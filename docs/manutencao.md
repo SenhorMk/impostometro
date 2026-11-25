@@ -106,3 +106,7 @@ cd site && npm install && npm test && npm run dev     # o site já calcula sozin
 # opcional, para conferir o porte contra a oficial:
 cd .. && docker compose up -d --build && ./scripts/validar-calculadora.sh && cd site && npm run porte:comparar
 ```
+
+## Conteúdo editorial e documentação
+
+Para adicionar ou revisar artigos e termos, consulte [`conteudo.md`](conteudo.md): cadastro, fontes, data de revisão, sitemap e verificações. A matriz de skills está em [`skills.md`](skills.md). Cada entrega deve atualizar ticket, índice, backlog e [`diário`](diario/README.md), conforme [`o fluxo de documentação`](README.md).

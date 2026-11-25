@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | ⏳ A fazer |
+| Status | 🟡 Implementado; revisão contábil pendente |
 | Épico | E6 Conteúdo e SEO |
 | Sprint | S3 |
 | Prioridade | P1 |
@@ -15,10 +15,16 @@ Como visitante, quero entender a reforma em linguagem simples; como dono, quero 
 
 ## Critérios de aceite
 
-- [ ] Artigos: como calcular CBS e IBS; quanto vou pagar em 2027; linha do tempo 2026 a 2033; reforma no Simples Nacional; o que é cClassTrib e por que importa.
-- [ ] Glossário com CBS, IBS, IS, crédito, não cumulatividade, split payment e alíquota de referência.
-- [ ] Cada artigo termina com um link para a calculadora.
+- [x] Artigos: como calcular CBS e IBS; quanto vou pagar em 2027; linha do tempo 2026 a 2033; reforma no Simples Nacional; o que é cClassTrib e por que importa.
+- [x] Glossário com CBS, IBS, IS, crédito, não cumulatividade, split payment e alíquota de referência.
+- [x] Cada artigo termina com um link para a calculadora.
 - [ ] Revisado por um contador, se houver parceiro.
+
+## Entrega e evidências
+
+Cinco guias em `/artigos`, sete termos em `/glossario`, fontes oficiais por seção, data editorial e metadados próprios. Conteúdo em `site/src/dados/conteudo.ts`; páginas no sitemap quando a indexação está habilitada. Nenhuma revisão de contador foi confirmada nesta sessão; o aviso público mantém essa pendência.
+
+[Fontes e manutenção](../conteudo.md) · [Skills pesquisadas](../skills.md) · [Registro e validação da entrega](../diario/2026-11-25-t19.md).
 
 ---
 [← Todos os tickets](README.md) · [Status geral](../backlog.md)

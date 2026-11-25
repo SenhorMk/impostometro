@@ -4,6 +4,8 @@ Registro curto do que foi decidido, quando e por quê. Novas decisões entram no
 
 | Data | Decisão | Por quê | Status |
 |---|---|---|---|
+| 2026-11-25 | Conteúdo do T19 versionado em TypeScript, com páginas geradas no servidor, fontes por seção e data editorial | cinco guias não exigem CMS nem banco; cada revisão pode ser auditada no Git e no PR. Não duplicar alíquotas provisórias nos artigos e manter explícita a revisão contábil pendente | implementado; revisão contábil pendente |
+| 2026-11-25 | Documentar cada entrega com ticket, índice, backlog e diário de evidências; manter matriz de skills e fontes | pedido do Mateus para acompanhar a construção do início ao fim, distinguindo implementado, validado, revisado e publicado | adotado a partir do T19 |
 | 2026-11-25 | **Calculadora traduzida para TypeScript (porte) e rodando dentro do site.** A oficial em Java fica só no Docker, como referência nos testes e na CI | ideia do Mateus: sem servidor Java não há Fly.io para pagar (~US$ 6,70/mês), nem chave para proteger, nem servidor para cair; o cálculo fica instantâneo. O preço: a cada versão nova da Receita, um agente precisa traduzir as mudanças (de qualquer jeito alguém precisaria atualizar o servidor). A segurança vem da comparação automática: 1.519 pedidos com resposta idêntica à oficial, e a CI reprova qualquer diferença | feito |
 | 2026-11-25 | ~~Fly.io com porteiro Caddy e chave~~ | substituído pelo porte acima. Os arquivos (`calculadora/fly.toml`, `calculadora/producao/`) foram apagados e ficam no histórico do git | descartado |
 | 2026-11-25 | Nome provisório "Calcula Reforma" | "Impostômetro" é marca conhecida da Associação Comercial de SP | aguardando T04 |
