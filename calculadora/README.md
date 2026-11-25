@@ -6,18 +6,20 @@ Esta pasta transforma a **calculadora oficial da Reforma Tributária** (CBS, IBS
 - Versão empacotada: **1.7.2** (commit `39363aa`), com tabelas oficiais **V0073** de 09/11/2026
 - Licença: **MIT**, Copyright (c) 2026 Receita Federal do Brasil. A cópia está em [`LICENSE-RECEITA-FEDERAL.txt`](LICENSE-RECEITA-FEDERAL.txt) e também vai dentro da imagem, em `/app/LICENSE-RECEITA-FEDERAL.txt`.
 
-> Nós **não alteramos uma linha** do código da Receita. Só compilamos e empacotamos. Isso é o que garante a transparência: o número que o site mostra é o número que o motor oficial calculou.
+> Nós **não alteramos uma linha** do código da Receita. Só compilamos e empacotamos.
+>
+> **Papel desta pasta hoje: referência.** O site não chama este container. Ele usa um porte fiel da calculadora em TypeScript ([`site/src/motor/`](../site/src/motor/README.md)), que roda dentro do próprio site. Este container oficial roda no seu computador e na CI para conferir que o porte dá exatamente a mesma resposta (`cd site && npm run porte:comparar`, 1.519 pedidos), e é de onde saem as tabelas do porte (`npm run porte:tabelas`). Esta página continua valendo para entender como a calculadora oficial funciona, porque o porte segue a mesma lógica.
 
 ---
 
 ## 1. Como a calculadora funciona (a visão de cima)
 
-A calculadora **não é uma biblioteca** que a gente importa no site. Ela é um **servidor**: um programa Java que fica ligado esperando perguntas. O site manda os dados de uma venda em JSON e ela devolve os impostos em JSON.
+A calculadora oficial **não é uma biblioteca** que dê para importar no site. Ela é um **servidor**: um programa Java que fica ligado esperando perguntas. Quem chama manda os dados de uma venda em JSON e ela devolve os impostos em JSON. (Por isso fizemos o porte: a mesma lógica, em TypeScript, como uma função que o site chama direto.)
 
 ```
-  Site (Next.js na Vercel)                 Calculadora (este container, no Fly.io)
-  ───────────────────────                  ──────────────────────────────────────
-  empresário digita a venda   ── JSON ──▶  POST /api/calculadora/observabilidade/regime-geral
+  Quem chama (testes, CI)                  Calculadora (este container)
+  ───────────────────────                  ────────────────────────────
+  dados de uma venda          ── JSON ──▶  POST /api/calculadora/observabilidade/regime-geral
                                                  │
                                                  ├─ confere NCM/NBS, CST, cClassTrib
                                                  ├─ busca a redução da tabela oficial (SQLite)
@@ -47,7 +49,7 @@ Arquivo: [`Dockerfile`](Dockerfile)
 As portas:
 
 - `8080`: a API. A documentação interativa (Swagger) fica em <http://localhost:8080/api/swagger-ui.html>.
-- `9101`: saúde (<http://localhost:9101/health>) e métricas. É o endereço que o Fly.io vai usar para saber se o container está vivo.
+- `9101`: saúde (<http://localhost:9101/health>) e métricas. É o endereço que diz se o container está vivo.
 
 ## 3. Como rodar na sua máquina
 
@@ -133,24 +135,11 @@ Medido em 25/11/2026, versão 1.7.2, máquina de 4 núcleos, com o container já
 
 Leitura: o Java ocupa a memória que encontrar livre, por isso sem limite ele passa de 600 MB. Com o teto de 512 MB ele funciona, mas sem folga. **Recomendação: 1 GB** no Fly.io (o backlog estimava 2 GB, dá para economizar). O cálculo em si é rápido: o que vai pesar no tempo total é a rede entre a Vercel e o Fly.io.
 
-## 7. Produção no Fly.io
+## 7. Produção
 
-O `Dockerfile` tem três etapas: `build` (compila), `runtime` (a calculadora pura, usada no `docker compose` e no CI) e `producao` (usada no Fly.io).
+Este container **não vai para produção**. O site usa o porte em TypeScript (veja a seção do topo e [`docs/decisoes.md`](../docs/decisoes.md)). Uma versão anterior do projeto rodava este container no Fly.io atrás de um porteiro com chave; esses arquivos foram apagados e estão no histórico do git, caso um dia sejam úteis.
 
-A etapa `producao` coloca um **porteiro** (Caddy) na porta 8000 na frente da calculadora, porque ela não tem senha e vai ficar na internet para a Vercel chamar:
-
-- sem o cabeçalho `Authorization: Bearer <MOTOR_CHAVE>`, a resposta é **401**;
-- `GET /saude` responde sem chave, para o health check do Fly.io;
-- o container nem sobe se `MOTOR_CHAVE` tiver menos de 32 caracteres.
-
-Arquivos: [`fly.toml`](fly.toml) (São Paulo, 1 GB, sempre ligado), [`producao/Caddyfile`](producao/Caddyfile) e [`producao/iniciar.sh`](producao/iniciar.sh). Passo a passo do deploy em [`docs/deploy.md`](../docs/deploy.md).
-
-Testar a imagem de produção no seu computador:
-
-```bash
-docker build --target producao -t calculadora:producao calculadora
-docker run --rm -p 8000:8000 -e MOTOR_CHAVE=$(openssl rand -hex 32) calculadora:producao
-```
+O `Dockerfile` tem duas etapas: `build` (compila) e `runtime` (a calculadora pura, usada no `docker compose` e na CI).
 
 Aviso esperado nos logs: a calculadora tenta consultar a versão do simulador online do governo (`piloto-cbs.tributos.gov.br`) para comparar. Se não conseguir, só registra um aviso e continua funcionando.
 

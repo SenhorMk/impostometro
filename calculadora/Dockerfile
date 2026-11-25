@@ -10,12 +10,16 @@
 #   3. compila o servidor Java;
 #   4. monta uma imagem pequena, só com o Java de execução, o .jar e o banco.
 #
+# Para que serve hoje: é a REFERÊNCIA. O site usa um porte fiel em TypeScript
+# (site/src/motor/), e esta imagem oficial roda só no seu computador e na CI
+# para conferir que o porte responde igual (npm run porte:comparar).
+# As tabelas do porte também saem do banco desta imagem (npm run porte:tabelas).
+#
 # Para atualizar a calculadora, troque CALC_VERSION e CALC_COMMIT (ver README).
 # =============================================================================
 
 ARG BUILD_IMAGE=maven:3.9-eclipse-temurin-25
 ARG JRE_IMAGE=eclipse-temurin:25-jre
-ARG CADDY_IMAGE=caddy:2.11
 
 # -----------------------------------------------------------------------------
 # Etapa 0: o código-fonte oficial, numa versão fixa.
@@ -84,20 +88,3 @@ ENV CALC_VERSION=${CALC_VERSION} \
 EXPOSE 8080 9101
 ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -Dspring.profiles.active=offline -jar /app/app.jar"]
 
-# -----------------------------------------------------------------------------
-# Etapa 3: imagem de "producao" (usada no Fly.io).
-# A calculadora oficial não tem senha. Na internet, colocamos na frente dela um
-# porteiro (Caddy) na porta 8000 que só deixa passar quem mandar
-#   Authorization: Bearer <MOTOR_CHAVE>
-# A chave fica nos segredos do Fly.io e da Vercel, nunca no código.
-# GET /saude responde sem chave (para o health check do Fly.io).
-# -----------------------------------------------------------------------------
-FROM ${CADDY_IMAGE} AS caddy
-
-FROM runtime AS producao
-COPY --from=caddy /usr/bin/caddy /usr/local/bin/caddy
-COPY producao/Caddyfile /app/Caddyfile
-COPY producao/iniciar.sh /app/iniciar.sh
-ENV XDG_DATA_HOME=/tmp/caddy-data XDG_CONFIG_HOME=/tmp/caddy-config
-EXPOSE 8000
-ENTRYPOINT ["sh", "/app/iniciar.sh"]

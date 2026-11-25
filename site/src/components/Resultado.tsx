@@ -84,7 +84,7 @@ export function Resultado({ resultado, descricao, cidade }: Props) {
               <strong>Alíquota provisória:</strong> a CBS de 2027 ainda pode mudar até 15/12/2026.{" "}
             </>
           )}
-          Simulação feita com a calculadora oficial da Receita Federal (versão {r.versaoMotor}). Não substitui o seu
+          Simulação feita com as regras e tabelas da calculadora oficial da Receita Federal (versão {r.versaoMotor}). Não substitui o seu
           contador. Este site não é do governo.
         </p>
 

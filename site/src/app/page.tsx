@@ -62,7 +62,7 @@ export default function Inicio() {
               </p>
               <ul className="mt-6 hidden space-y-2.5 text-sm text-tinta md:block">
                 {[
-                  "Usa a calculadora oficial da Receita Federal, sem alterações",
+                  "Mesma conta da calculadora oficial da Receita Federal, conferida em mais de 1.500 casos",
                   "Sem login gov.br e sem códigos complicados: é só dizer o que você vende",
                   "Mostra a redução do seu setor e o artigo da lei",
                 ].map((t) => (

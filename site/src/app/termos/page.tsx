@@ -33,8 +33,10 @@ export default function Termos() {
         </p>
         <h2>Licença da calculadora oficial</h2>
         <p>
-          Calculadora de tributos: Copyright © 2026 Receita Federal do Brasil, distribuída sob a licença MIT e usada sem
-          modificações.
+          Calculadora de tributos: Copyright © 2026 Receita Federal do Brasil, distribuída sob a licença MIT. Usamos a
+          mesma lógica e as mesmas tabelas da versão oficial, traduzidas para a linguagem do site (TypeScript) sob a
+          mesma licença. Antes de cada atualização, a tradução é conferida contra a calculadora oficial e precisa dar
+          resultados idênticos.
         </p>
       </main>
       <Rodape />

@@ -1,27 +1,28 @@
 # Site (Next.js)
 
-A landing page que já é a calculadora, e a API que conversa com a calculadora oficial da Receita.
+A landing page que já é a calculadora, a API e o porte da calculadora oficial da Receita (`src/motor/`), que roda aqui dentro.
 
 ## Rodar no seu computador
 
 ```bash
-docker compose up -d          # na raiz: liga a calculadora oficial (porta 8080)
 cd site
-cp .env.example .env.local    # endereço da calculadora
 npm install
+npm test                      # porte: exemplo oficial + 30 dourados (sem Docker)
 npm run dev                   # abre em http://localhost:3000
+npm run porte:comparar        # porte × oficial (precisa de `docker compose up -d` na raiz)
 ```
 
 ## Como as peças se encaixam
 
 ```
-Navegador                          Vercel (este site)                         Fly.io
-─────────                          ──────────────────                         ──────
+Navegador                          Vercel (este site)
+─────────                          ──────────────────
 Calculadora.tsx  ── POST ──▶  /api/calcular (route.ts)
   busca local no                 └─ lib/motor.ts  (T08)
   dicionário (T10)                    ├─ escolhe as alíquotas em dados/aliquotas.json
-                                      ├─ monta o pedido no formato da Receita   ── POST ──▶  calculadora oficial
-                                      └─ traduz a resposta + memória de cálculo ◀── JSON ──
+                                      ├─ monta o pedido no formato da Receita
+                                      ├─ chama o porte  src/motor/  (mesma conta da oficial, sem rede)
+                                      └─ traduz a resposta + memória de cálculo
 Resultado.tsx    ◀── JSON ──   { total, cbs, ibs, fundamentação, versões, fontes }
   "Como chegamos nesse número" (T12)
 ```
@@ -31,7 +32,8 @@ Resultado.tsx    ◀── JSON ──   { total, cbs, ibs, fundamentação, ver
 | `src/app/page.tsx` | landing page: calculadora no topo, como funciona, o que muda, transparência, planos, dúvidas (com dados estruturados de FAQ para o Google) |
 | `src/components/Calculadora.tsx` | formulário: o que você vende, valor, estado e cidade |
 | `src/components/Resultado.tsx` | resultado e a conta aberta, passo a passo |
-| `src/lib/motor.ts` | **único** ponto que fala com a calculadora oficial; nunca inventa número |
+| `src/motor/` | o porte da calculadora oficial (veja o `README.md` da pasta) |
+| `src/lib/motor.ts` | **único** ponto que chama o porte; nunca inventa número |
 | `src/app/api/calcular/route.ts` | valida o pedido e chama `lib/motor.ts` |
 | `src/app/api/municipios/route.ts` | lista de cidades por estado (tirada das tabelas oficiais, não depende do motor) |
 | `src/dados/aliquotas.json` | alíquotas de 2027 com fonte e status (T03) |
@@ -49,7 +51,8 @@ Resultado.tsx    ◀── JSON ──   { total, cbs, ibs, fundamentação, ver
 
 ## Variáveis de ambiente
 
+O site não precisa de nenhuma para calcular. Só para a comparação com a oficial:
+
 | Nome | Para quê |
 |---|---|
-| `MOTOR_URL` | endereço da calculadora oficial (padrão: `http://localhost:8080/api/calculadora`) |
-| `MOTOR_CHAVE` | chave que o proxy da calculadora vai exigir em produção (T05) |
+| `CALCULADORA_URL` | endereço da calculadora oficial em Docker (padrão: `http://localhost:8080/api/calculadora`) |

@@ -4,7 +4,7 @@ Leia este arquivo inteiro antes de mudar qualquer coisa. Ele vale para qualquer 
 
 ## O que é o projeto
 
-Site por assinatura barata para empresários calcularem a **CBS e o IBS da reforma tributária (2027)**, usando a **calculadora oficial que a Receita Federal publicou no GitHub** (licença MIT). Diferenciais: mais simples que o simulador do governo (sem login gov.br), encontrável no Google, importação de XML de notas (assinantes) e **transparência total nos cálculos**.
+Site por assinatura barata para empresários calcularem a **CBS e o IBS da reforma tributária (2027)**, usando a **calculadora oficial que a Receita Federal publicou no GitHub** (licença MIT), traduzida fielmente para TypeScript para rodar dentro do próprio site (o "porte", em `site/src/motor/`). Diferenciais: mais simples que o simulador do governo (sem login gov.br), encontrável no Google, importação de XML de notas (assinantes) e **transparência total nos cálculos**.
 
 - Dono do produto: Mateus (GitHub `SenhorMk`). Mora no Brasil, fala português.
 - Estado atual, tickets e próximos passos: [`docs/backlog.md`](docs/backlog.md).
@@ -12,13 +12,14 @@ Site por assinatura barata para empresários calcularem a **CBS e o IBS da refor
 
 ## Regras que não se quebram
 
-1. **Nunca alterar o código da calculadora da Receita.** Ela é baixada numa versão fixa pelo `calculadora/Dockerfile` e usada como está. Se precisar de algo diferente, faça no nosso código (site), nunca num fork dela.
-2. **Nunca inventar número.** Se a calculadora oficial não calculou um item, o site mostra "não calculado" com o motivo. Todo valor exibido vem da calculadora oficial.
-3. **Transparência em todo resultado:** alíquota usada e fonte, redução e artigo da lei, memória de cálculo oficial, versão da calculadora e da tabela de alíquotas.
-4. **Manter a atribuição MIT da Receita** (README, rodapé do site, `calculadora/LICENSE-RECEITA-FEDERAL.txt`, licença dentro da imagem).
-5. **O site não é do governo** e isso aparece no rodapé de todas as páginas. Não usar "Receita", "gov" nem "Impostômetro" (marca da ACSP) no nome do produto.
-6. **Segredos nunca no git.** Chaves ficam na Vercel, no Fly.io e no Supabase. Só `.env.example` (sem valores) é versionado.
-7. **Testes dourados não se "consertam" regravando.** Se um valor mudou, descubra por quê (CHANGELOG da Receita) antes de rodar `--gerar`, e explique no pull request.
+1. **Nunca alterar o código da calculadora da Receita.** A versão oficial (Java) é baixada numa versão fixa pelo `calculadora/Dockerfile` e usada como está, só como **referência** (no seu computador e na CI).
+2. **O porte tem que responder IGUAL à oficial, sempre.** `site/src/motor/` é uma tradução linha a linha da lógica da Receita: não "melhore" nem "corrija" regras ali (se a oficial errar, o porte erra igual). `npm run porte:comparar` precisa dar 100% idêntico; nunca mude a comparação para aceitar uma diferença. Se precisar de algo diferente, faça fora de `src/motor/` (em `src/lib/`). Para atualizar quando a Receita lançar versão nova: [`docs/manutencao.md`](docs/manutencao.md).
+3. **Nunca inventar número.** Se a calculadora não calculou um item, o site mostra "não calculado" com o motivo. Todo valor exibido vem do porte, conferido contra a calculadora oficial.
+4. **Transparência em todo resultado:** alíquota usada e fonte, redução e artigo da lei, memória de cálculo oficial, versão da calculadora e da tabela de alíquotas.
+5. **Manter a atribuição MIT da Receita** (README, rodapé do site, termos, `calculadora/LICENSE-RECEITA-FEDERAL.txt`, licença dentro da imagem e cabeçalho de `site/src/motor/`). O porte é obra derivada e segue sob a mesma licença.
+6. **O site não é do governo** e isso aparece no rodapé de todas as páginas. Não usar "Receita", "gov" nem "Impostômetro" (marca da ACSP) no nome do produto.
+7. **Segredos nunca no git.** Chaves ficam na Vercel e no Supabase. Só `.env.example` (sem valores) é versionado.
+8. **Testes dourados não se "consertam" regravando.** Se um valor mudou, descubra por quê (CHANGELOG da Receita) antes de rodar `--gerar`, e explique no pull request.
 
 ## Idioma e estilo
 
@@ -30,15 +31,17 @@ Site por assinatura barata para empresários calcularem a **CBS e o IBS da refor
 
 | Caminho | O que é |
 |---|---|
-| `calculadora/` | Dockerfile que empacota a calculadora oficial (Java 25), `fly.toml`, porteiro de produção (`producao/`), exemplo oficial |
+| `calculadora/` | Dockerfile que empacota a calculadora oficial (Java 25), usada só como referência; exemplo oficial e resposta oficial |
 | `site/` | Next.js 16 + TypeScript + Tailwind 4: landing page, calculadora grátis e API (`/api/calcular`) |
-| `site/src/lib/motor.ts` | o **único** ponto do site que fala com a calculadora oficial |
+| `site/src/motor/` | o **porte**: calculadora da Receita traduzida para TypeScript + tabelas oficiais (`dados/tabelas.json`). Mapa Java → TS no `README.md` da pasta |
+| `site/src/lib/motor.ts` | o **único** ponto do site que chama o porte |
+| `site/scripts/porte/` | `comparar.ts` (porte × oficial, 1.519 pedidos) e `exportar-tabelas.mjs` |
 | `site/src/dados/aliquotas.json` | alíquotas de 2027 com fonte e status |
 | `site/src/dados/atividades.json` | dicionário "o que você vende?" (atividade → NCM/NBS + cClassTrib) |
 | `testes-dourados/` | 30 operações com resultado conhecido + checagem do dicionário |
 | `scripts/validar-calculadora.sh` | confere o exemplo oficial da Receita (CBS de R$ 42,24) |
 | `docs/` | arquitetura, deploy, manutenção, backlog, decisões |
-| `.github/workflows/` | CI: `calculadora.yml` (motor + testes) e `site.yml` (lint, tipos, build) |
+| `.github/workflows/` | CI: `calculadora.yml` (oficial + testes + porte × oficial) e `site.yml` (lint, testes do porte, tipos, build) |
 
 Arquitetura detalhada: [`docs/arquitetura.md`](docs/arquitetura.md).
 
@@ -47,25 +50,27 @@ Arquitetura detalhada: [`docs/arquitetura.md`](docs/arquitetura.md).
 Pré-requisitos: Docker, Node 22, Python 3 (só biblioteca padrão), `curl` e `jq`.
 
 ```bash
-# Calculadora oficial (porta 8080). Primeira vez ~5 min.
+# Site (porta 3000). Já calcula sozinho, sem Docker.
+cd site
+npm install
+npm test                                      # porte: exemplo oficial + 30 dourados (sem Docker)
+npm run dev
+npm run lint && npx next typegen && npx tsc --noEmit && npm run build   # o que o CI roda
+
+# Calculadora oficial em Docker (porta 8080), a referência. Primeira vez ~5 min.
 docker compose up -d --build
 ./scripts/validar-calculadora.sh              # exemplo oficial
 python3 testes-dourados/dourados.py           # 30 operações de referência
 python3 testes-dourados/atividades.py         # dicionário do site
-
-# Site (porta 3000)
-cd site
-cp .env.example .env.local
-npm install
-npm run dev
-npm run lint && npx next typegen && npx tsc --noEmit && npm run build   # o que o CI roda
+cd site && npm run porte:comparar             # porte × oficial: tem que dar 100% idêntico
+npm run porte:tabelas                         # exporta as tabelas do banco oficial para o porte
 ```
 
 **Next.js 16 tem mudanças grandes** em relação ao que modelos costumam saber (por exemplo, `cacheComponents` ligado e tipos globais como `LayoutProps`). Antes de escrever código do site, leia `site/AGENTS.md` e a documentação em `site/node_modules/next/dist/docs/`.
 
 ## Antes de abrir um pull request
 
-- Rode o que você mudou: testes dourados e dicionário (se mexeu em calculadora, alíquotas ou atividades) e lint, tipos e build (se mexeu no site).
+- Rode o que você mudou: `npm run porte:comparar` (se mexeu em `src/motor/` ou na versão da calculadora), testes dourados e dicionário (se mexeu em calculadora, alíquotas ou atividades) e lint, testes, tipos e build (se mexeu no site).
 - Mudou a interface? Teste no navegador, no celular e no computador.
 - Atualize o [`docs/backlog.md`](docs/backlog.md) (status do ticket) e, se tomou uma decisão, registre em [`docs/decisoes.md`](docs/decisoes.md).
 - Não faça merge sozinho: o Mateus revisa e aprova.
@@ -74,7 +79,7 @@ npm run lint && npx next typegen && npx tsc --noEmit && npm run build   # o que 
 
 Passo a passo em [`docs/manutencao.md`](docs/manutencao.md):
 - atualizar a alíquota (por exemplo, quando o Senado fixar a CBS de 2027);
-- atualizar a versão da calculadora da Receita;
+- atualizar a versão da calculadora da Receita **e o porte** (passo a passo para agentes);
 - adicionar uma atividade ao "o que você vende?";
 - colocar no ar e mudar segredos ([`docs/deploy.md`](docs/deploy.md)).
 

@@ -19,9 +19,10 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
-| T05 | Vercel, Supabase e motor no Fly.io | 🟡 | `fly.toml`, imagem `producao` com chave e `site/vercel.json` prontos; falta criar os projetos nas contas ([`deploy.md`](deploy.md)) |
-| T06 | Repositório, CI e deploy automático | 🟡 | CI pronto (`.github/workflows/`). Falta: deploy automático do motor no Fly.io e ligar a Vercel ao repositório |
-| T08 | Serviço de cálculo que conversa com o motor | ✅ | `site/src/lib/motor.ts`. Falta gravar cada cálculo no banco (depende do Supabase) |
+| T05 | Vercel e Supabase | 🟡 | `site/vercel.json` pronto; falta criar os projetos nas contas ([`deploy.md`](deploy.md)). Fly.io não é mais necessário (porte) |
+| T06 | Repositório, CI e deploy automático | 🟡 | CI pronto (`.github/workflows/`), com comparação porte × oficial. Falta ligar a Vercel ao repositório |
+| T08b | Porte da calculadora para TypeScript (roda dentro do site) | ✅ | `site/src/motor/`. 1.519 de 1.519 pedidos idênticos à oficial 1.7.2. Atualização em [`manutencao.md`](manutencao.md) |
+| T08 | Serviço de cálculo | ✅ | `site/src/lib/motor.ts`, agora chamando o porte. Falta gravar cada cálculo no banco (depende do Supabase) |
 
 ## Sprint 2 · Calculadora grátis
 
@@ -39,7 +40,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T19 | 5 artigos base e glossário | ⏳ | |
 | T20 | SEO técnico, Search Console e medição | 🟡 | títulos, descrição e dados de FAQ feitos. Falta: sitemap, robots, Search Console, Plausible/GA |
 | T21 | Termos, privacidade e aviso "não oficial" | 🟡 | rodapé feito; termos e privacidade são rascunhos para advogado revisar |
-| T07 | Backup e monitoramento | ⏳ | Sentry + aviso se site ou motor caírem |
+| T07 | Backup e monitoramento | ⏳ | Sentry + aviso se o site cair |
 
 ## Sprints 4 a 6 · Conta, assinatura e XML
 
@@ -55,11 +56,11 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 ## Depois do MVP (P2)
 
-T23 atualização automática do motor · T24 Simples Nacional · T25 NFS-e · T26 créditos das compras · T27 PDF para o contador · T28 alertas · T29 painel de alíquotas · T30 páginas por setor/cidade · T31 comparar com o imposto atual · T32 painel do contador.
+T23 aviso automático de versão nova da Receita (abre tarefa para um agente atualizar o porte) · T24 Simples Nacional · T25 NFS-e · T26 créditos das compras · T27 PDF para o contador · T28 alertas · T29 painel de alíquotas · T30 páginas por setor/cidade · T31 comparar com o imposto atual · T32 painel do contador.
 
 ## Próximo passo recomendado
 
-1. 🧑 Mateus: decidir nome, domínio e preço (T04) e criar a conta no Fly.io.
-2. Subir o motor no Fly.io e o site na Vercel ([`deploy.md`](deploy.md)) → calculadora grátis no ar.
+1. 🧑 Mateus: decidir nome, domínio e preço (T04).
+2. Subir o site na Vercel ([`deploy.md`](deploy.md)) → calculadora grátis no ar. Não precisa mais de Fly.io.
 3. T20 (sitemap, Search Console, medição) e T19 (artigos) para o Google começar a indexar antes da virada do ano.
 4. T13 + T15 (login e empresa) com Supabase.

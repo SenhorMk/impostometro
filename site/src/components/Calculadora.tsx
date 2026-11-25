@@ -334,7 +334,7 @@ export function Calculadora() {
         <button type="submit" disabled={carregando} className="botao-primario w-full py-3.5 text-base">
           {carregando ? "Calculando…" : "Calcular meu imposto de 2027"}
         </button>
-        <p className="text-center text-xs text-suave">Grátis, sem cadastro. Usa a calculadora oficial da Receita Federal.</p>
+        <p className="text-center text-xs text-suave">Grátis, sem cadastro. Mesma conta da calculadora oficial da Receita Federal.</p>
       </form>
 
       <div ref={resultadoRef} aria-live="polite">

@@ -5,8 +5,8 @@
 #
 # Uso:   ./scripts/validar-calculadora.sh [URL_BASE]
 #        URL_BASE padrão: http://localhost:8080/api/calculadora
-#        Para conferir a produção (Fly.io), exporte MOTOR_CHAVE antes:
-#        MOTOR_CHAVE=... ./scripts/validar-calculadora.sh https://<app>.fly.dev/api/calculadora
+#        Se a calculadora estiver atrás de um porteiro com chave (opcional),
+#        exporte MOTOR_CHAVE antes.
 # Precisa de: curl e jq.
 #
 # O que conferimos (valores copiados da documentação oficial):

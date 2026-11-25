@@ -1,20 +1,22 @@
 /**
- * Serviço de cálculo (T08): a ÚNICA parte do site que conversa com a calculadora oficial.
+ * Serviço de cálculo (T08): a ÚNICA parte do site que usa a calculadora.
+ *
+ * A calculadora é o PORTE em TypeScript da calculadora oficial da Receita
+ * (pasta src/motor/), que roda aqui mesmo, dentro do site. Não há servidor
+ * Java em produção. O porte é conferido contra a calculadora oficial em mais
+ * de 1.500 pedidos a cada mudança (scripts/porte/comparar.ts, na CI).
  *
  * O que ele faz, em ordem:
  *  1. escolhe as alíquotas de 2027 na nossa tabela (src/dados/aliquotas.json);
- *  2. monta o pedido no formato da Receita e chama "cálculo com observabilidade"
+ *  2. monta o pedido no formato da Receita e chama o "cálculo com observabilidade"
  *     (um item com erro não derruba os outros);
  *  3. traduz a resposta para um formato simples, com a memória de cálculo oficial;
- *  4. NUNCA inventa número: se o motor não calculou, devolvemos "não calculado" com o motivo.
- *
- * Roda só no servidor (a chave do motor nunca vai para o navegador).
+ *  4. NUNCA inventa número: se a calculadora não calculou, devolvemos "não calculado" com o motivo.
  */
+import { calcularOperacao } from "@/motor/observabilidade";
+import { versao as versaoCalculadora } from "@/motor/versao";
 import { aliquotasPara, VERSAO_TABELA } from "./aliquotas";
 import type { ParteTributo, PedidoCalculo, ResultadoCalculo } from "./tipos";
-
-const MOTOR_URL = process.env.MOTOR_URL ?? "http://localhost:8080/api/calculadora";
-const MOTOR_CHAVE = process.env.MOTOR_CHAVE; // exigida pelo proxy do motor em produção (T05)
 
 /** Mensagens em português simples para os erros mais comuns do motor. */
 const ERROS_AMIGAVEIS: Record<string, string> = {
@@ -54,28 +56,6 @@ export function dataDoCalculo(data?: string): string {
   return d < "2027-01-01" ? "2027-01-01" : d;
 }
 
-let versaoEmCache: { app: string; db: string; quando: number } | null = null;
-
-async function versaoMotor(): Promise<{ app: string; db: string }> {
-  if (versaoEmCache && Date.now() - versaoEmCache.quando < 10 * 60_000) return versaoEmCache;
-  const r = await chamarMotor("/dados-abertos/versao");
-  const j = (await r.json()) as Json;
-  versaoEmCache = { app: String(j.versaoApp), db: String(j.versaoDb), quando: Date.now() };
-  return versaoEmCache;
-}
-
-async function chamarMotor(caminho: string, corpo?: unknown): Promise<Response> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (MOTOR_CHAVE) headers.Authorization = `Bearer ${MOTOR_CHAVE}`;
-  return fetch(`${MOTOR_URL}${caminho}`, {
-    method: corpo ? "POST" : "GET",
-    headers,
-    body: corpo ? JSON.stringify(corpo) : undefined,
-    signal: AbortSignal.timeout(15_000),
-    cache: "no-store",
-  });
-}
-
 export async function calcular(pedido: PedidoCalculo): Promise<ResultadoCalculo> {
   const data = dataDoCalculo(pedido.data);
   const periodo = aliquotasPara(data);
@@ -111,20 +91,19 @@ export async function calcular(pedido: PedidoCalculo): Promise<ResultadoCalculo>
   };
 
   let resposta: Json;
-  let versao: { app: string; db: string };
   try {
-    const [r, v] = await Promise.all([chamarMotor("/observabilidade/regime-geral", operacao), versaoMotor()]);
-    if (!r.ok) throw new Error(`motor respondeu HTTP ${r.status}`);
-    resposta = (await r.json()) as Json;
-    versao = v;
+    const r = calcularOperacao(operacao);
+    if (r.status !== 200) throw new Error(`calculadora recusou o pedido: ${JSON.stringify(r.corpo)}`);
+    resposta = r.corpo as Json;
   } catch (erro) {
     console.error("[motor] falha ao calcular", erro);
     return {
       ok: false,
-      estado: "FORA_DO_AR",
-      mensagem: "A calculadora oficial não respondeu agora. Tente de novo em alguns segundos.",
+      estado: "FALHA_TECNICA",
+      mensagem: "A calculadora não conseguiu calcular este item. Confira os dados e tente de novo.",
     };
   }
+  const versao = versaoCalculadora();
 
   const objeto = (resposta.objetos as Json[] | undefined)?.[0];
   const estado = String(objeto?.estadoItem ?? "FALHA_TECNICA");
@@ -167,8 +146,8 @@ export async function calcular(pedido: PedidoCalculo): Promise<ResultadoCalculo>
     fundamentacao,
     semAliquota: !g,
     dataFatoGerador: data,
-    versaoMotor: versao.app,
-    versaoTabelaMotor: versao.db,
+    versaoMotor: versao.versaoApp,
+    versaoTabelaMotor: versao.versaoDb,
     versaoTabelaAliquotas: VERSAO_TABELA,
     periodoAliquotas: {
       id: periodo.id,

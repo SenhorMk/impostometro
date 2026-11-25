@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   }
 
   const resultado = await calcular(corpo as PedidoCalculo);
-  return Response.json(resultado, { status: resultado.ok || resultado.estado !== "FORA_DO_AR" ? 200 : 503 });
+  return Response.json(resultado, { status: resultado.ok || resultado.estado !== "FALHA_TECNICA" ? 200 : 500 });
 }
 
 function validar(p: Partial<PedidoCalculo>): string | null {

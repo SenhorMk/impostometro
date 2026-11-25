@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from casos import CASOS, montar_entrada  # noqa: E402
 
 BASE_URL = os.environ.get("CALCULADORA_URL", "http://localhost:8080/api/calculadora")
-# Em produção (Fly.io) o porteiro exige a chave: exporte MOTOR_CHAVE.
+# Opcional: se a calculadora oficial estiver atrás de um porteiro com chave, exporte MOTOR_CHAVE.
 CABECALHOS = {"Content-Type": "application/json"}
 if os.environ.get("MOTOR_CHAVE"):
     CABECALHOS["Authorization"] = f"Bearer {os.environ['MOTOR_CHAVE']}"

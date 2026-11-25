@@ -2,33 +2,49 @@
 
 ## Visão geral
 
-São três peças, cada uma num serviço feito para ela:
+São duas peças em produção, e uma terceira só para conferência:
 
 ```
-                    ┌────────────────────────────── Vercel (região gru1, São Paulo) ─────────────────────────────┐
- Navegador  ──────▶ │  Next.js (site/)                                                                           │
- (empresário)       │   • página inicial = landing + calculadora grátis (Calculadora.tsx, Resultado.tsx)         │
-                    │   • POST /api/calcular ──▶ lib/motor.ts                                                    │
-                    │        1. escolhe alíquotas em dados/aliquotas.json pela data                             │
-                    │        2. monta o pedido no formato da Receita                                             │
-                    │        3. chama a calculadora com  Authorization: Bearer MOTOR_CHAVE  ───────────────┐     │
-                    │        4. traduz a resposta (valores, redução, artigo, memória de cálculo, versões)  │     │
-                    └──────────────────────────────────────────────────────────────────────────────────────┼─────┘
-                                                                                                           │ HTTPS
-                    ┌──────────────────────── Fly.io (região gru, São Paulo, 1 GB) ─────────────────────────▼─────┐
-                    │  container "producao" (calculadora/Dockerfile)                                             │
-                    │   • Caddy :8000  → recusa sem a chave (401); /saude sem chave para o health check          │
-                    │   • calculadora oficial da Receita (Java 25, Spring Boot) :8080, sem alterações            │
-                    │   • banco SQLite somente leitura com as tabelas oficiais (gerado no build)                 │
-                    └────────────────────────────────────────────────────────────────────────────────────────────┘
+                    ┌────────────────────────── Vercel (região gru1, São Paulo) ──────────────────────────┐
+ Navegador  ──────▶ │  Next.js (site/)                                                                    │
+ (empresário)       │   • página inicial = landing + calculadora grátis (Calculadora.tsx, Resultado.tsx)  │
+                    │   • POST /api/calcular ──▶ lib/motor.ts                                             │
+                    │        1. escolhe alíquotas em dados/aliquotas.json pela data                       │
+                    │        2. monta o pedido no formato da Receita                                      │
+                    │        3. chama o PORTE da calculadora oficial (src/motor/), aqui mesmo, sem rede   │
+                    │        4. traduz a resposta (valores, redução, artigo, memória de cálculo, versões) │
+                    │   • src/motor/  = calculadora da Receita traduzida de Java para TypeScript,         │
+                    │                   com as tabelas oficiais em src/motor/dados/tabelas.json           │
+                    └─────────────────────────────────────────────────────────────────────────────────────┘
 
-                    ┌──────────────────────── Supabase (São Paulo) — ainda não usado no código ─────────────────┐
-                    │  login (Google e link por e-mail), banco Postgres (empresas, cálculos, assinaturas),       │
-                    │  bucket privado para XMLs (apagados após a leitura)                                        │
-                    └────────────────────────────────────────────────────────────────────────────────────────────┘
+                    ┌──────────────── Supabase (São Paulo) — ainda não usado no código ───────────────────┐
+                    │  login (Google e link por e-mail), banco Postgres (empresas, cálculos, assinaturas),│
+                    │  bucket privado para XMLs (apagados após a leitura)                                 │
+                    └─────────────────────────────────────────────────────────────────────────────────────┘
+
+ Só no seu computador e na CI (nunca em produção):
+                    ┌─────────────────────────────────────────────────────────────────────────────────────┐
+                    │  calculadora OFICIAL da Receita (Java 25) em Docker, sem alterações                 │
+                    │   • é a referência: o porte precisa responder IGUAL a ela (npm run porte:comparar)  │
+                    │   • é de onde saem as tabelas do porte (npm run porte:tabelas)                      │
+                    └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Por que separado: a Vercel só roda funções curtas e não mantém um servidor Java ligado. O Fly.io roda o container 24 horas perto da Vercel. Detalhes em [`decisoes.md`](decisoes.md).
+Por que o porte: a Vercel não mantém um servidor Java ligado. Em vez de pagar um servidor só para a calculadora (Fly.io), traduzimos a parte de cálculo da calculadora oficial para TypeScript, e ela roda dentro do próprio site. Detalhes e o preço disso em [`decisoes.md`](decisoes.md).
+
+## O porte da calculadora (`site/src/motor/`)
+
+A calculadora da Receita tem cerca de 35 mil linhas de Java, mas a maior parte é servidor web, banco de dados e telas. O caminho do cálculo tem cerca de 3 mil linhas, e foi isso que traduzimos, arquivo por arquivo. O mapa "arquivo Java → arquivo TypeScript" está em [`site/src/motor/README.md`](../site/src/motor/README.md).
+
+Três coisas fazem o porte dar o mesmo número, até o centavo:
+
+1. **Mesma aritmética.** O Java usa `BigDecimal` (números decimais exatos, sem os erros do `0,1 + 0,2` do computador) com arredondamento "metade para o par" (HALF_EVEN). O porte usa a biblioteca `decimal.js` com as mesmas regras e a mesma precisão nas divisões (34 dígitos).
+2. **Mesmas tabelas.** As fórmulas e alíquotas ficam em tabelas do banco da Receita. Exportamos essas tabelas, sem mexer em nenhum valor, para `src/motor/dados/tabelas.json` (30 tabelas, 25 mil linhas, 0,9 MB).
+3. **Mesma resposta.** O porte devolve o mesmo JSON da calculadora oficial, campo por campo, na mesma ordem, inclusive as mensagens de erro e a memória de cálculo.
+
+E uma coisa garante que continua assim: a CI manda os mesmos 1.519 pedidos para o porte e para a calculadora oficial, e reprova o pull request se qualquer resposta tiver uma diferença, mesmo de um centavo ou de uma vírgula num texto.
+
+O que **não** foi portado (o site não usa; se alguém mandar, o porte recusa com erro em vez de calcular errado): compra governamental (`gCompraGov`), documento de referência (`tpDoc`), componentes da base (`gComponentesBC`) e monofasia de combustíveis (que a própria calculadora oficial 1.7.2 ainda não implementa).
 
 ## Fluxo de um cálculo grátis
 
@@ -36,12 +52,12 @@ Por que separado: a Vercel só roda funções curtas e não mantém um servidor 
 2. Ela escolhe "Restaurante / pizzaria / lanchonete" → NBS `103011000`, cClassTrib `200047`.
 3. O navegador manda `POST /api/calcular` com `{ tipo, codigo, cClassTrib, valor, municipio, uf }`.
 4. `route.ts` valida tudo e chama `calcular()` em `lib/motor.ts`.
-5. `motor.ts` pega as alíquotas vigentes (hoje CBS 11,2%, IBS 0,05% + 0,05%, provisórias), monta a operação e chama `POST /api/calculadora/observabilidade/regime-geral` na calculadora oficial.
-6. A calculadora devolve os grupos `gCBS`, `gIBSUF`, `gIBSMun` (com redução e alíquota efetiva) e a `memoriaCalculo` em texto.
+5. `motor.ts` pega as alíquotas vigentes (hoje CBS 11,2%, IBS 0,05% + 0,05%, provisórias), monta a operação no formato da Receita e chama `calcularOperacao()` do porte (o mesmo que `POST /api/calculadora/observabilidade/regime-geral` da oficial).
+6. O porte devolve os grupos `gCBS`, `gIBSUF`, `gIBSMun` (com redução e alíquota efetiva) e a `memoriaCalculo` em texto.
 7. `motor.ts` traduz para `ResultadoCalculo` (tipo em `lib/tipos.ts`), incluindo versões e fontes.
 8. `Resultado.tsx` mostra o total e a "conta aberta".
 
-Se a calculadora disser `INCONSISTENCIA_ENTRADA`, `NAO_IMPLEMENTADO` ou `FALHA_TECNICA`, o site mostra a mensagem e **nenhum valor**.
+Se o resultado for `INCONSISTENCIA_ENTRADA`, `NAO_IMPLEMENTADO` ou `FALHA_TECNICA`, o site mostra a mensagem e **nenhum valor**.
 
 ## Conceitos tributários que aparecem no código
 
@@ -63,12 +79,19 @@ Se a calculadora disser `INCONSISTENCIA_ENTRADA`, `NAO_IMPLEMENTADO` ou `FALHA_T
 | Alíquotas por período | `site/src/dados/aliquotas.json` | pull request ([`manutencao.md`](manutencao.md)) |
 | Atividades do "o que você vende?" | `site/src/dados/atividades.json` | pull request |
 | Lista de municípios (IBGE) | `site/src/dados/municipios.json` (gerada das tabelas oficiais) | regenerar se a Receita mudar |
-| Tabelas oficiais (NCM, NBS, reduções) | dentro da imagem da calculadora | atualizar a versão da calculadora |
+| Tabelas oficiais (NCM, NBS, reduções, fórmulas) | `site/src/motor/dados/tabelas.json`, exportadas do banco da imagem oficial | `npm run porte:tabelas` ao atualizar a calculadora |
 | Contas, empresas, histórico | Supabase (a fazer: T13, T15, T18) | o site |
 
 ## Testes e CI
 
+| Teste | Precisa de Docker? | O que confere |
+|---|---|---|
+| `cd site && npm test` | não | o porte devolve a resposta oficial do exemplo da Receita e os valores dos 30 testes dourados |
+| `cd site && npm run porte:comparar` | sim (calculadora oficial ligada) | 1.519 pedidos: respostas do porte e da oficial idênticas |
+| `python3 testes-dourados/dourados.py` | sim | 30 operações com resultado conhecido na oficial |
+| `python3 testes-dourados/atividades.py` | sim | cada atividade do dicionário calcula na oficial |
+
 | Workflow | Quando roda | O que faz |
 |---|---|---|
-| `.github/workflows/calculadora.yml` | PR que mexe em `calculadora/`, `testes-dourados/`, `site/src/dados/` | compila a imagem (com cache), sobe, roda o exemplo oficial, os 30 testes dourados e o dicionário |
-| `.github/workflows/site.yml` | PR que mexe em `site/` | `npm ci`, lint, tipos (`next typegen` + `tsc`), build |
+| `.github/workflows/calculadora.yml` | PR que mexe em `calculadora/`, `testes-dourados/`, `site/src/dados/`, `site/src/motor/`, `scripts/` | compila a imagem oficial (com cache), sobe, roda o exemplo oficial, os dourados e o dicionário; confere se as tabelas do porte são as do banco oficial; compara porte × oficial |
+| `.github/workflows/site.yml` | PR que mexe em `site/` | `npm ci`, lint, testes do porte, tipos (`next typegen` + `tsc`), build |
