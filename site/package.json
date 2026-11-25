@@ -9,7 +9,7 @@
     "lint": "eslint",
     "porte:comparar": "node scripts/porte/comparar.ts",
     "porte:tabelas": "../scripts/exportar-tabelas-porte.sh",
-    "test": "node --test src/motor/*.test.ts"
+    "test": "node --test src/motor/*.test.ts src/lib/*.test.ts"
   },
   "dependencies": {
     "decimal.js": "10.6.0",

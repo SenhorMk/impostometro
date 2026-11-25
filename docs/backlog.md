@@ -29,7 +29,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
 | T09 | Testes dourados no CI | ✅ | `calculadora.yml` |
-| T10 | Busca "o que você vende?" | 🟡 | 52 atividades. Falta: busca nas tabelas oficiais quando não acha, e registrar buscas sem resultado (precisa do banco) |
+| T10 | Busca "o que você vende?" | 🟡 | 52 atividades + busca em descrições oficiais de cClassTrib e códigos NCM/NBS vigentes. Falta registrar buscas sem resultado no banco (T05). Detalhes em `docs/busca.md` |
 | T11 | Simulação rápida sem cadastro | ✅ | página inicial. Medir tempo de carga em produção |
 
 ## Sprint 3 · Lançamento 1
@@ -62,5 +62,6 @@ T23 aviso automático de versão nova da Receita (abre tarefa para um agente atu
 
 1. 🧑 Mateus: decidir nome, domínio e preço (T04).
 2. Subir o site na Vercel ([`deploy.md`](deploy.md)) → calculadora grátis no ar. Não precisa mais de Fly.io.
-3. T20 (sitemap, Search Console, medição) e T19 (artigos) para o Google começar a indexar antes da virada do ano.
-4. T13 + T15 (login e empresa) com Supabase.
+3. T20: configurar URL de produção, Search Console e medição. T19: artigos e glossário integrados; revisão contábil pendente.
+4. T10: concluir persistência de buscas sem resultado quando o banco do T05 existir.
+5. T13 + T15 (login e empresa) com Supabase.

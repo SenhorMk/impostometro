@@ -1,4 +1,4 @@
-import atividades from "@/dados/atividades.json";
+import atividades from "../dados/atividades.json" with { type: "json" };
 
 export type Atividade = (typeof atividades)[number];
 

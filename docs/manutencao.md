@@ -110,3 +110,5 @@ cd .. && docker compose up -d --build && ./scripts/validar-calculadora.sh && cd 
 ## Conteúdo editorial e documentação
 
 Para adicionar ou revisar artigos e termos, consulte [`conteudo.md`](conteudo.md): cadastro, fontes, data de revisão, sitemap e verificações. A matriz de skills está em [`skills.md`](skills.md). Cada entrega deve atualizar ticket, índice, backlog e [`diário`](diario/README.md), conforme [`o fluxo de documentação`](README.md).
+
+Para a busca oficial do T10, consulte [`busca.md`](busca.md): fonte, colunas utilizadas, vigências, contrato HTTP e testes. Atualizar o porte pelo procedimento acima também exige conferir a leitura dessas colunas fora do motor. Não altere tabelas oficiais para ajustar uma busca.
