@@ -5,6 +5,8 @@
 #
 # Uso:   ./scripts/validar-calculadora.sh [URL_BASE]
 #        URL_BASE padrão: http://localhost:8080/api/calculadora
+#        Para conferir a produção (Fly.io), exporte MOTOR_CHAVE antes:
+#        MOTOR_CHAVE=... ./scripts/validar-calculadora.sh https://<app>.fly.dev/api/calculadora
 # Precisa de: curl e jq.
 #
 # O que conferimos (valores copiados da documentação oficial):
@@ -21,23 +23,26 @@ DIR="$(cd "$(dirname "$0")/.." && pwd)"
 ENTRADA="$DIR/calculadora/exemplos/operacao-oficial.json"
 ESPERA_MAX="${ESPERA_MAX:-180}"   # segundos esperando o servidor subir
 
+AUTH=()
+if [[ -n "${MOTOR_CHAVE:-}" ]]; then AUTH=(-H "Authorization: Bearer $MOTOR_CHAVE"); fi
+
 for cmd in curl jq; do
   command -v "$cmd" >/dev/null || { echo "Falta o programa '$cmd'. Instale e rode de novo."; exit 2; }
 done
 
 echo "→ Esperando a calculadora responder em $BASE_URL (até ${ESPERA_MAX}s)..."
 inicio=$(date +%s)
-until curl -fsS "$BASE_URL/dados-abertos/versao" >/dev/null 2>&1; do
+until curl -fsS ${AUTH[@]+"${AUTH[@]}"} "$BASE_URL/dados-abertos/versao" >/dev/null 2>&1; do
   if (( $(date +%s) - inicio > ESPERA_MAX )); then
     echo "✗ A calculadora não respondeu. Veja os logs: docker compose logs calculadora"
     exit 1
   fi
   sleep 3
 done
-echo "  Versão do banco/tabelas: $(curl -fsS "$BASE_URL/dados-abertos/versao")"
+echo "  Versão do banco/tabelas: $(curl -fsS ${AUTH[@]+"${AUTH[@]}"} "$BASE_URL/dados-abertos/versao")"
 
 echo "→ Enviando o exemplo oficial (4 itens) para /observabilidade/regime-geral..."
-RESPOSTA="$(curl -fsS -X POST "$BASE_URL/observabilidade/regime-geral" \
+RESPOSTA="$(curl -fsS ${AUTH[@]+"${AUTH[@]}"} -X POST "$BASE_URL/observabilidade/regime-geral" \
   -H 'Content-Type: application/json' --data-binary @"$ENTRADA")"
 
 # Guarda a resposta completa para quem quiser estudar (inclui a memória de cálculo).

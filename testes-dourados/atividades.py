@@ -14,6 +14,10 @@ import urllib.request
 from pathlib import Path
 
 BASE_URL = os.environ.get("CALCULADORA_URL", "http://localhost:8080/api/calculadora")
+# Em produção (Fly.io) o porteiro exige a chave: exporte MOTOR_CHAVE.
+CABECALHOS = {"Content-Type": "application/json"}
+if os.environ.get("MOTOR_CHAVE"):
+    CABECALHOS["Authorization"] = f"Bearer {os.environ['MOTOR_CHAVE']}"
 ARQUIVO = Path(__file__).parent.parent / "site" / "src" / "dados" / "atividades.json"
 
 
@@ -27,8 +31,7 @@ def main():
             item.update(quantidade=1, unidade="UN")
         operacao = {"id": "dic", "versao": "1.0.0", "dhFatoGerador": "2027-03-10T10:00:00-03:00",
                     "municipio": 3550308, "uf": "SP", "itens": [item]}
-        req = urllib.request.Request(f"{BASE_URL}/observabilidade/regime-geral", json.dumps(operacao).encode(),
-                                     {"Content-Type": "application/json"})
+        req = urllib.request.Request(f"{BASE_URL}/observabilidade/regime-geral", json.dumps(operacao).encode(), CABECALHOS)
         obj = json.load(urllib.request.urlopen(req, timeout=30))["objetos"][0]
         if obj["estadoItem"] in ("CALCULADO", "CALCULO_SIMULADO"):
             continue

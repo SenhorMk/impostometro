@@ -6,6 +6,7 @@ services:
   calculadora:
     build:
       context: ./calculadora
+      target: runtime
       args:
         CALC_VERSION: "1.7.2"
         CALC_COMMIT: "39363aa84103c6d58f7e8e76acb2f592691ec382"

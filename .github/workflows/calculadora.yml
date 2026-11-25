@@ -23,6 +23,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./calculadora
+          target: runtime
           load: true
           tags: impostometro/calculadora:1.7.2
           cache-from: type=gha,scope=calculadora

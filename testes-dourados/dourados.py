@@ -23,6 +23,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 from casos import CASOS, montar_entrada  # noqa: E402
 
 BASE_URL = os.environ.get("CALCULADORA_URL", "http://localhost:8080/api/calculadora")
+# Em produção (Fly.io) o porteiro exige a chave: exporte MOTOR_CHAVE.
+CABECALHOS = {"Content-Type": "application/json"}
+if os.environ.get("MOTOR_CHAVE"):
+    CABECALHOS["Authorization"] = f"Bearer {os.environ['MOTOR_CHAVE']}"
 PASTA = Path(__file__).parent / "esperados"
 
 # Conferência "à mão": reduções que conferimos direto na LC 214/2025.
@@ -54,7 +58,7 @@ CAMPOS = [  # (nome no arquivo, caminho dentro de gIBSCBS)
 def calcular(entrada):
     req = urllib.request.Request(
         f"{BASE_URL}/observabilidade/regime-geral",
-        data=json.dumps(entrada).encode(), headers={"Content-Type": "application/json"})
+        data=json.dumps(entrada).encode(), headers=CABECALHOS)
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
 
@@ -93,7 +97,7 @@ def esperar_motor(segundos=180):
     inicio = time.time()
     while True:
         try:
-            urllib.request.urlopen(f"{BASE_URL}/dados-abertos/versao", timeout=5)
+            urllib.request.urlopen(urllib.request.Request(f"{BASE_URL}/dados-abertos/versao", headers=CABECALHOS), timeout=5)
             return
         except Exception:
             if time.time() - inicio > segundos:
@@ -104,7 +108,7 @@ def esperar_motor(segundos=180):
 def main():
     gerar = "--gerar" in sys.argv
     esperar_motor()
-    versao = json.load(urllib.request.urlopen(f"{BASE_URL}/dados-abertos/versao"))
+    versao = json.load(urllib.request.urlopen(urllib.request.Request(f"{BASE_URL}/dados-abertos/versao", headers=CABECALHOS)))
     print(f"Motor {versao['versaoApp']} · tabelas {versao['versaoDb']}\n")
     PASTA.mkdir(exist_ok=True)
     falhas = 0

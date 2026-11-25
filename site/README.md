@@ -37,6 +37,7 @@ Resultado.tsx    ◀── JSON ──   { total, cbs, ibs, fundamentação, ver
 | `src/dados/aliquotas.json` | alíquotas de 2027 com fonte e status (T03) |
 | `src/dados/atividades.json` | dicionário "o que você vende?" com 52 atividades (T10) |
 | `src/lib/config.ts` | nome do site, preço e itens dos planos |
+| `vercel.json` | funções na região de São Paulo (`gru1`) |
 
 ## Suposições a revisar
 

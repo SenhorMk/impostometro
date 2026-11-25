@@ -133,15 +133,26 @@ Medido em 25/11/2026, versão 1.7.2, máquina de 4 núcleos, com o container já
 
 Leitura: o Java ocupa a memória que encontrar livre, por isso sem limite ele passa de 600 MB. Com o teto de 512 MB ele funciona, mas sem folga. **Recomendação: 1 GB** no Fly.io (o backlog estimava 2 GB, dá para economizar). O cálculo em si é rápido: o que vai pesar no tempo total é a rede entre a Vercel e o Fly.io.
 
-## 7. Próximo passo: colocar no Fly.io
+## 7. Produção no Fly.io
 
-Notas para o ticket de deploy (ainda não feito aqui):
+O `Dockerfile` tem três etapas: `build` (compila), `runtime` (a calculadora pura, usada no `docker compose` e no CI) e `producao` (usada no Fly.io).
 
-- **Memória:** com 512 MB funciona, mas usa uns 440 MB. Recomendo **1 GB** para ter folga.
-- **Health check:** `GET http://<host>:9101/health` deve responder `"status":"UP"`.
-- **Região:** `gru` (São Paulo).
-- **Aviso esperado nos logs:** a calculadora tenta consultar a versão do simulador online do governo (`piloto-cbs.tributos.gov.br`) para comparar. Se não conseguir, só registra um aviso e continua funcionando normalmente.
-- A calculadora **não deve ficar aberta para a internet toda**: só o nosso backend na Vercel deve chamá-la (proteger com rede privada ou um token). Isso entra no ticket de deploy.
+A etapa `producao` coloca um **porteiro** (Caddy) na porta 8000 na frente da calculadora, porque ela não tem senha e vai ficar na internet para a Vercel chamar:
+
+- sem o cabeçalho `Authorization: Bearer <MOTOR_CHAVE>`, a resposta é **401**;
+- `GET /saude` responde sem chave, para o health check do Fly.io;
+- o container nem sobe se `MOTOR_CHAVE` tiver menos de 32 caracteres.
+
+Arquivos: [`fly.toml`](fly.toml) (São Paulo, 1 GB, sempre ligado), [`producao/Caddyfile`](producao/Caddyfile) e [`producao/iniciar.sh`](producao/iniciar.sh). Passo a passo do deploy em [`docs/deploy.md`](../docs/deploy.md).
+
+Testar a imagem de produção no seu computador:
+
+```bash
+docker build --target producao -t calculadora:producao calculadora
+docker run --rm -p 8000:8000 -e MOTOR_CHAVE=$(openssl rand -hex 32) calculadora:producao
+```
+
+Aviso esperado nos logs: a calculadora tenta consultar a versão do simulador online do governo (`piloto-cbs.tributos.gov.br`) para comparar. Se não conseguir, só registra um aviso e continua funcionando.
 
 ## 8. Se você compila atrás de um proxy corporativo
 
