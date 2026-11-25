@@ -1,0 +1,40 @@
+{
+  "id": "20",
+  "descricao": "Contabilidade (profissão intelectual, redução 30%)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-20",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 4314902,
+    "uf": "RS",
+    "itens": [
+      {
+        "numero": 1,
+        "nbs": "113022100",
+        "cst": "200",
+        "cClassTrib": "200052",
+        "baseCalculo": 1234.56,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        }
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "1234.56",
+    "pCBS": "8.80",
+    "pRedCBS": "30.00",
+    "pAliqEfetCBS": "6.16",
+    "vCBS": "76.05",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.43",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.43",
+    "vIBS": "0.86"
+  }
+}

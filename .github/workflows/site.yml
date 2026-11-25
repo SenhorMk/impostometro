@@ -1,0 +1,32 @@
+# A cada mudança no site: confere o código (lint), os tipos, os testes do porte
+# da calculadora (sem Docker) e se o site compila.
+name: Site
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "testes-dourados/esperados/**", "calculadora/exemplos/**", "calculadora/Dockerfile", ".github/workflows/site.yml"]
+  pull_request:
+    paths: ["site/**", "testes-dourados/esperados/**", "calculadora/exemplos/**", "calculadora/Dockerfile", ".github/workflows/site.yml"]
+  workflow_dispatch:
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - name: Testes do porte da calculadora (exemplo oficial + 30 dourados)
+        run: npm test
+      - run: npx next typegen && npx tsc --noEmit
+      - run: npm run build

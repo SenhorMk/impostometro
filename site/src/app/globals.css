@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/* Paleta: verde-petróleo (confiança, dinheiro) + âmbar para destaques. */
+@theme inline {
+  --color-marca-50: #ecfdf7;
+  --color-marca-100: #d1fae9;
+  --color-marca-200: #a6f2d5;
+  --color-marca-600: #0b8f6a;
+  --color-marca-700: #08735a;
+  --color-marca-800: #0a5c49;
+  --color-marca-900: #0b3d33;
+  --color-destaque: #f5b83d;
+  --color-tinta: #13201c;
+  --color-suave: #5b6b66;
+  --color-borda: #dfe7e4;
+  --color-fundo: #f5f8f7;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-tinta);
+}
+
+@layer components {
+  .rotulo {
+    @apply mb-1.5 block text-sm font-medium text-tinta;
+  }
+  .campo {
+    @apply w-full rounded-xl border border-borda bg-white px-3.5 py-3 text-base text-tinta outline-none transition placeholder:text-suave/70 focus:border-marca-600 focus:ring-4 focus:ring-marca-100 disabled:bg-fundo;
+  }
+  .botao-primario {
+    @apply inline-flex items-center justify-center rounded-xl bg-marca-700 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-marca-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-marca-200 disabled:opacity-60;
+  }
+  .botao-secundario {
+    @apply inline-flex items-center justify-center rounded-xl border border-borda bg-white px-5 py-3 font-semibold text-tinta transition hover:bg-fundo;
+  }
+}

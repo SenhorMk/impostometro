@@ -1,0 +1,41 @@
+{
+  "id": "18",
+  "descricao": "Diária de hotel (hotelaria, redução 40%)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-18",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3304557,
+    "uf": "RJ",
+    "itens": [
+      {
+        "numero": 1,
+        "nbs": "103031100",
+        "cst": "200",
+        "cClassTrib": "200048",
+        "baseCalculo": 480.0,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        }
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "480.00",
+    "pCBS": "8.80",
+    "pRedCBS": "40.00",
+    "pAliqEfetCBS": "5.28",
+    "vCBS": "25.34",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.14",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.14",
+    "vIBS": "0.28"
+  },
+  "conferidoAMao": "LC 214/2025, art. 281 (hotelaria)"
+}

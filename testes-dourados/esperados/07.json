@@ -1,0 +1,40 @@
+{
+  "id": "07",
+  "descricao": "Centavos: venda de R$ 0,99 com alíquota cheia",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-07",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3550308,
+    "uf": "SP",
+    "itens": [
+      {
+        "numero": 1,
+        "ncm": "61091000",
+        "cst": "000",
+        "cClassTrib": "000001",
+        "baseCalculo": 0.99,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        },
+        "quantidade": 1,
+        "unidade": "UN"
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "0.99",
+    "pCBS": "8.80",
+    "vCBS": "0.09",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.00",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.00",
+    "vIBS": "0.00"
+  }
+}

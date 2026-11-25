@@ -1,0 +1,46 @@
+{
+  "versaoTabela": "2026-11-25",
+  "comoUsar": "O serviço de cálculo (T08) escolhe o período cuja vigência contém a data da venda e manda estes percentuais para a calculadora oficial no campo aliquotasNominais. Mudou uma alíquota? Edite este arquivo, mude versaoTabela e abra um pull request. Cada cálculo guarda a versaoTabela usada.",
+  "periodos": [
+    {
+      "id": "2027-provisorio-tcu",
+      "vigenciaInicio": "2027-01-01",
+      "vigenciaFim": "2027-12-31",
+      "status": "provisorio",
+      "cbs": 11.2,
+      "ibsEstadual": 0.05,
+      "ibsMunicipal": 0.05,
+      "explicacao": {
+        "cbs": "Alíquota de referência da CBS para 2027 calculada pelo TCU em 28/10/2026: 11,3468%, arredondada para 11,3%. Em 2027 e 2028 a CBS é cobrada com 0,1 ponto percentual a menos (compensa o IBS de teste), então 11,3 - 0,1 = 11,2%. O Senado pode mudar esse número por resolução até 15/12/2026; se não votar, vale o cálculo do TCU.",
+        "ibs": "Em 2027 e 2028 o IBS é cobrado em caráter de teste: 0,05% para o estado e 0,05% para o município (0,1% no total). São os mesmos valores do exemplo oficial da Receita.",
+        "porQueNao8_8": "O backlog começou com CBS de 8,8% porque é o número do exemplo da Receita e da estimativa da Fazenda de 2024. O cálculo oficial do TCU saiu bem maior (11,3%), por isso trocamos."
+      },
+      "pendencias": [
+        "Conferir a resolução do Senado (prazo 15/12/2026) e atualizar cbs se mudar.",
+        "Conferir no texto da LC 214/2025 (arts. 353 a 359 para a CBS e disposições de transição do IBS) o redutor de 0,1 p.p. e as alíquotas de teste do IBS. Suposição até lá: 0,1 p.p. de redutor e 0,05% + 0,05% de IBS."
+      ],
+      "fontes": [
+        {
+          "titulo": "Senado Notícias, 28/10/2026: TCU calcula alíquota da CBS em 11,3% para 2027",
+          "url": "https://www12.senado.leg.br/noticias/materias/2026/10/28/reforma-tributaria-tcu-calcula-aliquota-da-cbs-em-11-3-para-2027"
+        },
+        {
+          "titulo": "Senado Notícias, 03/11/2026: Senado tem até 15 de dezembro para definir o percentual",
+          "url": "https://www12.senado.leg.br/noticias/materias/2026/11/03/senado-deve-receber-calculo-da-cbs-na-proxima-terca-para-definir-aliquota"
+        },
+        {
+          "titulo": "Mix Vale, 24/11/2026: 11,3468% arredondado para 11,3%; cobrança de 11,2% com o redutor de 0,1 p.p.",
+          "url": "https://www.mixvale.com.br/2026/11/24/cbs-de-2027-tera-aliquota-de-referencia-de-113-calculada-pelo-tcu/"
+        },
+        {
+          "titulo": "Lei Complementar 214/2025 (texto atualizado, Câmara dos Deputados)",
+          "url": "https://www2.camara.leg.br/legin/fed/leicom/2025/leicomplementar-214-16-janeiro-2025-796905-normaatualizada-pl.html"
+        },
+        {
+          "titulo": "Exemplo oficial da Receita Federal (IBS 0,05% + 0,05% em 2027)",
+          "url": "https://github.com/ReceitaFederal/calculadora-rtc-regime-regular/blob/main/docs/exemplos.md"
+        }
+      ]
+    }
+  ]
+}

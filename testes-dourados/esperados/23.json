@@ -1,0 +1,42 @@
+{
+  "id": "23",
+  "descricao": "Tomate (hortícolas, redução 100%)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-23",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3106200,
+    "uf": "MG",
+    "itens": [
+      {
+        "numero": 1,
+        "ncm": "07020000",
+        "cst": "200",
+        "cClassTrib": "200014",
+        "baseCalculo": 35.0,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        },
+        "quantidade": 1,
+        "unidade": "UN"
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "35.00",
+    "pCBS": "8.80",
+    "pRedCBS": "100.00",
+    "pAliqEfetCBS": "0.00",
+    "vCBS": "0.00",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.00",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.00",
+    "vIBS": "0.00"
+  }
+}

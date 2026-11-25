@@ -1,0 +1,64 @@
+# Toda vez que algo da calculadora ou do porte mudar, o GitHub compila a imagem
+# OFICIAL da Receita, sobe o container e confere:
+#  - o exemplo oficial, os testes dourados e o dicionário de atividades;
+#  - que as tabelas do porte são as mesmas do banco oficial;
+#  - que o PORTE em TypeScript (o que roda no site) responde IGUAL à oficial
+#    em mais de 1.500 pedidos. Uma diferença de um centavo ou de uma vírgula
+#    num texto já reprova.
+name: Calculadora oficial × porte
+
+on:
+  push:
+    branches: [main]
+    paths: ["calculadora/**", "testes-dourados/**", "site/src/dados/**", "site/src/motor/**", "site/scripts/porte/**", "site/package.json", "site/package-lock.json", "scripts/**", "docker-compose.yml", ".github/workflows/calculadora.yml"]
+  pull_request:
+    paths: ["calculadora/**", "testes-dourados/**", "site/src/dados/**", "site/src/motor/**", "site/scripts/porte/**", "site/package.json", "site/package-lock.json", "scripts/**", "docker-compose.yml", ".github/workflows/calculadora.yml"]
+  workflow_dispatch:
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      # Cache das camadas do Docker no GitHub: o Maven só baixa as dependências
+      # quando a versão da calculadora muda (evita o limite de downloads do Maven Central).
+      - uses: docker/setup-buildx-action@v3
+      - name: Compilar a imagem da calculadora (com cache)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./calculadora
+          target: runtime
+          load: true
+          tags: impostometro/calculadora:1.7.2
+          cache-from: type=gha,scope=calculadora
+          cache-to: type=gha,mode=max,scope=calculadora
+      - name: Subir a calculadora
+        run: docker compose up -d --no-build
+      - name: Conferir o exemplo oficial (CBS de R$ 42,24)
+        run: ./scripts/validar-calculadora.sh
+      - name: Conferir as 30 operações de referência (testes dourados)
+        run: python3 testes-dourados/dourados.py
+      - name: Conferir o dicionário de atividades do site
+        run: python3 testes-dourados/atividades.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Instalar dependências do site
+        working-directory: site
+        run: npm ci
+      - name: Conferir se as tabelas do porte são as do banco oficial
+        run: |
+          ./scripts/exportar-tabelas-porte.sh
+          git diff --exit-code --stat site/src/motor/dados/ || {
+            echo "::error::As tabelas do porte estão diferentes do banco oficial. Rode 'npm run porte:tabelas' e faça commit."
+            exit 1
+          }
+      - name: Comparar o porte (TypeScript) com a calculadora oficial
+        working-directory: site
+        run: npm run porte:comparar
+      - name: Logs do container (se falhar)
+        if: failure()
+        run: docker compose logs calculadora
