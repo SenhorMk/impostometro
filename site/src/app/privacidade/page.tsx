@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Cabecalho } from "@/components/Cabecalho";
 import { Rodape } from "@/components/Rodape";
 
-export const metadata: Metadata = { title: "Privacidade" };
+export const metadata: Metadata = {
+  title: "Privacidade",
+  alternates: { canonical: "/privacidade" },
+};
 
 // RASCUNHO (T21): revisar com advogado antes do lançamento e atualizar quando as contas abrirem.
 export default function Privacidade() {
