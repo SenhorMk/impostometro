@@ -7,7 +7,7 @@ Leia este arquivo inteiro antes de mudar qualquer coisa. Ele vale para qualquer 
 Site por assinatura barata para empresários calcularem a **CBS e o IBS da reforma tributária (2027)**, usando a **calculadora oficial que a Receita Federal publicou no GitHub** (licença MIT), traduzida fielmente para TypeScript para rodar dentro do próprio site (o "porte", em `site/src/motor/`). Diferenciais: mais simples que o simulador do governo (sem login gov.br), encontrável no Google, importação de XML de notas (assinantes) e **transparência total nos cálculos**.
 
 - Dono do produto: Mateus (GitHub `SenhorMk`). Mora no Brasil, fala português.
-- Estado atual, tickets e próximos passos: [`docs/backlog.md`](docs/backlog.md).
+- Estado atual e próximos passos: [`docs/backlog.md`](docs/backlog.md). Cada ticket (história, critérios de aceite, dependências) tem um arquivo em [`docs/tickets/`](docs/tickets/README.md).
 - Decisões já tomadas e por quê: [`docs/decisoes.md`](docs/decisoes.md).
 
 ## Regras que não se quebram
@@ -41,6 +41,7 @@ Site por assinatura barata para empresários calcularem a **CBS e o IBS da refor
 | `testes-dourados/` | 30 operações com resultado conhecido + checagem do dicionário |
 | `scripts/validar-calculadora.sh` | confere o exemplo oficial da Receita (CBS de R$ 42,24) |
 | `docs/` | arquitetura, deploy, manutenção, backlog, decisões |
+| `docs/tickets/` | um arquivo por ticket do MVP, com critérios de aceite e status |
 | `.github/workflows/` | CI: `calculadora.yml` (oficial + testes + porte × oficial) e `site.yml` (lint, testes do porte, tipos, build) |
 
 Arquitetura detalhada: [`docs/arquitetura.md`](docs/arquitetura.md).
@@ -72,7 +73,7 @@ npm run porte:tabelas                         # exporta as tabelas do banco ofic
 
 - Rode o que você mudou: `npm run porte:comparar` (se mexeu em `src/motor/` ou na versão da calculadora), testes dourados e dicionário (se mexeu em calculadora, alíquotas ou atividades) e lint, testes, tipos e build (se mexeu no site).
 - Mudou a interface? Teste no navegador, no celular e no computador.
-- Atualize o [`docs/backlog.md`](docs/backlog.md) (status do ticket) e, se tomou uma decisão, registre em [`docs/decisoes.md`](docs/decisoes.md).
+- Atualize o arquivo do ticket em [`docs/tickets/`](docs/tickets/README.md) (marque os critérios cumpridos) e o [`docs/backlog.md`](docs/backlog.md) (status) e, se tomou uma decisão, registre em [`docs/decisoes.md`](docs/decisoes.md).
 - Não faça merge sozinho: o Mateus revisa e aprova.
 
 ## Tarefas comuns
