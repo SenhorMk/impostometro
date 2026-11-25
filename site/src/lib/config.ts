@@ -6,7 +6,6 @@ export const SITE = {
   // Nome provisório. "Impostômetro" já é marca conhecida da Associação Comercial de SP,
   // então não usamos esse nome no site. Trocar quando o T04 decidir.
   nome: "Calcula Reforma",
-  dominio: "calculareforma.com.br",
   descricao:
     "Descubra em 2 minutos quanto sua empresa vai pagar de CBS e IBS em 2027. Grátis, sem cadastro e com a conta aberta, usando a calculadora oficial da Receita Federal.",
 };

@@ -3,7 +3,10 @@ import { Cabecalho } from "@/components/Cabecalho";
 import { Rodape } from "@/components/Rodape";
 import { SITE } from "@/lib/config";
 
-export const metadata: Metadata = { title: "Termos de uso" };
+export const metadata: Metadata = {
+  title: "Termos de uso",
+  alternates: { canonical: "/termos" },
+};
 
 // RASCUNHO (T21): revisar com advogado antes do lançamento.
 export default function Termos() {

@@ -38,7 +38,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 |---|---|---|---|
 | T12 | "Como chegamos nisso" | ✅ | `Resultado.tsx` |
 | T19 | 5 artigos base e glossário | ⏳ | |
-| T20 | SEO técnico, Search Console e medição | 🟡 | títulos, descrição e dados de FAQ feitos. Falta: sitemap, robots, Search Console, Plausible/GA |
+| T20 | SEO técnico, Search Console e medição | 🟡 | títulos, descrição, FAQ, sitemap, robots e canônicas feitos. `SITE_URL` configura o endereço; prévias e ambientes sem URL ficam fora da indexação. Falta: configurar URL de produção, Search Console e Plausible/GA |
 | T21 | Termos, privacidade e aviso "não oficial" | 🟡 | rodapé feito; termos e privacidade são rascunhos para advogado revisar |
 | T07 | Backup e monitoramento | ⏳ | Sentry + aviso se o site cair |
 

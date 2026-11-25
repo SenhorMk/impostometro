@@ -17,7 +17,14 @@ Só a **Vercel** (e depois um domínio). Não existe servidor da calculadora par
 1. Compre o domínio no Registro.br (decisão do T04).
 2. Na Vercel: Project → Settings → Domains → adicione `seudominio.com.br` e `www.seudominio.com.br` (redirecionando para o principal).
 3. No Registro.br, aponte o DNS como a Vercel indicar. O HTTPS é automático.
-4. Atualize `SITE.dominio` em `site/src/lib/config.ts`.
+4. Configure `SITE_URL=https://seudominio.com.br` nas variáveis do ambiente **Production** e faça um novo deploy. Use somente a raiz, sem caminho, parâmetros ou credenciais. Pode usar o endereço público `https://seuprojeto.vercel.app` enquanto o domínio não for decidido (T04).
+
+### Indexação no Google (T20)
+
+- Sem `SITE_URL`, o site calcula normalmente, mas envia `noindex`, bloqueia rastreamento no `robots.txt` e retorna sitemap vazio. HTTP também não habilita indexação.
+- Em produção com `SITE_URL` HTTPS, `/sitemap.xml` lista a calculadora, termos e privacidade. Cada página tem sua URL canônica. `/entrar` permanece `noindex`; `/api/` fica bloqueada no robots.
+- Prévias (`VERCEL_ENV=preview`) e desenvolvimento permanecem bloqueados, mesmo com `SITE_URL` preenchida. Robots orienta buscadores; não é controle de acesso.
+- Após publicar, confira `/robots.txt`, `/sitemap.xml` e a URL canônica no HTML. No Search Console, verifique a propriedade do domínio por DNS e envie `sitemap.xml`. A verificação de propriedade e a escolha de medição (Plausible/GA) continuam pendentes.
 
 ## 3. Supabase (quando o login for feito, T13)
 
@@ -31,6 +38,7 @@ Planejado:
 
 | Variável | Onde | Para quê |
 |---|---|---|
+| `SITE_URL` | site, ambiente Production | endereço HTTPS público para sitemap e canônicas; vazio desabilita indexação |
 | `CALCULADORA_URL` | quem roda os testes | endereço da calculadora oficial em Docker para `npm run porte:comparar` e `testes-dourados/*.py` (padrão: `http://localhost:8080/api/calculadora`) |
 | `MOTOR_CHAVE` | quem roda os testes (opcional) | só se a calculadora oficial estiver atrás de um porteiro com chave. Normalmente vazia |
 

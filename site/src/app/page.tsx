@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { Cabecalho } from "@/components/Cabecalho";
 import { Calculadora } from "@/components/Calculadora";
 import { Rodape } from "@/components/Rodape";
 import { PLANOS } from "@/lib/config";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const PERGUNTAS = [
   {
