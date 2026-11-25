@@ -29,7 +29,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | [T16](T16-upload-e-leitura-de-xml-de.md) | Upload e leitura de XML de NF-e/NFC-e | E5 Importação de XML | S4 | P0 | 5 | ⏳ A fazer |
 | [T17](T17-calcular-o-lote-item-a-item.md) | Calcular o lote item a item | E5 Importação de XML | S5 | P0 | 5 | ⏳ A fazer |
 | [T18](T18-historico-de-calculos.md) | Histórico de cálculos | E4 Conta e assinatura | S6 | P1 | 3 | ⏳ A fazer |
-| [T19](T19-5-artigos-base-e-glossario.md) | 5 artigos base e glossário | E6 Conteúdo e SEO | S3 | P1 | 3 | ⏳ A fazer |
+| [T19](T19-5-artigos-base-e-glossario.md) | 5 artigos base e glossário | E6 Conteúdo e SEO | S3 | P1 | 3 | 🟡 Implementado; revisão contábil pendente |
 | [T20](T20-seo-tecnico-e-medicao.md) | SEO técnico e medição | E6 Conteúdo e SEO | S3 | P0 | 2 | 🟡 Parcial |
 | [T21](T21-termos-privacidade-e-aviso-nao-oficial.md) | Termos, privacidade e aviso “não oficial” | E7 Lançamento | S3 | P0 | 2 | 🟡 Parcial |
 | [T22](T22-funil-medido-e-checklist-de-lancamento.md) | Funil medido e checklist de lançamento | E7 Lançamento | S6 | P1 | 2 | ⏳ A fazer |

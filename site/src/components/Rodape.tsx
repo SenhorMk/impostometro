@@ -19,6 +19,8 @@ export function Rodape() {
           <p className="font-semibold text-tinta">Site</p>
           <ul className="mt-2 space-y-1.5">
             <li><Link href="/#calculadora" className="hover:text-tinta">Calculadora</Link></li>
+            <li><Link href="/artigos" className="hover:text-tinta">Guias da reforma</Link></li>
+            <li><Link href="/glossario" className="hover:text-tinta">Glossário</Link></li>
             <li><Link href="/#planos" className="hover:text-tinta">Planos</Link></li>
             <li><Link href="/entrar" className="hover:text-tinta">Entrar</Link></li>
           </ul>

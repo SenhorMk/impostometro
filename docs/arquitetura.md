@@ -32,6 +32,12 @@ São duas peças em produção, e uma terceira só para conferência:
 
 Por que o porte: a Vercel não mantém um servidor Java ligado. Em vez de pagar um servidor só para a calculadora (Fly.io), traduzimos a parte de cálculo da calculadora oficial para TypeScript, e ela roda dentro do próprio site. Detalhes e o preço disso em [`decisoes.md`](decisoes.md).
 
+## Artigos e glossário (T19)
+
+O visitante encontra o índice em `/artigos`, lê uma página em `/artigos/[slug]`, consulta termos em `/glossario` e volta à calculadora pelo link final. O cadastro editorial fica em `site/src/dados/conteudo.ts`, com fontes, seções e data de revisão. As páginas são Server Components; `generateStaticParams` fornece os cinco slugs e `loading.tsx` delimita o carregamento da rota dinâmica. Não há API, CMS ou banco nesse fluxo.
+
+O sitemap usa o mesmo cadastro para listar os artigos. `SITE_URL` e a política de indexação do T20 definem quando as URLs entram no sitemap e quando o site usa `noindex`. Slugs desconhecidos exibem a página de ausência; o comportamento HTTP de streaming está descrito em [`conteudo.md`](conteudo.md), junto com fontes e manutenção editorial.
+
 ## O porte da calculadora (`site/src/motor/`)
 
 A calculadora da Receita tem cerca de 35 mil linhas de Java, mas a maior parte é servidor web, banco de dados e telas. O caminho do cálculo tem cerca de 3 mil linhas, e foi isso que traduzimos, arquivo por arquivo. O mapa "arquivo Java → arquivo TypeScript" está em [`site/src/motor/README.md`](../site/src/motor/README.md).

@@ -49,6 +49,10 @@ docs/               arquitetura, deploy, manutenção, backlog e decisões
 
 | Documento | Para quê |
 |---|---|
+| [`docs/README.md`](docs/README.md) | índice e fluxo de documentação de cada entrega |
+| [`docs/skills.md`](docs/skills.md) | skills disponíveis e pesquisadas, aplicação e fontes |
+| [`docs/conteudo.md`](docs/conteudo.md) | artigos, glossário, fontes oficiais e manutenção editorial |
+| [`docs/diario/README.md`](docs/diario/README.md) | histórico de entregas com verificações e pendências |
 | [`AGENTS.md`](AGENTS.md) | regras do projeto, comandos, convenções (o `CLAUDE.md` aponta para ele) |
 | [`docs/arquitetura.md`](docs/arquitetura.md) | como as peças conversam, fluxo de um cálculo, glossário tributário |
 | [`docs/deploy.md`](docs/deploy.md) | colocar no ar: Vercel, domínio, Supabase, variáveis de ambiente |

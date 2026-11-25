@@ -9,6 +9,7 @@ Site por assinatura barata para empresários calcularem a **CBS e o IBS da refor
 - Dono do produto: Mateus (GitHub `SenhorMk`). Mora no Brasil, fala português.
 - Estado atual e próximos passos: [`docs/backlog.md`](docs/backlog.md). Cada ticket (história, critérios de aceite, dependências) tem um arquivo em [`docs/tickets/`](docs/tickets/README.md).
 - Decisões já tomadas e por quê: [`docs/decisoes.md`](docs/decisoes.md).
+- Índice da documentação: [`docs/README.md`](docs/README.md). Skills pesquisadas e uso por ticket: [`docs/skills.md`](docs/skills.md). Evidências de cada entrega: [`docs/diario/`](docs/diario/README.md).
 
 ## Regras que não se quebram
 
@@ -74,6 +75,7 @@ npm run porte:tabelas                         # exporta as tabelas do banco ofic
 - Rode o que você mudou: `npm run porte:comparar` (se mexeu em `src/motor/` ou na versão da calculadora), testes dourados e dicionário (se mexeu em calculadora, alíquotas ou atividades) e lint, testes, tipos e build (se mexeu no site).
 - Mudou a interface? Teste no navegador, no celular e no computador.
 - Atualize o arquivo do ticket em [`docs/tickets/`](docs/tickets/README.md) (marque os critérios cumpridos) e o [`docs/backlog.md`](docs/backlog.md) (status) e, se tomou uma decisão, registre em [`docs/decisoes.md`](docs/decisoes.md).
+- Mantenha também o índice de tickets e o diário da entrega: escopo, fontes/skills usadas, implementação, comandos e resultados, limitações e link do PR. Não marque revisão contábil, build, teste visual ou deploy como concluído sem evidência. O fluxo completo está em [`docs/README.md`](docs/README.md).
 - Não faça merge sozinho: o Mateus revisa e aprova.
 
 ## Tarefas comuns
