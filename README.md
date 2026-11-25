@@ -54,6 +54,7 @@ docs/               arquitetura, deploy, manutenção, backlog e decisões
 | [`docs/deploy.md`](docs/deploy.md) | colocar no ar: Vercel, domínio, Supabase, variáveis de ambiente |
 | [`docs/manutencao.md`](docs/manutencao.md) | atualizar alíquota, atualizar a calculadora e o porte, adicionar atividade |
 | [`docs/backlog.md`](docs/backlog.md) | status de cada ticket e próximo passo |
+| [`docs/tickets/`](docs/tickets/README.md) | cada ticket com história, critérios de aceite e dependências |
 | [`docs/decisoes.md`](docs/decisoes.md) | o que foi decidido e por quê |
 | [`calculadora/README.md`](calculadora/README.md) | como a calculadora oficial funciona, explicado passo a passo |
 | [`site/src/motor/README.md`](site/src/motor/README.md) | o porte: mapa Java → TypeScript e como ele garante o mesmo número |

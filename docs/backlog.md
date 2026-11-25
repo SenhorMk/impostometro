@@ -1,6 +1,6 @@
 # Backlog e status
 
-Fonte original (com histórias e critérios de aceite completos): [Backlog do MVP](https://claude.ai/artifact/Hr4U1WJddcMCdYTgVGzvJy). Este arquivo é o **status atual dentro do repositório**: atualize-o em cada pull request.
+**Cada ticket tem um arquivo em [`docs/tickets/`](tickets/README.md)**, com história, critérios de aceite (marcados quando prontos), prioridade, pontos e dependências. Este arquivo é o **resumo do status**: atualize-o junto com o arquivo do ticket em cada pull request. (Fonte original: [Backlog do MVP](https://claude.ai/artifact/Hr4U1WJddcMCdYTgVGzvJy).)
 
 Legenda: ✅ feito · 🟡 em andamento ou parcial · ⏳ a fazer · 🧑 depende do Mateus
 
