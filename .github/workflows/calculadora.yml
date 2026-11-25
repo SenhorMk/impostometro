@@ -4,6 +4,7 @@ name: Calculadora oficial
 
 on:
   push:
+    branches: [main]
     paths: ["calculadora/**", "testes-dourados/**", "site/src/dados/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
   pull_request:
     paths: ["calculadora/**", "testes-dourados/**", "site/src/dados/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
@@ -15,8 +16,19 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Compilar e subir a calculadora
-        run: docker compose up -d --build
+      # Cache das camadas do Docker no GitHub: o Maven só baixa as dependências
+      # quando a versão da calculadora muda (evita o limite de downloads do Maven Central).
+      - uses: docker/setup-buildx-action@v3
+      - name: Compilar a imagem da calculadora (com cache)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./calculadora
+          load: true
+          tags: impostometro/calculadora:1.7.2
+          cache-from: type=gha,scope=calculadora
+          cache-to: type=gha,mode=max,scope=calculadora
+      - name: Subir a calculadora
+        run: docker compose up -d --no-build
       - name: Conferir o exemplo oficial (CBS de R$ 42,24)
         run: ./scripts/validar-calculadora.sh
       - name: Conferir as 30 operações de referência (testes dourados)
