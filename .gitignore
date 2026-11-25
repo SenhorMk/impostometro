@@ -1,0 +1,3 @@
+# Certificados locais de proxy (nunca versionar)
+calculadora/certs/*.crt
+calculadora/exemplos/saida/

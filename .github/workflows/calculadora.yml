@@ -1,0 +1,24 @@
+# Toda vez que algo da calculadora mudar, o GitHub compila a imagem,
+# sobe o container e confere o exemplo oficial da Receita.
+name: Calculadora oficial
+
+on:
+  push:
+    paths: ["calculadora/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
+  pull_request:
+    paths: ["calculadora/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
+  workflow_dispatch:
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compilar e subir a calculadora
+        run: docker compose up -d --build
+      - name: Conferir o exemplo oficial (CBS de R$ 42,24)
+        run: ./scripts/validar-calculadora.sh
+      - name: Logs do container (se falhar)
+        if: failure()
+        run: docker compose logs calculadora
