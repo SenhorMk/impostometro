@@ -4,7 +4,7 @@ Lista das 30 operações de referência ("testes dourados").
 Cada caso é uma venda de 1 item. As alíquotas são FIXAS (8,8% CBS, 0,05% IBS UF,
 0,05% IBS Mun, as mesmas do exemplo oficial da Receita) de propósito: aqui
 testamos o MOTOR, não a política de alíquotas. Assim, quando o Senado fixar a
-alíquota de 2027 (ver dados/aliquotas.json), estes testes continuam valendo.
+alíquota de 2027 (ver site/src/dados/aliquotas.json), estes testes continuam valendo.
 
 Campos: id, descrição, cClassTrib, ncm OU nbs, base (R$), município IBGE, UF,
 e "esperado_estado" (o que o motor deve responder).

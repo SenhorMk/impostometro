@@ -7,7 +7,7 @@ Site para empresários calcularem os impostos da Reforma Tributária (CBS e IBS 
 | Pasta | O que tem | Onde vai rodar |
 |---|---|---|
 | [`calculadora/`](calculadora/) | A calculadora oficial da Receita empacotada em Docker | Fly.io (São Paulo) |
-| [`dados/aliquotas.json`](dados/aliquotas.json) | Alíquotas de 2027 que o site vai usar, com fonte e status | junto com o site |
+| [`site/src/dados/aliquotas.json`](site/src/dados/aliquotas.json) | Alíquotas de 2027 que o site vai usar, com fonte e status | junto com o site |
 | [`testes-dourados/`](testes-dourados/) | 30 operações de referência que avisam se a Receita mudar algum valor | GitHub Actions |
 | `site/` *(em breve)* | O site e a API | Vercel |
 | *(em breve)* | Banco de dados e login | Supabase |

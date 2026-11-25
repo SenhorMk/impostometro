@@ -28,7 +28,7 @@ python3 testes-dourados/dourados.py        # confere as 30
 
 ## Por que as alíquotas são fixas (8,8% / 0,05% / 0,05%)
 
-Aqui testamos o **motor**, não a política de alíquotas. Usamos as mesmas do exemplo oficial da Receita para que estes testes não mudem quando o Senado fixar a alíquota de 2027. A alíquota que o site vai usar de verdade fica em [`dados/aliquotas.json`](../dados/aliquotas.json).
+Aqui testamos o **motor**, não a política de alíquotas. Usamos as mesmas do exemplo oficial da Receita para que estes testes não mudem quando o Senado fixar a alíquota de 2027. A alíquota que o site vai usar de verdade fica em [`site/src/dados/aliquotas.json`](../site/src/dados/aliquotas.json).
 
 ## O que foi conferido à mão
 
