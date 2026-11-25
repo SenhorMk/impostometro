@@ -119,7 +119,21 @@ A Receita atualiza quase toda semana, e às vezes muda centavos. Para subir de v
 
 O GitHub Actions ([`.github/workflows/calculadora.yml`](../.github/workflows/calculadora.yml)) faz os passos 3 e 4 sozinho a cada mudança nesta pasta.
 
-## 6. Próximo passo: colocar no Fly.io
+## 6. Medições (T01)
+
+Medido em 25/11/2026, versão 1.7.2, máquina de 4 núcleos, com o container já aquecido:
+
+| Situação | Tempo por cálculo | Memória do container |
+|---|---|---|
+| Em repouso, logo depois de ligar | — | ~560 MB (sem limite) |
+| 50 cálculos seguidos, 1 item | média 12 ms, pior 22 ms | ~610 MB |
+| 50 cálculos seguidos, 4 itens | média 13 ms, pior 25 ms | ~610 MB |
+| 50 cálculos, 10 ao mesmo tempo | média 57 ms, pior 102 ms | ~660 MB (pico) |
+| Limitado a 512 MB | os mesmos resultados, validação passou | ~440 MB de 512 MB |
+
+Leitura: o Java ocupa a memória que encontrar livre, por isso sem limite ele passa de 600 MB. Com o teto de 512 MB ele funciona, mas sem folga. **Recomendação: 1 GB** no Fly.io (o backlog estimava 2 GB, dá para economizar). O cálculo em si é rápido: o que vai pesar no tempo total é a rede entre a Vercel e o Fly.io.
+
+## 7. Próximo passo: colocar no Fly.io
 
 Notas para o ticket de deploy (ainda não feito aqui):
 
@@ -129,7 +143,7 @@ Notas para o ticket de deploy (ainda não feito aqui):
 - **Aviso esperado nos logs:** a calculadora tenta consultar a versão do simulador online do governo (`piloto-cbs.tributos.gov.br`) para comparar. Se não conseguir, só registra um aviso e continua funcionando normalmente.
 - A calculadora **não deve ficar aberta para a internet toda**: só o nosso backend na Vercel deve chamá-la (proteger com rede privada ou um token). Isso entra no ticket de deploy.
 
-## 7. Se você compila atrás de um proxy corporativo
+## 8. Se você compila atrás de um proxy corporativo
 
 Normalmente isto não se aplica. Se o build falhar com erro de certificado (`PKIX path building failed`):
 
