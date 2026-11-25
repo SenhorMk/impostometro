@@ -4,9 +4,9 @@ name: Calculadora oficial
 
 on:
   push:
-    paths: ["calculadora/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
+    paths: ["calculadora/**", "testes-dourados/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
   pull_request:
-    paths: ["calculadora/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
+    paths: ["calculadora/**", "testes-dourados/**", "scripts/validar-calculadora.sh", "docker-compose.yml", ".github/workflows/calculadora.yml"]
   workflow_dispatch:
 
 jobs:
@@ -19,6 +19,8 @@ jobs:
         run: docker compose up -d --build
       - name: Conferir o exemplo oficial (CBS de R$ 42,24)
         run: ./scripts/validar-calculadora.sh
+      - name: Conferir as 30 operações de referência (testes dourados)
+        run: python3 testes-dourados/dourados.py
       - name: Logs do container (se falhar)
         if: failure()
         run: docker compose logs calculadora

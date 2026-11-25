@@ -1,0 +1,40 @@
+{
+  "id": "03",
+  "descricao": "Móveis de madeira (produto, alíquota cheia)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-03",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3106200,
+    "uf": "MG",
+    "itens": [
+      {
+        "numero": 1,
+        "ncm": "94036000",
+        "cst": "000",
+        "cClassTrib": "000001",
+        "baseCalculo": 1850.0,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        },
+        "quantidade": 1,
+        "unidade": "UN"
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "1850.00",
+    "pCBS": "8.80",
+    "vCBS": "162.80",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.92",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.92",
+    "vIBS": "1.84"
+  }
+}

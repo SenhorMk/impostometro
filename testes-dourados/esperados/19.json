@@ -1,0 +1,41 @@
+{
+  "id": "19",
+  "descricao": "Advocacia criminal (profissão intelectual, redução 30%)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-19",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3550308,
+    "uf": "SP",
+    "itens": [
+      {
+        "numero": 1,
+        "nbs": "113011000",
+        "cst": "200",
+        "cClassTrib": "200052",
+        "baseCalculo": 5000.0,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        }
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "5000.00",
+    "pCBS": "8.80",
+    "pRedCBS": "30.00",
+    "pAliqEfetCBS": "6.16",
+    "vCBS": "308.00",
+    "pIBSUF": "0.05",
+    "vIBSUF": "1.75",
+    "pIBSMun": "0.05",
+    "vIBSMun": "1.75",
+    "vIBS": "3.50"
+  },
+  "conferidoAMao": "LC 214/2025, art. 127 (profissões intelectuais)"
+}

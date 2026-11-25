@@ -1,0 +1,40 @@
+{
+  "id": "02",
+  "descricao": "Notebook (produto, alíquota cheia)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-02",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3304557,
+    "uf": "RJ",
+    "itens": [
+      {
+        "numero": 1,
+        "ncm": "84713012",
+        "cst": "000",
+        "cClassTrib": "000001",
+        "baseCalculo": 4599.9,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        },
+        "quantidade": 1,
+        "unidade": "UN"
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "4599.90",
+    "pCBS": "8.80",
+    "vCBS": "404.79",
+    "pIBSUF": "0.05",
+    "vIBSUF": "2.30",
+    "pIBSMun": "0.05",
+    "vIBSMun": "2.30",
+    "vIBS": "4.60"
+  }
+}

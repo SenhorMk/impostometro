@@ -1,0 +1,42 @@
+{
+  "id": "14",
+  "descricao": "Sabonete (higiene pessoal, redução 60%)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-14",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 2611606,
+    "uf": "PE",
+    "itens": [
+      {
+        "numero": 1,
+        "ncm": "34011190",
+        "cst": "200",
+        "cClassTrib": "200035",
+        "baseCalculo": 4.79,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        },
+        "quantidade": 1,
+        "unidade": "UN"
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "4.79",
+    "pCBS": "8.80",
+    "pRedCBS": "60.00",
+    "pAliqEfetCBS": "3.52",
+    "vCBS": "0.17",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.00",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.00",
+    "vIBS": "0.00"
+  }
+}

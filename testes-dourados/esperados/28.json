@@ -1,0 +1,32 @@
+{
+  "id": "28",
+  "descricao": "Livro (imune, sem alíquota)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-28",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3550308,
+    "uf": "SP",
+    "itens": [
+      {
+        "numero": 1,
+        "ncm": "49019900",
+        "cst": "410",
+        "cClassTrib": "410008",
+        "baseCalculo": 69.9,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        },
+        "quantidade": 1,
+        "unidade": "UN"
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO"
+  }
+}

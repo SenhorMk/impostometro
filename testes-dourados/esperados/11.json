@@ -1,0 +1,41 @@
+{
+  "id": "11",
+  "descricao": "Serviço cirúrgico (saúde humana, redução 60%)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-11",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3304557,
+    "uf": "RJ",
+    "itens": [
+      {
+        "numero": 1,
+        "nbs": "123011100",
+        "cst": "200",
+        "cClassTrib": "200029",
+        "baseCalculo": 320.0,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        }
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "320.00",
+    "pCBS": "8.80",
+    "pRedCBS": "60.00",
+    "pAliqEfetCBS": "3.52",
+    "vCBS": "11.26",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.06",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.06",
+    "vIBS": "0.12"
+  },
+  "conferidoAMao": "LC 214/2025, art. 130 e Anexo III (saúde humana)"
+}

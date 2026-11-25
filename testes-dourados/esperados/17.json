@@ -1,0 +1,41 @@
+{
+  "id": "17",
+  "descricao": "Locação de imóvel residencial (redução 70%)",
+  "motor": "1.7.2",
+  "tabelas": "V0073",
+  "entrada": {
+    "id": "dourado-17",
+    "versao": "1.0.0",
+    "dhFatoGerador": "2027-03-10T10:00:00-03:00",
+    "municipio": 3550308,
+    "uf": "SP",
+    "itens": [
+      {
+        "numero": 1,
+        "nbs": "110021000",
+        "cst": "200",
+        "cClassTrib": "200027",
+        "baseCalculo": 2500.0,
+        "aliquotasNominais": {
+          "cbs": 8.8,
+          "ibsEstadual": 0.05,
+          "ibsMunicipal": 0.05
+        }
+      }
+    ]
+  },
+  "esperado": {
+    "estadoItem": "CALCULO_SIMULADO",
+    "vBC": "2500.00",
+    "pCBS": "8.80",
+    "pRedCBS": "70.00",
+    "pAliqEfetCBS": "2.64",
+    "vCBS": "66.00",
+    "pIBSUF": "0.05",
+    "vIBSUF": "0.38",
+    "pIBSMun": "0.05",
+    "vIBSMun": "0.38",
+    "vIBS": "0.76"
+  },
+  "conferidoAMao": "LC 214/2025, art. 261 (locação de imóveis)"
+}
