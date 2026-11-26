@@ -55,4 +55,4 @@ No navegador, testar busca por código, escolha por teclado, campo restante vazi
 
 ## O que falta no T10
 
-O registro persistente de buscas sem resultado continua pendente do banco do T05. Esta entrega não grava buscas em banco, armazenamento local ou arquivo de aplicação; o registro de tentativas no terminal de desenvolvimento não equivale ao critério de persistência. Antes dessa etapa, definir o que será guardado, retenção e acesso, atualizar privacidade e testar a gravação real.
+O registro persistente de buscas sem resultado continua pendente do banco do T05. Migração e integração com Supabase foram preparadas, com inserção restrita, leitura administrativa e retenção de 30 dias; a criação do projeto está bloqueada pela quota Free da conta e pelo acesso MCP à organização escolhida. Sem configuração, o registro continua desativado. Estado em [`banco.md`](banco.md). Antes de ativar, conferir permissões, atualizar a política de privacidade junto da ativação e testar a gravação real; o terminal de desenvolvimento não equivale à persistência.

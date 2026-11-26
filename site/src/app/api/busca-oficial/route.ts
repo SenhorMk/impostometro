@@ -1,4 +1,7 @@
+import { after } from "next/server";
 import { buscarOficiais, VERSAO_TABELA_OFICIAL } from "@/lib/busca-oficial";
+import { buscarAtividades } from "@/lib/busca";
+import { registrarBuscaSemResultado } from "@/lib/registro-buscas";
 import { dataDoCalculo } from "@/lib/motor";
 import type { RespostaBuscaOficial } from "@/lib/busca-oficial-tipos";
 
@@ -14,5 +17,10 @@ export function GET(request: Request) {
     data,
     versaoTabela: VERSAO_TABELA_OFICIAL,
   };
+  if (resposta.resultados.length === 0 && buscarAtividades(q).length === 0) {
+    after(async () => {
+      await registrarBuscaSemResultado(q, VERSAO_TABELA_OFICIAL, data);
+    });
+  }
   return Response.json(resposta, { headers: { "Cache-Control": "no-store" } });
 }

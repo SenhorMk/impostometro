@@ -30,5 +30,7 @@ O fallback consulta o servidor após 250 ms sem digitação, limita seis opçõe
 
 O registro em banco continua pendente do T05. Não tratamos uma mensagem no terminal como persistência. [Funcionamento e manutenção](../busca.md) · [Merge dos PRs e evidências da entrega](../diario/2026-11-25-merges-e-t10.md).
 
+Código de persistência e migração preparados, mas ainda sem banco provisionado por quota Free e acesso à nova organização. O critério de registro só será marcado após testar a gravação real e as permissões. [Estado do Supabase](../banco.md).
+
 ---
 [← Todos os tickets](README.md) · [Status geral](../backlog.md)

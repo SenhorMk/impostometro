@@ -19,7 +19,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
-| T05 | Vercel e Supabase | 🟡 | `site/vercel.json` pronto; falta criar os projetos nas contas ([`deploy.md`](deploy.md)). Fly.io não é mais necessário (porte) |
+| T05 | Vercel e Supabase | 🟡 | `site/vercel.json` pronto; Supabase preparado em organização separada; vaga Free liberada, formulário aguarda senha pelo titular e acesso MCP. Banco ainda não criado ([`banco.md`](banco.md)); Vercel pendente. Fly.io não é mais necessário (porte) |
 | T06 | Repositório, CI e deploy automático | 🟡 | CI pronto (`.github/workflows/`), com comparação porte × oficial. Falta ligar a Vercel ao repositório |
 | T08b | Porte da calculadora para TypeScript (roda dentro do site) | ✅ | `site/src/motor/`. 1.519 de 1.519 pedidos idênticos à oficial 1.7.2. Atualização em [`manutencao.md`](manutencao.md) |
 | T08 | Serviço de cálculo | ✅ | `site/src/lib/motor.ts`, agora chamando o porte. Falta gravar cada cálculo no banco (depende do Supabase) |
