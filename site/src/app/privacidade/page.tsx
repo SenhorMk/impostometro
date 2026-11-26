@@ -34,6 +34,8 @@ export default function Privacidade() {
           histórico de cálculos. Os XMLs das notas são lidos no seu próprio navegador e não são enviados para nós:
           para o cálculo vão só os dados fiscais de cada item. Dados de consumidores finais (como CPF e nome) são
           ignorados, conforme a LGPD. Apagar a conta apaga o e-mail, a empresa e o aceite dos termos.
+          O pagamento da assinatura é feito na página do Asaas: não recebemos nem guardamos dados de cartão; guardamos só
+          os códigos da assinatura e se ela está paga.
         </p>
         <h2>Seus direitos</h2>
         <p>Você poderá pedir acesso, correção ou exclusão dos seus dados a qualquer momento, inclusive apagando a conta.</p>

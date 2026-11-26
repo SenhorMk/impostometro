@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Cabecalho } from "@/components/Cabecalho";
 import { Importador } from "@/components/Importador";
+import { PortaoAssinante } from "@/components/PortaoAssinante";
 import { Rodape } from "@/components/Rodape";
 
-// Prévia da área de assinante (T16/T17). Fica fora do Google até o login e a assinatura (T13/T14) existirem.
+// Área de assinante (T16/T17). Com a cobrança ligada (T14), só assinante importa; sem ela, fica como prévia aberta. Fora do Google.
 export const metadata: Metadata = {
   title: "Importar notas (XML)",
   robots: { index: false },
@@ -25,7 +26,9 @@ export default function Importar() {
           quantidade, classificação, data e cidade de cada item. Nome, CPF e endereço do seu cliente são ignorados.
         </p>
         <div className="mt-8">
-          <Importador />
+          <PortaoAssinante>
+            <Importador />
+          </PortaoAssinante>
         </div>
       </main>
       <Rodape />

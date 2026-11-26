@@ -18,3 +18,12 @@ test("empresa: CNPJ e razão social são opcionais; cidade e regime não", () =>
   assert.equal(typeof validarEmpresa({ uf: "SP", municipio: 3550308, regime: "lucro", cnpj: "", razaoSocial: "" }), "string");
   assert.equal(typeof validarEmpresa({ uf: "SP", municipio: 3550308, regime: "simples", cnpj: "11222333000182", razaoSocial: "" }), "string");
 });
+
+test("pagador: aceita CPF ou CNPJ válidos", async () => {
+  const { documentoPagador, cpfValido } = await import("./contas.ts");
+  assert.equal(cpfValido("529.982.247-25"), true);
+  assert.equal(cpfValido("52998224726"), false);
+  assert.equal(documentoPagador("529.982.247-25"), "52998224725");
+  assert.equal(documentoPagador("11.222.333/0001-81"), "11222333000181");
+  assert.equal(documentoPagador("123"), null);
+});

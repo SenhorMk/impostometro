@@ -9,8 +9,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { REGIMES, UFS, VERSAO_TERMOS, validarEmpresa, type Empresa } from "@/lib/contas";
-import { useSessao } from "@/lib/sessao";
+import { ASSINATURA_ATIVA, cabecalhoLogin, useSessao } from "@/lib/sessao";
 import { supabase } from "@/lib/supabase-navegador";
+import { AssinaturaConta } from "./AssinaturaConta";
 import { CHAVE_ACEITE } from "./Entrar";
 
 function aceitePendente(): boolean {
@@ -111,6 +112,7 @@ export function Conta() {
         </section>
       ) : perfil === "ok" ? (
         <>
+          <AssinaturaConta usuarioId={usuario.id} />
           <FormEmpresa usuarioId={usuario.id} />
           <section className="rounded-2xl border border-borda bg-white p-5">
             <h2 className="text-lg font-semibold">Notas do mês</h2>
@@ -285,6 +287,15 @@ function ApagarConta() {
   async function apagar() {
     setApagando(true);
     const sb = supabase()!;
+    // T14: antes de apagar, encerra a assinatura no Asaas para não haver cobranças futuras.
+    if (ASSINATURA_ATIVA) {
+      const r = await fetch("/api/assinatura", { method: "DELETE", headers: await cabecalhoLogin() });
+      if (!r.ok) {
+        setErro("Não conseguimos cancelar a assinatura antes de apagar a conta. Tente de novo.");
+        setApagando(false);
+        return;
+      }
+    }
     const { error } = await sb.rpc("apagar_minha_conta");
     if (error) {
       setErro("Não conseguimos apagar a conta agora. Tente de novo ou fale com a gente.");
@@ -299,7 +310,7 @@ function ApagarConta() {
     <details className="rounded-2xl border border-borda bg-white p-5 text-sm">
       <summary className="cursor-pointer font-medium text-red-800">Apagar minha conta</summary>
       <p className="mt-3 text-suave">
-        Apaga para sempre a conta, os dados da empresa e o aceite dos termos. Não dá para desfazer. Os XMLs das notas nunca ficaram
+        Apaga para sempre a conta, os dados da empresa e o aceite dos termos, e cancela a assinatura. Não dá para desfazer. Os XMLs das notas nunca ficaram
         guardados conosco.
       </p>
       <label htmlFor="confirmar-apagar" className="rotulo mt-3">

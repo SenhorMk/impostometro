@@ -24,7 +24,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | [T11](T11-simulacao-rapida-sem-cadastro.md) | Simulação rápida sem cadastro | E3 Calculadora grátis | S2 | P0 | 5 | ✅ Feito |
 | [T12](T12-como-chegamos-nisso.md) | “Como chegamos nisso” | E3 Calculadora grátis | S3 | P0 | 3 | ✅ Feito |
 | [T13](T13-login-com-link-por-e-mail.md) | Login com link por e-mail e Google | E4 Conta e assinatura | S4 | P0 | 3 | 🟡 Em revisão |
-| [T14](T14-assinatura-recorrente-e-limite-do-plano.md) | Assinatura recorrente e limite do plano grátis | E4 Conta e assinatura | S5 | P0 | 5 | ⏳ A fazer 🧑 |
+| [T14](T14-assinatura-recorrente-e-limite-do-plano.md) | Assinatura recorrente e limite do plano grátis | E4 Conta e assinatura | S5 | P0 | 5 | 🟡 Em revisão |
 | [T15](T15-cadastro-minimo-da-empresa.md) | Cadastro mínimo da empresa | E4 Conta e assinatura | S4 | P0 | 2 | 🟡 Em revisão |
 | [T16](T16-upload-e-leitura-de-xml-de.md) | Upload e leitura de XML de NF-e/NFC-e | E5 Importação de XML | S4 | P0 | 5 | 🟡 Em revisão |
 | [T17](T17-calcular-o-lote-item-a-item.md) | Calcular o lote item a item | E5 Importação de XML | S5 | P0 | 5 | 🟡 Em revisão |

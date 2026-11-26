@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL ?? "",
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.SUPABASE_PUBLISHABLE_KEY ?? "",
+    // T14: só diz SE a cobrança está ligada (nunca repassa as chaves secretas).
+    NEXT_PUBLIC_ASSINATURA_ATIVA: process.env.ASAAS_API_KEY && process.env.SUPABASE_SECRET_KEY ? "1" : "",
   },
   partialPrefetching: true,
   turbopack: {

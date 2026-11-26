@@ -50,3 +50,24 @@ export function validarEmpresa(f: { uf: string; municipio: number; regime: strin
   const razao = f.razaoSocial.trim().slice(0, 150);
   return { uf: f.uf, municipio: f.municipio, regime: f.regime as Regime, cnpj: cnpj || null, razao_social: razao || null };
 }
+
+/** Confere os dígitos verificadores do CPF (só números, 11 dígitos). */
+export function cpfValido(cpf: string): boolean {
+  const d = cpf.replace(/\D/g, "");
+  if (!/^\d{11}$/.test(d) || /^(\d)\1{10}$/.test(d)) return false;
+  const digito = (n: number) => {
+    let soma = 0;
+    for (let i = 0; i < n; i++) soma += Number(d[i]) * (n + 1 - i);
+    const r = (soma * 10) % 11;
+    return r === 10 ? 0 : r;
+  };
+  return digito(9) === Number(d[9]) && digito(10) === Number(d[10]);
+}
+
+/** CPF ou CNPJ de quem paga a assinatura (o Asaas exige um dos dois). Devolve só os números, ou null. */
+export function documentoPagador(texto: string): string | null {
+  const d = texto.replace(/\D/g, "");
+  if (d.length === 11) return cpfValido(d) ? d : null;
+  if (d.length === 14) return cnpjValido(d) ? d : null;
+  return null;
+}

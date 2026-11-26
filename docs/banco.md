@@ -96,3 +96,38 @@ Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. *
 4. **Google (opcional, pode ficar para depois):** criar um cliente OAuth "Aplicativo da Web" no Google Cloud Console, com a URL de retorno que o painel do Supabase mostra em Providers → Google, e colar o Client ID e o Secret ali. Sem isso, o botão do Google mostra erro e o link por e-mail continua funcionando.
 5. **Vercel:** as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (as mesmas do T10) ligam o login. O `next.config.ts` repassa as duas para o navegador; a chave publicável pode ficar visível, porque só dá o que as regras acima permitem. **Nunca** colocar a chave secreta (`service_role`) nessas variáveis.
 6. Testar: entrar com o próprio e-mail, salvar a empresa, sair, entrar de novo e apagar a conta.
+
+## Assinatura pelo Asaas (T14)
+
+Migração: `supabase/migrations/20261126140000_assinaturas_asaas.sql`. **Ainda não aplicada.** Ela usa `pg_cron`, que a primeira migração do T10 já ligou.
+
+| Tabela | O que guarda | Quem acessa |
+|---|---|---|
+| `assinaturas` | ids do cliente e da assinatura no Asaas, status (`pendente`, `ativa`, `atrasada`, `cancelada`, `suspensa`), `valido_ate`, valor e link de pagamento | dono da conta só **lê**; só o servidor (chave secreta) escreve |
+| `asaas_eventos` | ids dos avisos do Asaas já processados (para ignorar repetidos), apagados após 60 dias | só o servidor |
+
+Conferido num Postgres 17 local: a pessoa lê a própria assinatura, não consegue se dar acesso (update negado) e não vê a de outra conta.
+
+### Como o dinheiro vira acesso
+
+1. Em `/conta`, a pessoa informa nome e CPF/CNPJ e clica em "Assinar". O site (`POST /api/assinatura`) cria o cliente e a assinatura mensal no Asaas (`billingType: UNDEFINED`, a pessoa escolhe Pix, cartão ou boleto) e manda a pessoa para a página de pagamento do Asaas.
+2. O Asaas avisa o site em `POST /api/asaas/webhook`. Regras em `site/src/lib/assinatura.ts`: pagamento confirmado libera até o vencimento + 1 mês + 3 dias; atraso só muda o status; cancelamento vale até o fim do mês pago; estorno ou contestação suspende na hora.
+3. `/api/calcular-lote` só calcula para quem tem acesso. A simulação de uma venda continua grátis para todos.
+4. Cancelar em `/conta` (`DELETE /api/assinatura`) encerra a recorrência no Asaas. Apagar a conta cancela a assinatura antes.
+
+### Passo a passo para ligar (sandbox primeiro)
+
+1. Rodar a migração acima no SQL Editor do Supabase.
+2. Criar uma conta no **sandbox** do Asaas (https://sandbox.asaas.com), gerar a chave da API em Integrações.
+3. Ainda no Asaas, em Integrações → Webhooks, criar um webhook:
+   - URL: `https://<endereço do site>/api/asaas/webhook`;
+   - token de autenticação: uma senha longa inventada (a mesma vai para `ASAAS_WEBHOOK_TOKEN`);
+   - eventos: cobranças (`PAYMENT_CONFIRMED`, `PAYMENT_RECEIVED`, `PAYMENT_OVERDUE`, `PAYMENT_REFUNDED`, `PAYMENT_CHARGEBACK_REQUESTED`) e assinaturas (`SUBSCRIPTION_DELETED`, `SUBSCRIPTION_INACTIVATED`).
+4. Na Vercel (Settings → Environment Variables), sem colocar nada no git:
+   - `SUPABASE_SECRET_KEY`: chave secreta do Supabase (Settings → API Keys, `sb_secret_...`);
+   - `ASAAS_API_KEY`, `ASAAS_AMBIENTE=sandbox`, `ASAAS_WEBHOOK_TOKEN`.
+   Com `ASAAS_API_KEY` e `SUPABASE_SECRET_KEY` presentes, a cobrança liga e `/importar` passa a exigir assinatura.
+5. Testar no sandbox: assinar, pagar a cobrança pelo painel do sandbox (o Asaas simula o pagamento), conferir que `/importar` libera; cancelar e conferir.
+6. **Teste real de R$ 1:** trocar para a chave de produção e `ASAAS_AMBIENTE=producao`, colocar `ASSINATURA_PRECO_CENTAVOS=100`, assinar com o próprio CPF, pagar com Pix, conferir, cancelar e **apagar** `ASSINATURA_PRECO_CENTAVOS` (volta a R$ 29).
+
+**Suposições a confirmar no sandbox** (a rede deste ambiente não alcança o Asaas): endereço do sandbox (`https://api-sandbox.asaas.com/v3`; se mudar, use `ASAAS_URL`), formato da data `AAAA-MM-DD`, e que o link de pagamento vem em `invoiceUrl` da primeira cobrança.

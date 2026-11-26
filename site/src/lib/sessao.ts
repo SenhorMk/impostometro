@@ -22,3 +22,12 @@ export function useSessao(): Sessao {
   }, [sb]);
   return sb ? { configurado: true, ...estado } : { configurado: false };
 }
+
+/** Token do login para mandar às rotas do site ("Authorization: Bearer ..."). */
+export async function cabecalhoLogin(): Promise<Record<string, string>> {
+  const { data } = (await supabase()?.auth.getSession()) ?? { data: { session: null } };
+  return data.session ? { Authorization: `Bearer ${data.session.access_token}` } : {};
+}
+
+/** A cobrança (T14) está ligada neste site? */
+export const ASSINATURA_ATIVA = process.env.NEXT_PUBLIC_ASSINATURA_ATIVA === "1";

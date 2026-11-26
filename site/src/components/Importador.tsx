@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { dataBR, emPercentual, emReais } from "@/lib/formato";
 import type { ItemCalculado, NotaCalculada, NotaParaCalcular, RespostaLote } from "@/lib/lote";
 import { lerNota, type ItemNota, type NotaLida } from "@/lib/nfe";
+import { cabecalhoLogin } from "@/lib/sessao";
 
 const LIMITE_NOTAS = 500;
 const NOTAS_POR_PEDIDO = 50;
@@ -149,7 +150,7 @@ export function Importador() {
         const parte = comItens.slice(k, k + NOTAS_POR_PEDIDO);
         const r = await fetch("/api/calcular-lote", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...(await cabecalhoLogin()) },
           body: JSON.stringify({ notas: parte.map((x) => x.p) }),
         });
         const corpo = await r.json();

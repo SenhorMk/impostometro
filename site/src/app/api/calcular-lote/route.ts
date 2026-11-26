@@ -1,3 +1,4 @@
+import { exigirAssinante } from "@/lib/acesso";
 import { calcularLote, validarLote, type NotaParaCalcular } from "@/lib/lote";
 
 /**
@@ -7,6 +8,9 @@ import { calcularLote, validarLote, type NotaParaCalcular } from "@/lib/lote";
  * Devolve cada item calculado (ou o motivo de não ter calculado) e os totais por nota.
  */
 export async function POST(request: Request) {
+  // T14: com a cobrança ligada, importar notas é só para assinantes.
+  const { erro: semAcesso } = await exigirAssinante(request);
+  if (semAcesso) return semAcesso;
   let corpo: unknown;
   try {
     corpo = await request.json();
