@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NFC-e FICTÍCIA para testes. -->
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+  <infNFe Id="NFe33270100000000000000650010000000451000000450" versao="4.00">
+    <ide><cUF>33</cUF><mod>65</mod><serie>1</serie><nNF>45</nNF><dhEmi>2027-05-02T19:40:00-03:00</dhEmi>
+      <tpNF>1</tpNF><cMunFG>3304557</cMunFG><finNFe>1</finNFe></ide>
+    <det nItem="1"><prod><cProd>1</cProd><xProd>Sorvete pote 2 L</xProd><NCM>21050010</NCM><CFOP>5102</CFOP>
+      <uCom>UN</uCom><qCom>1.0000</qCom><vProd>39.90</vProd></prod><imposto/></det>
+  </infNFe>
+</NFe>

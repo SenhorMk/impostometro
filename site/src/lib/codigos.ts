@@ -64,3 +64,17 @@ export function buscarCodigos(consulta: string, limite = 8): CodigoOficial[] {
       especiais: esp.map((i) => ({ cClassTrib: bruto.classificacoes[i][0], descricao: bruto.classificacoes[i][1] })),
     }));
 }
+
+const porCodigo = new Map(bruto.codigos.map((l) => [l[1], l]));
+
+/** Para a importação de XML (T17): classificações especiais possíveis de cada NCM/NBS exato. */
+export function especiaisPorCodigo(codigos: string[]): Record<string, { descricao: string; especiais: Classificacao[] } | null> {
+  const saida: Record<string, { descricao: string; especiais: Classificacao[] } | null> = {};
+  for (const c of codigos) {
+    const l = porCodigo.get(c);
+    saida[c] = l
+      ? { descricao: l[2], especiais: l[4].map((i) => ({ cClassTrib: bruto.classificacoes[i][0], descricao: bruto.classificacoes[i][1] })) }
+      : null;
+  }
+  return saida;
+}

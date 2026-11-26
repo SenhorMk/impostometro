@@ -102,3 +102,10 @@ Se o resultado for `INCONSISTENCIA_ENTRADA`, `NAO_IMPLEMENTADO` ou `FALHA_TECNIC
 |---|---|---|
 | `.github/workflows/calculadora.yml` | PR que mexe em `calculadora/`, `testes-dourados/`, `site/src/dados/`, `site/src/motor/`, `scripts/` | compila a imagem oficial (com cache), sobe, roda o exemplo oficial, os dourados e o dicionário; confere se as tabelas do porte são as do banco oficial; compara porte × oficial |
 | `.github/workflows/site.yml` | PR que mexe em `site/` | `npm ci`, lint, testes do porte, tipos (`next typegen` + `tsc`), build |
+
+## Importação de XML (T16/T17)
+
+1. A pessoa escolhe XMLs ou um .zip em `/importar`. O navegador abre o .zip (`fflate`) e lê cada nota (`site/src/lib/nfe.ts`). O arquivo **não sai do computador**; nome, CPF e endereço do cliente são ignorados.
+2. Itens sem `cClassTrib` são agrupados por NCM; `GET /api/codigos?codigos=...` traz os tratamentos especiais possíveis. A pessoa confirma (padrão 000001).
+3. O navegador manda só os dados fiscais, 50 notas por vez, para `POST /api/calcular-lote` (`site/src/lib/lote.ts`), que chama o porte uma vez por nota.
+4. A tela soma só os itens calculados e mostra cada erro com o motivo.

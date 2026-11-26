@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Nota FICTÍCIA para testes: CNPJ, nomes e chave inventados. -->
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+  <NFe>
+    <infNFe Id="NFe35270100000000000000550010000001231000001230" versao="4.00">
+      <ide>
+        <cUF>35</cUF><natOp>Venda de mercadoria</natOp><mod>55</mod><serie>1</serie><nNF>123</nNF>
+        <dhEmi>2027-03-10T10:15:00-03:00</dhEmi><tpNF>1</tpNF><cMunFG>3550308</cMunFG><finNFe>1</finNFe>
+      </ide>
+      <emit><CNPJ>00000000000000</CNPJ><xNome>Loja Exemplo de Testes</xNome></emit>
+      <dest><CPF>00000000000</CPF><xNome>Cliente que deve ser ignorado</xNome></dest>
+      <det nItem="1">
+        <prod>
+          <cProd>CAM01</cProd><xProd>Camiseta de algodão</xProd><NCM>61091000</NCM><CFOP>5102</CFOP>
+          <uCom>UN</uCom><qCom>2.0000</qCom><vUnCom>50.00</vUnCom><vProd>100.00</vProd>
+          <vFrete>10.00</vFrete><vDesc>5.50</vDesc><indTot>1</indTot>
+        </prod>
+        <imposto><vTotTrib>0.00</vTotTrib></imposto>
+      </det>
+      <det nItem="2">
+        <prod>
+          <cProd>ARZ5</cProd><xProd>Arroz parboilizado 5 kg</xProd><NCM>10063011</NCM><CFOP>5102</CFOP>
+          <uCom>PCT</uCom><qCom>3</qCom><vUnCom>30.00</vUnCom><vProd>90.00</vProd><indTot>1</indTot>
+        </prod>
+        <imposto>
+          <IBSCBS>
+            <CST>200</CST><cClassTrib>200003</cClassTrib>
+            <gIBSCBS><vBC>90.00</vBC></gIBSCBS>
+          </IBSCBS>
+        </imposto>
+      </det>
+    </infNFe>
+  </NFe>
+  <protNFe versao="4.00"><infProt><cStat>100</cStat></infProt></protNFe>
+</nfeProc>
