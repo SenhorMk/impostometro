@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Pronto para revisão (falta ligar no painel do Supabase) |
+| Status | 🟡 Pronto para revisão (tabelas criadas; faltam as URLs de login no painel) |
 | Épico | E4 Conta e assinatura |
 | Sprint | S4 |
 | Prioridade | P0 |
@@ -23,7 +23,7 @@ Como visitante, quero criar conta em segundos, sem senha nova para lembrar.
 
 Sem `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`, `/entrar` continua só explicando que as contas abrem em janeiro. O navegador usa a chave publicável; o que cada conta pode ver é decidido pelas regras do banco (RLS).
 
-**Pendente (Mateus ou Codex, no painel do Supabase):** aplicar a migração `20261126120000_contas_perfis_e_empresas.sql`, configurar as URLs de retorno e, se quiser o Google, cadastrar o app no Google Cloud. Testado com o Supabase simulado no navegador e com as regras do banco num Postgres local; ainda não testado no projeto real.
+**Feito em 26/11/2026:** migração aplicada no projeto real. **Pendente (painel do Supabase):** configurar Site URL e Redirect URLs e, se quiser o Google, cadastrar o app no Google Cloud. Testado com o Supabase simulado no navegador e com as regras do banco num Postgres local; ainda não testado no projeto real.
 
 ---
 [← Todos os tickets](README.md) · [Status geral](../backlog.md)

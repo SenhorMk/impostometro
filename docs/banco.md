@@ -73,9 +73,20 @@ Advisor Center foi consultado com severidades Critical, Warning e Info, sem filt
 
 Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best-practices` (1.1.1), incluindo referências de RLS e menor privilégio. Os 41 testes locais, lint e build passaram na validação final. Provisionamento, aplicação manual e testes remotos concluídos. Faltam reconciliar o histórico de migrações quando o acesso de administração estiver conectado e configurar o deploy.
 
+## Estado em 26/11/2026 (contas e assinatura)
+
+| Item | Estado |
+|---|---|
+| Tabelas `perfis`, `empresas`, `assinaturas`, `asaas_eventos` e função `apagar_minha_conta` | ✅ criadas, com RLS (conferido pelo conector) |
+| Limpeza diária de `asaas_eventos` (`pg_cron`) | ✅ job 2 |
+| Site URL e Redirect URLs do login (Authentication → URL Configuration) | ⏳ falta: o conector não grava essa configuração; fazer no painel |
+| `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ⏳ conferir (ligam o login) |
+| `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY`, `ASAAS_WEBHOOK_TOKEN` na Vercel e webhook no Asaas | ⏳ falta (ligam a assinatura) |
+| Código das contas e da assinatura em produção | ⏳ depende do merge dos PRs #4 e #5 |
+
 ## Contas: login, aceite dos termos e empresa (T13 e T15)
 
-Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. **Ainda não aplicada no projeto real.**
+Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. **Aplicada em 26/11/2026** pelo Mateus no SQL Editor do projeto `uivewvttfvaoqdzltrnc`; conferido pelo conector que `perfis` e `empresas` existem com RLS ligada. Como as anteriores, não entrou no histórico de `supabase_migrations`.
 
 | Tabela | O que guarda | Quem acessa |
 |---|---|---|
@@ -88,7 +99,7 @@ Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. *
 
 ### Passo a passo para ligar (no painel do Supabase, sem custo)
 
-1. **SQL Editor:** colar e rodar a migração acima (uma vez). Depois, conferir em Table Editor que `perfis` e `empresas` aparecem com RLS ligada. Como as anteriores, ela não entra no histórico de `supabase_migrations` (ver o aviso no começo deste arquivo).
+1. ~~**SQL Editor:** colar e rodar a migração acima (uma vez).~~ Feito em 26/11/2026. Depois, conferir em Table Editor que `perfis` e `empresas` aparecem com RLS ligada. Como as anteriores, ela não entra no histórico de `supabase_migrations` (ver o aviso no começo deste arquivo).
 2. **Authentication → URL Configuration:**
    - Site URL: o endereço de produção (o domínio que aparece em Settings → Domains do projeto na Vercel, ou o do T04).
    - Redirect URLs: `https://<endereço de produção>/conta`, `https://*-orbita16.vercel.app/conta` (prévias) e `http://localhost:3000/conta`.
@@ -99,7 +110,7 @@ Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. *
 
 ## Assinatura pelo Asaas (T14)
 
-Migração: `supabase/migrations/20261126140000_assinaturas_asaas.sql`. **Ainda não aplicada.** Ela usa `pg_cron`, que a primeira migração do T10 já ligou.
+Migração: `supabase/migrations/20261126140000_assinaturas_asaas.sql`. **Aplicada em 26/11/2026** no SQL Editor; `assinaturas` e `asaas_eventos` com RLS ligada e a limpeza diária criada no `pg_cron` (job 2). Ela usa `pg_cron`, que a primeira migração do T10 já ligou.
 
 | Tabela | O que guarda | Quem acessa |
 |---|---|---|
@@ -117,7 +128,7 @@ Conferido num Postgres 17 local: a pessoa lê a própria assinatura, não conseg
 
 ### Passo a passo para ligar (sandbox primeiro)
 
-1. Rodar a migração acima no SQL Editor do Supabase.
+1. ~~Rodar a migração acima no SQL Editor do Supabase.~~ Feito em 26/11/2026.
 2. Criar uma conta no **sandbox** do Asaas (https://sandbox.asaas.com), gerar a chave da API em Integrações.
 3. Ainda no Asaas, em Integrações → Webhooks, criar um webhook:
    - URL: `https://<endereço do site>/api/asaas/webhook`;

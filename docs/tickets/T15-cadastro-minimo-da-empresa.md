@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Pronto para revisão (falta aplicar a migração) |
+| Status | 🟡 Pronto para revisão (tabela criada no Supabase em 26/11/2026) |
 | Épico | E4 Conta e assinatura |
 | Sprint | S4 |
 | Prioridade | P0 |
