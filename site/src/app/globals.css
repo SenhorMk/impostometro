@@ -37,3 +37,74 @@ body {
     @apply inline-flex items-center justify-center rounded-xl border border-borda bg-white px-5 py-3 font-semibold text-tinta transition hover:bg-fundo;
   }
 }
+
+/* ------------------------------------------------------------------
+   Animações leves (sem JavaScript e sem biblioteca).
+   - "revelar": a seção sobe e aparece quando entra na tela. Usa as
+     animações ligadas à rolagem do CSS; navegador antigo só mostra a seção.
+   - Quem pediu "reduzir movimento" no celular/computador não vê animação.
+   ------------------------------------------------------------------ */
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes crescer-x {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes flutuar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes pulsar {
+  0% { box-shadow: 0 0 0 0 rgb(11 143 106 / 0.45); }
+  70% { box-shadow: 0 0 0 10px rgb(11 143 106 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(11 143 106 / 0); }
+}
+
+/* Demonstração animada (a "mini vídeo" do como funciona): ciclo de 12 s. */
+@keyframes demo-digitar {
+  0%, 4% { width: 0; }
+  18%, 100% { width: 100%; }
+}
+@keyframes demo-valor {
+  0%, 22% { opacity: 0; }
+  28%, 100% { opacity: 1; }
+}
+@keyframes demo-botao {
+  0%, 36% { transform: scale(1); }
+  39% { transform: scale(0.95); }
+  42%, 100% { transform: scale(1); }
+}
+@keyframes demo-resultado {
+  0%, 42% { opacity: 0; transform: translateY(12px); }
+  50%, 92% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: none; }
+}
+@keyframes demo-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .revelar {
+      animation: surgir linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+    .barra-crescer {
+      transform-origin: left;
+      animation: crescer-x linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+  }
+  .flutuar { animation: flutuar 5s ease-in-out infinite; }
+  .pulsar { animation: pulsar 2.4s ease-out infinite; }
+  .demo-digitar { animation: demo-digitar 12s steps(18, end) infinite; }
+  .demo-valor { animation: demo-valor 12s ease infinite; }
+  .demo-botao { animation: demo-botao 12s ease infinite; }
+  .demo-resultado { animation: demo-resultado 12s ease infinite; }
+  .demo-cursor { animation: demo-cursor 0.9s step-end infinite; }
+}

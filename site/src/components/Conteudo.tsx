@@ -27,6 +27,7 @@ export function PaginaConteudo({ titulo, descricao, children }: {
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-16">
         <nav aria-label="Navegação do conteúdo" className="mb-8 flex flex-wrap gap-4 text-sm text-marca-800">
           <Link href="/artigos" className="underline underline-offset-4">Guias da reforma</Link>
+          <Link href="/imposto-2027" className="underline underline-offset-4">Imposto 2027 por setor</Link>
           <Link href="/glossario" className="underline underline-offset-4">Glossário</Link>
         </nav>
         <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">{titulo}</h1>

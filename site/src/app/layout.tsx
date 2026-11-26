@@ -22,6 +22,9 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE.nome,
   },
+  twitter: { card: "summary_large_image" },
+  applicationName: SITE.nome,
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = { themeColor: "#0b3d33" };

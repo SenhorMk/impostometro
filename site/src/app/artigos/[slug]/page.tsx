@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FontesConteudo, PaginaConteudo } from "@/components/Conteudo";
+import { DadosEstruturados } from "@/components/DadosEstruturados";
 import { ARTIGOS, artigoPorSlug } from "@/dados/conteudo";
+import { SITE } from "@/lib/config";
+import { URL_SITE } from "@/lib/seo";
 
 export function generateStaticParams() {
   return ARTIGOS.map(({ slug }) => ({ slug }));
@@ -14,6 +17,7 @@ export async function generateMetadata({ params }: PageProps<"/artigos/[slug]">)
     title: artigo.titulo,
     description: artigo.descricao,
     alternates: { canonical: `/artigos/${artigo.slug}` },
+    openGraph: { type: "article", title: artigo.titulo, description: artigo.descricao, modifiedTime: artigo.atualizadoEm, locale: "pt_BR", siteName: SITE.nome },
   };
 }
 
@@ -33,6 +37,29 @@ export default async function Artigo({ params }: PageProps<"/artigos/[slug]">) {
           </section>
         ))}
       </article>
+      <DadosEstruturados
+        dados={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: artigo.titulo,
+            description: artigo.descricao,
+            dateModified: artigo.atualizadoEm,
+            inLanguage: "pt-BR",
+            mainEntityOfPage: new URL(`/artigos/${artigo.slug}`, URL_SITE).href,
+            publisher: { "@type": "Organization", name: SITE.nome },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Início", item: new URL("/", URL_SITE).href },
+              { "@type": "ListItem", position: 2, name: "Guias da reforma", item: new URL("/artigos", URL_SITE).href },
+              { "@type": "ListItem", position: 3, name: artigo.titulo, item: new URL(`/artigos/${artigo.slug}`, URL_SITE).href },
+            ],
+          },
+        ]}
+      />
     </PaginaConteudo>
   );
 }
