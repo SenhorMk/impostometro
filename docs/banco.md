@@ -82,7 +82,9 @@ Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best
 | Site URL e Redirect URLs do login (Authentication → URL Configuration) | ⏳ falta: o conector não grava essa configuração; fazer no painel |
 | `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ⏳ conferir (ligam o login) |
 | `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY`, `ASAAS_WEBHOOK_TOKEN` na Vercel e webhook no Asaas | ⏳ falta (ligam a assinatura) |
-| Código das contas e da assinatura em produção | ⏳ depende do merge dos PRs #4 e #5 |
+| Código das contas e da assinatura em produção | ✅ PRs #4 e #5 no `main` |
+| Tabela `calculos` (histórico, T18) | ⏳ rodar `20261126160000_historico_calculos.sql` no SQL Editor |
+| Tabela `funil_diario`, função `contar_evento` e visão `funil_semanal` (T22) | ⏳ rodar `20261126170000_funil_diario.sql` no SQL Editor |
 
 ## Contas: login, aceite dos termos e empresa (T13 e T15)
 
@@ -142,3 +144,25 @@ Conferido num Postgres 17 local: a pessoa lê a própria assinatura, não conseg
 6. **Teste real de R$ 1:** trocar para a chave de produção e `ASAAS_AMBIENTE=producao`, colocar `ASSINATURA_PRECO_CENTAVOS=100`, assinar com o próprio CPF, pagar com Pix, conferir, cancelar e **apagar** `ASSINATURA_PRECO_CENTAVOS` (volta a R$ 29).
 
 **Suposições a confirmar no sandbox** (a rede deste ambiente não alcança o Asaas): endereço do sandbox (`https://api-sandbox.asaas.com/v3`; se mudar, use `ASAAS_URL`), formato da data `AAAA-MM-DD`, e que o link de pagamento vem em `invoiceUrl` da primeira cobrança.
+
+## Histórico de cálculos (T18)
+
+Migração: `supabase/migrations/20261126160000_historico_calculos.sql`. **Ainda não aplicada**: rodar no SQL Editor (não usa `pg_cron` nem extensão nova).
+
+- Tabela `calculos`: origem (`manual` ou `xml`), título, totais em centavos, itens calculados e com erro, as três versões (calculadora, tabelas da calculadora, nossa tabela de alíquotas) e `detalhe` (jsonb, resultado completo, até 5.000.000 bytes).
+- Quem grava é o navegador da pessoa logada, com a chave publicável. RLS: cada conta lê, grava e apaga só as próprias linhas; não há update (um cálculo guardado não muda). `usuario_id` é preenchido pelo banco (`auth.uid()`).
+- Gatilho `limitar_calculos_por_conta`: no máximo 2.000 cálculos por conta. (Primeiro tentei pôr o limite na própria regra de RLS e o Postgres recusou com "infinite recursion": regra não pode consultar a própria tabela. Por isso o gatilho.)
+- Apagar a conta apaga o histórico (`on delete cascade`).
+
+Conferido num Postgres 17 local: grava e lê o próprio; gravar em nome de outra conta é negado; outra conta não vê nem apaga; update negado; `detalhe` acima do limite e origem inválida são recusados; o 2.001º cálculo é recusado com mensagem; `anon` não lê; apagar a conta apaga tudo.
+
+## Funil sem dados pessoais (T22)
+
+Migração: `supabase/migrations/20261126170000_funil_diario.sql`. **Ainda não aplicada**.
+
+- Tabela `funil_diario (dia, evento, total)`: só um contador por dia (horário de Brasília) e etapa. Etapas aceitas: `visita`, `calculo_gratis`, `cadastro`, `assinatura`, `cancelamento`.
+- Função `contar_evento(evento)`: soma 1 no contador do dia. `anon` e `authenticated` só podem chamar a função; ninguém da API lê a tabela.
+- Para ver: no SQL Editor, `select * from funil_semanal;` (uma linha por semana, etapas lado a lado) ou `select * from funil_diario order by dia desc;`.
+- Limitação: como qualquer contador sem login, alguém pode chamar a função à toa e inflar números. Serve para tendência e taxas de conversão, não como número exato.
+
+Conferido num Postgres 17 local: soma por dia, recusa etapa desconhecida (ex.: um e-mail), `anon` e `authenticated` não leem a tabela nem a visão.
