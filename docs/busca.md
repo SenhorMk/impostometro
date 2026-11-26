@@ -56,3 +56,13 @@ No navegador, testar busca por código, escolha por teclado, campo restante vazi
 ## Registro de buscas sem resultado
 
 O servidor agenda o registro no Supabase após a resposta, somente quando o dicionário e as tabelas oficiais não encontram correspondência. Normaliza e filtra o termo preventivamente; grava termo, versão e data. RLS permite inserção restrita e impede leitura pública; limpeza diária mantém até 30 dias mais o intervalo até a execução. A integração real foi validada no site local e a política de privacidade foi atualizada. Sem variáveis de ambiente, a coleta fica desativada. Configuração, evidências e limitações em [`banco.md`](banco.md). Publicação depende do T05.
+
+## Junção com o PR #5 (26/11/2026)
+
+O PR #5 acrescentou os **nomes** das 10.417 NCM e 920 NBS (exportados do banco oficial completo para `site/src/dados/codigos-oficiais.json`, com os tratamentos especiais que a calculadora aceita). A ordem no formulário ficou:
+
+1. Dicionário de atividades (navegador).
+2. Produtos e serviços pelo nome ou código: `GET /api/codigos?q=...` (até 6 opções, com escolha do tratamento especial).
+3. Só quando os dois acima não acham nada: classificações pela descrição, `GET /api/busca-oficial?q=...` (esta seção). Escolher uma classificação preenche o cClassTrib e leva ao campo do NCM/NBS.
+
+O registro de busca sem resultado só grava quando as três buscas voltam vazias.

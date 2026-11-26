@@ -52,7 +52,7 @@ jobs:
       - name: Conferir se as tabelas do porte são as do banco oficial
         run: |
           ./scripts/exportar-tabelas-porte.sh
-          git diff --exit-code --stat site/src/motor/dados/ || {
+          git diff --exit-code --stat site/src/motor/dados/ site/src/dados/codigos-oficiais.json || {
             echo "::error::As tabelas do porte estão diferentes do banco oficial. Rode 'npm run porte:tabelas' e faça commit."
             exit 1
           }

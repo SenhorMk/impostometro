@@ -9,7 +9,8 @@
 #
 # Precisa: Docker, a imagem já compilada (docker compose build) e Node 22.
 # A versão da imagem é lida do docker-compose.yml.
-# Depois de rodar: `git diff --stat site/src/motor/dados/` mostra se algo mudou.
+# Também gera site/src/dados/codigos-oficiais.json (busca de NCM/NBS, T10).
+# Depois de rodar: `git diff --stat site/src/motor/dados/ site/src/dados/` mostra se algo mudou.
 # =============================================================================
 set -euo pipefail
 RAIZ="$(cd "$(dirname "$0")/.." && pwd)"
@@ -24,3 +25,6 @@ docker cp "$CID:/app/calculadora/db/calculadora-pro.db" "$TMP/calculadora-pro.db
 echo "→ Exportando as tabelas"
 cd "$RAIZ/site"
 node scripts/porte/exportar-tabelas.mjs "$TMP/calculadora-pro.db"
+
+echo "→ Exportando a lista oficial de NCM e NBS para a busca do site"
+node scripts/porte/exportar-codigos.ts "$TMP/calculadora-pro.db"

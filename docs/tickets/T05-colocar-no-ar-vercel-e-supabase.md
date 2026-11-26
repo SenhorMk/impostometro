@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Parcial |
+| Status | 🟡 Parcial (site no ar na Vercel) |
 | Épico | E1 Infraestrutura |
 | Sprint | S1 |
 | Prioridade | P0 |
@@ -15,8 +15,8 @@ Como dono, quero subir o site sem administrar servidor, com cada parte num servi
 
 ## Critérios de aceite
 
-- [ ] Projeto Supabase criado na região São Paulo, com login Google e link por e-mail ligados e um bucket privado para XMLs.
-- [ ] Projeto Vercel ligado ao repositório, funções na região São Paulo (`site/vercel.json` pronto), variáveis de ambiente fora do código.
+- [ ] Projeto Supabase: o Mateus pediu ao Codex para montar o banco num projeto que ele já tem (26/11). Login Google e link por e-mail entram no T13. O bucket de XMLs não é mais necessário se o T16 ler as notas no navegador.
+- [x] Projeto Vercel ligado ao repositório (`impostometro`, 26/11/2026), funções na região São Paulo (`site/vercel.json`), sem variáveis de ambiente necessárias para calcular. Primeiro deploy de produção: pronto (READY).
 - [x] ~~Motor oficial no Fly.io com chave secreta~~ → não é mais necessário: a calculadora roda dentro do site (porte, T08b).
 - [ ] Domínio apontado para a Vercel, com HTTPS automático; www redireciona para o principal.
 - [x] Tempo de um cálculo simples abaixo de 500 ms (o porte calcula em milissegundos, sem rede).

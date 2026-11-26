@@ -72,3 +72,73 @@ Resultados reais: inserção com `anon` aprovada; leitura, alteração, exclusã
 Advisor Center foi consultado com severidades Critical, Warning e Info, sem filtro de categoria. Os avisos de execução pública desapareceram após a revogação; permaneceu somente a mensagem operacional “Grace period started”. A conexão MCP sem acesso ao projeto impede obter relatórios pelo `get_advisors`; não confundir a consulta visual com execução dessa ferramenta.
 
 Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best-practices` (1.1.1), incluindo referências de RLS e menor privilégio. Os 41 testes locais, lint e build passaram na validação final. Provisionamento, aplicação manual e testes remotos concluídos. Faltam reconciliar o histórico de migrações quando o acesso de administração estiver conectado e configurar o deploy.
+
+## Estado em 26/11/2026 (contas e assinatura)
+
+| Item | Estado |
+|---|---|
+| Tabelas `perfis`, `empresas`, `assinaturas`, `asaas_eventos` e função `apagar_minha_conta` | ✅ criadas, com RLS (conferido pelo conector) |
+| Limpeza diária de `asaas_eventos` (`pg_cron`) | ✅ job 2 |
+| Site URL e Redirect URLs do login (Authentication → URL Configuration) | ⏳ falta: o conector não grava essa configuração; fazer no painel |
+| `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ⏳ conferir (ligam o login) |
+| `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY`, `ASAAS_WEBHOOK_TOKEN` na Vercel e webhook no Asaas | ⏳ falta (ligam a assinatura) |
+| Código das contas e da assinatura em produção | ⏳ depende do merge dos PRs #4 e #5 |
+
+## Contas: login, aceite dos termos e empresa (T13 e T15)
+
+Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. **Aplicada em 26/11/2026** pelo Mateus no SQL Editor do projeto `uivewvttfvaoqdzltrnc`; conferido pelo conector que `perfis` e `empresas` existem com RLS ligada. Como as anteriores, não entrou no histórico de `supabase_migrations`.
+
+| Tabela | O que guarda | Quem acessa |
+|---|---|---|
+| `perfis` | versão dos termos aceita e quando | só o dono da conta (ler e criar) |
+| `empresas` | UF, município (IBGE), regime, CNPJ e razão social opcionais. Uma por conta | só o dono da conta (ler, criar, alterar, apagar) |
+
+- As duas tabelas apontam para `auth.users` com `on delete cascade`: apagar a conta apaga tudo.
+- `apagar_minha_conta()` roda como dono da função (`security definer`), mas só apaga a linha de quem chamou (`auth.uid()`). `anon` não pode chamar.
+- Conferido num Postgres 17 local com um `auth` simulado: a conta A grava e lê a sua empresa; a conta B não vê nem altera a de A, nem grava em nome de A; `anon` não lê nada; apagar a conta remove perfil e empresa.
+
+### Passo a passo para ligar (no painel do Supabase, sem custo)
+
+1. ~~**SQL Editor:** colar e rodar a migração acima (uma vez).~~ Feito em 26/11/2026. Depois, conferir em Table Editor que `perfis` e `empresas` aparecem com RLS ligada. Como as anteriores, ela não entra no histórico de `supabase_migrations` (ver o aviso no começo deste arquivo).
+2. **Authentication → URL Configuration:**
+   - Site URL: o endereço de produção (o domínio que aparece em Settings → Domains do projeto na Vercel, ou o do T04).
+   - Redirect URLs: `https://<endereço de produção>/conta`, `https://*-orbita16.vercel.app/conta` (prévias) e `http://localhost:3000/conta`.
+3. **Authentication → Sign In / Providers → Email:** deixar ligado. O e-mail padrão do Supabase tem limite baixo de envios por hora; para o lançamento, configurar um SMTP próprio (por exemplo, Resend) em Authentication → Emails.
+4. **Google (opcional, pode ficar para depois):** criar um cliente OAuth "Aplicativo da Web" no Google Cloud Console, com a URL de retorno que o painel do Supabase mostra em Providers → Google, e colar o Client ID e o Secret ali. Sem isso, o botão do Google mostra erro e o link por e-mail continua funcionando.
+5. **Vercel:** as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (as mesmas do T10) ligam o login. O `next.config.ts` repassa as duas para o navegador; a chave publicável pode ficar visível, porque só dá o que as regras acima permitem. **Nunca** colocar a chave secreta (`service_role`) nessas variáveis.
+6. Testar: entrar com o próprio e-mail, salvar a empresa, sair, entrar de novo e apagar a conta.
+
+## Assinatura pelo Asaas (T14)
+
+Migração: `supabase/migrations/20261126140000_assinaturas_asaas.sql`. **Aplicada em 26/11/2026** no SQL Editor; `assinaturas` e `asaas_eventos` com RLS ligada e a limpeza diária criada no `pg_cron` (job 2). Ela usa `pg_cron`, que a primeira migração do T10 já ligou.
+
+| Tabela | O que guarda | Quem acessa |
+|---|---|---|
+| `assinaturas` | ids do cliente e da assinatura no Asaas, status (`pendente`, `ativa`, `atrasada`, `cancelada`, `suspensa`), `valido_ate`, valor e link de pagamento | dono da conta só **lê**; só o servidor (chave secreta) escreve |
+| `asaas_eventos` | ids dos avisos do Asaas já processados (para ignorar repetidos), apagados após 60 dias | só o servidor |
+
+Conferido num Postgres 17 local: a pessoa lê a própria assinatura, não consegue se dar acesso (update negado) e não vê a de outra conta.
+
+### Como o dinheiro vira acesso
+
+1. Em `/conta`, a pessoa informa nome e CPF/CNPJ e clica em "Assinar". O site (`POST /api/assinatura`) cria o cliente e a assinatura mensal no Asaas (`billingType: UNDEFINED`, a pessoa escolhe Pix, cartão ou boleto) e manda a pessoa para a página de pagamento do Asaas.
+2. O Asaas avisa o site em `POST /api/asaas/webhook`. Regras em `site/src/lib/assinatura.ts`: pagamento confirmado libera até o vencimento + 1 mês + 3 dias; atraso só muda o status; cancelamento vale até o fim do mês pago; estorno ou contestação suspende na hora.
+3. `/api/calcular-lote` só calcula para quem tem acesso. A simulação de uma venda continua grátis para todos.
+4. Cancelar em `/conta` (`DELETE /api/assinatura`) encerra a recorrência no Asaas. Apagar a conta cancela a assinatura antes.
+
+### Passo a passo para ligar (sandbox primeiro)
+
+1. ~~Rodar a migração acima no SQL Editor do Supabase.~~ Feito em 26/11/2026.
+2. Criar uma conta no **sandbox** do Asaas (https://sandbox.asaas.com), gerar a chave da API em Integrações.
+3. Ainda no Asaas, em Integrações → Webhooks, criar um webhook:
+   - URL: `https://<endereço do site>/api/asaas/webhook`;
+   - token de autenticação: uma senha longa inventada (a mesma vai para `ASAAS_WEBHOOK_TOKEN`);
+   - eventos: cobranças (`PAYMENT_CONFIRMED`, `PAYMENT_RECEIVED`, `PAYMENT_OVERDUE`, `PAYMENT_REFUNDED`, `PAYMENT_CHARGEBACK_REQUESTED`) e assinaturas (`SUBSCRIPTION_DELETED`, `SUBSCRIPTION_INACTIVATED`).
+4. Na Vercel (Settings → Environment Variables), sem colocar nada no git:
+   - `SUPABASE_SECRET_KEY`: chave secreta do Supabase (Settings → API Keys, `sb_secret_...`);
+   - `ASAAS_API_KEY`, `ASAAS_AMBIENTE=sandbox`, `ASAAS_WEBHOOK_TOKEN`.
+   Com `ASAAS_API_KEY` e `SUPABASE_SECRET_KEY` presentes, a cobrança liga e `/importar` passa a exigir assinatura.
+5. Testar no sandbox: assinar, pagar a cobrança pelo painel do sandbox (o Asaas simula o pagamento), conferir que `/importar` libera; cancelar e conferir.
+6. **Teste real de R$ 1:** trocar para a chave de produção e `ASAAS_AMBIENTE=producao`, colocar `ASSINATURA_PRECO_CENTAVOS=100`, assinar com o próprio CPF, pagar com Pix, conferir, cancelar e **apagar** `ASSINATURA_PRECO_CENTAVOS` (volta a R$ 29).
+
+**Suposições a confirmar no sandbox** (a rede deste ambiente não alcança o Asaas): endereço do sandbox (`https://api-sandbox.asaas.com/v3`; se mudar, use `ASAAS_URL`), formato da data `AAAA-MM-DD`, e que o link de pagamento vem em `invoiceUrl` da primeira cobrança.

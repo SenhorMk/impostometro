@@ -19,7 +19,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
-| T05 | Vercel e Supabase | 🟡 | `site/vercel.json` pronto; Supabase criado e registro do T10 validado no site local; login e bucket XML pendentes ([`banco.md`](banco.md)); Vercel pendente. Fly.io não é mais necessário (porte) |
+| T05 | Vercel e Supabase | 🟡 | site no ar na Vercel (projeto `impostometro`, deploy automático da `main`). Supabase criado e registro do T10 validado no site local; login pendente ([`banco.md`](banco.md)). Domínio depende do T04 |
 | T06 | Repositório, CI e deploy automático | 🟡 | CI pronto (`.github/workflows/`), com comparação porte × oficial. Falta ligar a Vercel ao repositório |
 | T08b | Porte da calculadora para TypeScript (roda dentro do site) | ✅ | `site/src/motor/`. 1.519 de 1.519 pedidos idênticos à oficial 1.7.2. Atualização em [`manutencao.md`](manutencao.md) |
 | T08 | Serviço de cálculo | ✅ | `site/src/lib/motor.ts`, agora chamando o porte. Falta gravar cada cálculo no banco (depende do Supabase) |
@@ -29,7 +29,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
 | T09 | Testes dourados no CI | ✅ | `calculadora.yml` |
-| T10 | Busca "o que você vende?" | ✅ | 52 atividades + busca oficial + registro real no Supabase com RLS e retenção; ativação em produção no T05. Detalhes em `docs/busca.md` |
+| T10 | Busca "o que você vende?" | ✅ | 52 atividades + busca nas 11 mil NCM/NBS oficiais com descrição e tratamento especial + busca de classificações (cClassTrib) + registro das buscas sem resultado no Supabase (RLS, retenção de 30 dias). Detalhes em `docs/busca.md` |
 | T11 | Simulação rápida sem cadastro | ✅ | página inicial. Medir tempo de carga em produção |
 
 ## Sprint 3 · Lançamento 1
@@ -46,11 +46,11 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
-| T13 | Login com link por e-mail e Google | ⏳ | Supabase Auth. `/entrar` hoje só explica que abre em janeiro |
-| T15 | Cadastro mínimo da empresa | ⏳ | |
-| T16 | Upload e leitura de XML de NF-e/NFC-e | ⏳ | |
-| T14 | Assinatura recorrente (Pix e cartão) | ⏳ 🧑 | gateway a decidir (sugestão: Asaas) |
-| T17 | Calcular o lote item a item | ⏳ | |
+| T13 | Login com link por e-mail e Google | 🟡 | `/entrar` e `/conta` prontos (aceite dos termos, sair, apagar conta). Tabelas criadas no Supabase; faltam as URLs de login no painel ([`banco.md`](banco.md)) |
+| T15 | Cadastro mínimo da empresa | 🟡 | formulário em `/conta`, tabela `empresas` com RLS criada no Supabase |
+| T16 | Upload e leitura de XML de NF-e/NFC-e | 🟡 | XML lido no navegador (não sai do computador). Prévia em `/importar`; falta restringir a assinantes (T13/T14) |
+| T14 | Assinatura recorrente (Pix e cartão) | 🟡 | Asaas (decisão do Mateus). Assinar, avisos, cancelar e XML só para assinante prontos; tabelas criadas no Supabase; falta ligar o Asaas, testar no sandbox e com R$ 1 ([`banco.md`](banco.md)) |
+| T17 | Calcular o lote item a item | 🟡 | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Em revisão |
 | T18 | Histórico de cálculos | ⏳ | |
 | T22 | Funil medido e checklist de lançamento | ⏳ | |
 

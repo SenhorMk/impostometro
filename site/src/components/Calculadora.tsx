@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { buscarAtividades, SUGESTOES_INICIAIS, type Atividade } from "@/lib/busca";
+import type { CodigoOficial } from "@/lib/codigos";
 import { lerValor } from "@/lib/formato";
 import type { ResultadoCalculo } from "@/lib/tipos";
 import type { RespostaBuscaOficial, ResultadoBuscaOficial } from "@/lib/busca-oficial-tipos";
@@ -21,7 +22,13 @@ const CAPITAIS: Record<string, number> = {
 
 type Escolha =
   | { modo: "atividade"; atividade: Atividade }
-  | { modo: "codigo"; tipo: "ncm" | "nbs"; codigo: string; cClassTrib: string };
+  | { modo: "codigo"; tipo: "ncm" | "nbs"; codigo: string; cClassTrib: string }
+  | { modo: "oficial"; oficial: CodigoOficial; cClassTrib: string };
+
+type Opcao =
+  | { tipo: "atividade"; atividade: Atividade }
+  | { tipo: "oficial"; oficial: CodigoOficial }
+  | { tipo: "classificacao"; item: ResultadoBuscaOficial };
 
 function lembrar<T>(chave: string, valor?: T): T | null {
   try {
@@ -48,14 +55,10 @@ export function Calculadora() {
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
-  const [buscaOficial, setBuscaOficial] = useState<{
-    consulta: string;
-    resposta?: RespostaBuscaOficial;
-    erro?: boolean;
-  } | null>(null);
-  const [selecionadoOficial, setSelecionadoOficial] = useState<ResultadoBuscaOficial | null>(null);
+  const [oficiais, setOficiais] = useState<CodigoOficial[]>([]);
+  const [classificacoes, setClassificacoes] = useState<ResultadoBuscaOficial[]>([]);
+  const [buscandoOficiais, setBuscandoOficiais] = useState(false);
   const codigoRef = useRef<HTMLInputElement>(null);
-  const classificacaoRef = useRef<HTMLInputElement>(null);
   const resultadoRef = useRef<HTMLDivElement>(null);
   const listaId = useId();
 
@@ -63,30 +66,50 @@ export function Calculadora() {
     () => (consulta.trim().length >= 2 ? buscarAtividades(consulta) : SUGESTOES_INICIAIS),
     [consulta],
   );
-  const consultaOficial = aberto && !modoCodigo && consulta.trim().length >= 2 && sugestoes.length === 0
-    ? consulta.trim() : "";
-  const buscaAtual = buscaOficial?.consulta === consultaOficial ? buscaOficial : null;
-  const oficiais = buscaAtual?.resposta?.resultados ?? [];
-  const quantidade = sugestoes.length || oficiais.length;
 
+  // T10: além do dicionário, busca nas tabelas oficiais de NCM e NBS da Receita.
+  const termoOficial = escolha === null && consulta.trim().length >= 3 ? consulta.trim() : "";
   useEffect(() => {
-    if (!consultaOficial) return;
-    const controlador = new AbortController();
-    const espera = setTimeout(async () => {
-      try {
-        const r = await fetch(`/api/busca-oficial?q=${encodeURIComponent(consultaOficial)}`, { signal: controlador.signal });
-        if (!r.ok) throw new Error("Falha na busca");
-        const resposta = await r.json() as RespostaBuscaOficial;
-        if (!controlador.signal.aborted) setBuscaOficial({ consulta: consultaOficial, resposta });
-      } catch {
-        if (!controlador.signal.aborted) setBuscaOficial({ consulta: consultaOficial, erro: true });
-      }
+    if (!termoOficial) return;
+    let cancelado = false;
+    const espera = setTimeout(() => {
+      setBuscandoOficiais(true);
+      fetch(`/api/codigos?q=${encodeURIComponent(termoOficial)}`)
+        .then((r) => r.json())
+        .then(async (lista: CodigoOficial[]) => {
+          if (cancelado) return;
+          setOficiais(lista);
+          // Nada no dicionário nem nos produtos/serviços: procura nas descrições das classificações
+          // (cClassTrib). Esse endpoint também registra a busca sem resultado, para crescer o dicionário.
+          let achadas: ResultadoBuscaOficial[] = [];
+          if (lista.length === 0 && buscarAtividades(termoOficial).length === 0) {
+            const r = await fetch(`/api/busca-oficial?q=${encodeURIComponent(termoOficial)}`);
+            if (r.ok) achadas = ((await r.json()) as RespostaBuscaOficial).resultados.filter((x) => x.tipo === "classificacao");
+          }
+          if (!cancelado) setClassificacoes(achadas);
+        })
+        .catch(() => {
+          if (!cancelado) {
+            setOficiais([]);
+            setClassificacoes([]);
+          }
+        })
+        .finally(() => !cancelado && setBuscandoOficiais(false));
     }, 250);
     return () => {
+      cancelado = true;
       clearTimeout(espera);
-      controlador.abort();
     };
-  }, [consultaOficial]);
+  }, [termoOficial]);
+
+  const opcoes: Opcao[] = useMemo(
+    () => [
+      ...sugestoes.map((a) => ({ tipo: "atividade" as const, atividade: a })),
+      ...(termoOficial ? oficiais.slice(0, sugestoes.length >= 3 ? 3 : 6) : []).map((o) => ({ tipo: "oficial" as const, oficial: o })),
+      ...(termoOficial ? classificacoes : []).map((c) => ({ tipo: "classificacao" as const, item: c })),
+    ],
+    [sugestoes, oficiais, classificacoes, termoOficial],
+  );
 
   // Carrega as cidades do estado. Na primeira vez, recupera o último estado/cidade
   // escolhidos neste navegador.
@@ -125,36 +148,43 @@ export function Calculadora() {
     setConsulta(a.nome);
     setAberto(false);
     setErro(null);
-    setSelecionadoOficial(null);
-    setResultado(null);
   }
 
-  function escolherOficial(item: ResultadoBuscaOficial) {
-    setSelecionadoOficial(item);
+  function escolherOficial(o: CodigoOficial) {
+    setEscolha({ modo: "oficial", oficial: o, cClassTrib: "000001" });
+    setConsulta(o.descricao);
+    setAberto(false);
+    setErro(null);
+  }
+
+  /** Classificação achada pela descrição: preenche o cClassTrib e pede o NCM/NBS. */
+  function escolherClassificacao(c: ResultadoBuscaOficial) {
     setEscolha(null);
-    setResultado(null);
-    setCodigo(item.tipo === "classificacao" ? "" : item.codigo);
-    setCClassTrib(item.tipo === "classificacao" ? item.codigo : "");
+    setCodigo("");
+    setCClassTrib(c.codigo);
     setModoCodigo(true);
     setAberto(false);
     setErro(null);
-    requestAnimationFrame(() => {
-      (item.tipo === "classificacao" ? codigoRef : classificacaoRef).current?.focus();
-    });
+    requestAnimationFrame(() => codigoRef.current?.focus());
+  }
+
+  function escolherOpcao(o: Opcao) {
+    if (o.tipo === "atividade") escolherAtividade(o.atividade);
+    else if (o.tipo === "oficial") escolherOficial(o.oficial);
+    else escolherClassificacao(o.item);
   }
 
   function teclado(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!aberto && (e.key === "ArrowDown" || e.key === "ArrowUp")) setAberto(true);
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setDestaque((d) => Math.min(d + 1, Math.max(quantidade - 1, 0)));
+      setDestaque((d) => Math.min(d + 1, opcoes.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setDestaque((d) => Math.max(d - 1, 0));
-    } else if (e.key === "Enter" && aberto) {
+    } else if (e.key === "Enter" && aberto && opcoes[destaque]) {
       e.preventDefault();
-      if (sugestoes[destaque]) escolherAtividade(sugestoes[destaque]);
-      else if (oficiais[destaque]) escolherOficial(oficiais[destaque]);
+      escolherOpcao(opcoes[destaque]);
     } else if (e.key === "Escape") {
       setAberto(false);
     }
@@ -171,16 +201,13 @@ export function Calculadora() {
         setErro("Digite um NCM (8 números) ou um NBS (9 números).");
         return;
       }
-      if (!/^\d{6}$/.test(cClassTrib)) {
-        setErro("Informe a classificação tributária (cClassTrib, 6 números).");
-        classificacaoRef.current?.focus();
-        return;
-      }
       pedidoBase = { tipo: limpo.length === 8 ? "ncm" : "nbs", codigo: limpo, cClassTrib };
       setEscolha({ modo: "codigo", ...pedidoBase });
     } else if (escolha?.modo === "atividade") {
       const a = escolha.atividade;
       pedidoBase = { tipo: a.tipo as "ncm" | "nbs", codigo: a.codigo, cClassTrib: a.cClassTrib };
+    } else if (escolha?.modo === "oficial") {
+      pedidoBase = { tipo: escolha.oficial.tipo, codigo: escolha.oficial.codigo, cClassTrib: escolha.cClassTrib };
     } else {
       setErro("Escolha na lista o que você vende.");
       setAberto(true);
@@ -230,9 +257,8 @@ export function Calculadora() {
               role="combobox"
               aria-expanded={aberto}
               aria-controls={listaId}
+              aria-activedescendant={aberto && opcoes.length > 0 ? `${listaId}-${destaque}` : undefined}
               aria-autocomplete="list"
-              aria-activedescendant={aberto && quantidade > 0 ? `${listaId}-${destaque}` : undefined}
-              maxLength={120}
               autoComplete="off"
               placeholder="Ex.: pizzaria, corte de cabelo, roupas"
               className="campo"
@@ -240,8 +266,6 @@ export function Calculadora() {
               onChange={(e) => {
                 setConsulta(e.target.value);
                 setEscolha(null);
-                setResultado(null);
-                setSelecionadoOficial(null);
                 setAberto(true);
                 setDestaque(0);
               }}
@@ -258,53 +282,51 @@ export function Calculadora() {
                 {consulta.trim().length < 2 && (
                   <li className="px-3 pb-1 pt-2 text-xs font-medium uppercase tracking-wide text-suave">Mais buscados</li>
                 )}
-                {sugestoes.map((a, i) => (
+                {opcoes.map((o, i) => (
                   <li
-                    key={a.id}
+                    key={o.tipo === "atividade" ? o.atividade.id : o.tipo === "oficial" ? `${o.oficial.tipo}-${o.oficial.codigo}` : `cclasstrib-${o.item.codigo}`}
                     id={`${listaId}-${i}`}
                     role="option"
                     aria-selected={i === destaque}
                     onMouseDown={(e) => {
                       e.preventDefault();
-                      escolherAtividade(a);
+                      escolherOpcao(o);
                     }}
                     onMouseEnter={() => setDestaque(i)}
-                    className={`flex cursor-pointer items-center justify-between gap-3 px-3 py-2.5 text-sm ${
-                      i === destaque ? "bg-marca-50 text-marca-900" : "text-tinta"
+                    className={`cursor-pointer px-3 py-2.5 text-sm ${i === destaque ? "bg-marca-50 text-marca-900" : "text-tinta"} ${
+                      o.tipo !== "atividade" && (i === 0 || opcoes[i - 1].tipo !== o.tipo) ? "border-t border-borda" : ""
                     }`}
                   >
-                    <span>{a.nome}</span>
-                    <span className="shrink-0 text-xs text-suave">{a.tipo === "nbs" ? "serviço" : "produto"}</span>
+                    {o.tipo === "oficial" && (i === 0 || opcoes[i - 1].tipo !== "oficial") && (
+                      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-suave">Nas tabelas oficiais da Receita</span>
+                    )}
+                    {o.tipo === "classificacao" && (i === 0 || opcoes[i - 1].tipo !== "classificacao") && (
+                      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-suave">Classificações da reforma</span>
+                    )}
+                    {o.tipo === "classificacao" ? (
+                      <span className="block">
+                        <span className="line-clamp-2">{o.item.descricao}</span>
+                        <span className="mt-0.5 block text-xs text-suave">cClassTrib {o.item.codigo} · depois informe o NCM ou NBS</span>
+                      </span>
+                    ) : o.tipo === "atividade" ? (
+                      <span className="flex items-center justify-between gap-3">
+                        <span>{o.atividade.nome}</span>
+                        <span className="shrink-0 text-xs text-suave">{o.atividade.tipo === "nbs" ? "serviço" : "produto"}</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-start justify-between gap-3">
+                        <span className="line-clamp-2">{o.oficial.descricao}</span>
+                        <span className="shrink-0 text-xs text-suave">
+                          {o.oficial.tipo.toUpperCase()} {o.oficial.codigo}
+                        </span>
+                      </span>
+                    )}
                   </li>
                 ))}
-                {consultaOficial && !buscaAtual && (
-                  <li role="presentation" className="px-3 py-3 text-sm text-suave"><span role="status">Buscando nas tabelas da Receita…</span></li>
-                )}
-                {oficiais.length > 0 && (
-                  <li role="presentation" className="px-3 py-2 text-xs text-suave">Tabela da Receita · {buscaAtual?.resposta?.versaoTabela}</li>
-                )}
-                {oficiais.map((item, i) => (
-                  <li
-                    key={`${item.tipo}:${item.codigo}`}
-                    id={`${listaId}-${i}`}
-                    role="option"
-                    aria-selected={i === destaque}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      escolherOficial(item);
-                    }}
-                    onMouseEnter={() => setDestaque(i)}
-                    className={`cursor-pointer px-3 py-2.5 text-sm ${i === destaque ? "bg-marca-50 text-marca-900" : "text-tinta"}`}
-                  >
-                    <span className="block">{item.descricao}</span>
-                    <span className="mt-1 block text-xs text-suave">
-                      {item.tipo === "classificacao" ? `cClassTrib ${item.codigo} · informe também o NCM ou NBS` : "Informe também a classificação tributária"}
-                    </span>
-                  </li>
-                ))}
-                {consultaOficial && buscaAtual && oficiais.length === 0 && (
+                {opcoes.length === 0 && buscandoOficiais && <li className="px-3 py-3 text-sm text-suave">Procurando nas tabelas oficiais…</li>}
+                {opcoes.length === 0 && !buscandoOficiais && consulta.trim().length >= 2 && (
                   <li className="px-3 py-3 text-sm text-suave">
-                    {buscaAtual.erro ? "Não conseguimos consultar as tabelas agora. Tente novamente ou informe os códigos." : `Não achamos “${consulta}” no dicionário nem nas tabelas consultadas.`}{" "}
+                    Não achamos “{consulta}”.{" "}
                     <button
                       type="button"
                       className="font-medium text-marca-700 underline"
@@ -319,18 +341,43 @@ export function Calculadora() {
                 )}
               </ul>
             )}
+            {escolha?.modo === "oficial" && (
+              <div className="mt-2 rounded-xl border border-borda bg-white p-3 text-sm">
+                <p className="text-suave">
+                  Código oficial: <strong className="text-tinta">{escolha.oficial.tipo.toUpperCase()} {escolha.oficial.codigo}</strong>
+                </p>
+                {escolha.oficial.especiais.length > 0 && (
+                  <div className="mt-2">
+                    <label htmlFor="tratamento" className="rotulo">
+                      Tratamento tributário
+                    </label>
+                    <select
+                      id="tratamento"
+                      className="campo"
+                      value={escolha.cClassTrib}
+                      onChange={(e) => setEscolha({ ...escolha, cClassTrib: e.target.value })}
+                    >
+                      <option value="000001">Tributação integral (000001)</option>
+                      {escolha.oficial.especiais.map((c) => (
+                        <option key={c.cClassTrib} value={c.cClassTrib}>
+                          {c.descricao} ({c.cClassTrib})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-1.5 text-xs text-suave">
+                      A lei prevê tratamento especial para este código em alguns casos. Escolha um deles só se a sua venda se
+                      encaixa; na dúvida, confirme com o seu contador.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
             <button type="button" onClick={() => setModoCodigo(true)} className="mt-1.5 text-xs text-suave underline hover:text-tinta">
               Sei o código NCM ou NBS
             </button>
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
-            {selecionadoOficial && (
-              <p className="rounded-lg bg-marca-50 p-3 text-sm text-marca-900 sm:col-span-2">
-                Selecionado na tabela da Receita: {selecionadoOficial.descricao}.
-                {" "}Complete o campo em branco e confirme o enquadramento com seu contador.
-              </p>
-            )}
             <div>
               <label htmlFor="codigo" className="rotulo">
                 Código NCM (produto) ou NBS (serviço)
@@ -351,7 +398,6 @@ export function Calculadora() {
               </label>
               <input
                 id="cclasstrib"
-                ref={classificacaoRef}
                 inputMode="numeric"
                 className="campo sm:w-32"
                 value={cClassTrib}
@@ -440,7 +486,9 @@ export function Calculadora() {
                   ? escolha.atividade.nome
                   : escolha?.modo === "codigo"
                     ? `${escolha.tipo.toUpperCase()} ${escolha.codigo}`
-                    : ""
+                    : escolha?.modo === "oficial"
+                      ? `${escolha.oficial.tipo.toUpperCase()} ${escolha.oficial.codigo}`
+                      : ""
               }
               cidade={nomeCidade ? `${nomeCidade}/${uf}` : uf}
             />

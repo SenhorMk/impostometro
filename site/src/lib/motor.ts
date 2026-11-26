@@ -19,7 +19,7 @@ import { aliquotasPara, VERSAO_TABELA } from "./aliquotas";
 import type { ParteTributo, PedidoCalculo, ResultadoCalculo } from "./tipos";
 
 /** Mensagens em português simples para os erros mais comuns do motor. */
-const ERROS_AMIGAVEIS: Record<string, string> = {
+export const ERROS_AMIGAVEIS: Record<string, string> = {
   "REG-002": "Não encontramos esse código NCM na tabela oficial para esta data.",
   "REG-003": "Não encontramos esse código NBS na tabela oficial para esta data.",
   "REG-010": "Esse código de serviço não combina com a classificação escolhida.",
