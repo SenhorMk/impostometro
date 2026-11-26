@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/glossario",
     "/termos",
     "/privacidade",
+    "/contato",
   ].map((caminho) => ({
     url: new URL(caminho, URL_SITE).href,
     ...(datas.get(caminho) ? { lastModified: datas.get(caminho) } : {}),

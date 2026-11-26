@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Pronto para revisão (falta só restringir a assinantes, T13/T14) |
+| Status | ✅ Feito |
 | Épico | E5 Importação de XML |
 | Sprint | S4 |
 | Prioridade | P0 |
@@ -23,7 +23,7 @@ Como assinante, quero enviar as notas do mês de uma vez, em vez de digitar item
 
 **Suposições:** sem a base da reforma na nota (`vBC` do grupo IBSCBS), a base é estimada como vProd − vDesc + vFrete + vSeg + vOutro; o local do fato gerador é `cMunFGIBS` ou, se não houver, `cMunFG`.
 
-**Pendente:** a página `/importar` está aberta como prévia (fora do Google). Restringir a assinantes depende do login (T13) e da assinatura (T14).
+**Acesso:** com a cobrança ligada (T14), só assinante importa (tela e servidor, `/api/calcular-lote`). Sem as chaves do Asaas, `/importar` continua como prévia aberta, fora do Google.
 
 ---
 [← Todos os tickets](README.md) · [Status geral](../backlog.md)
