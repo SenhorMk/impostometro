@@ -84,6 +84,7 @@ Se o resultado for `INCONSISTENCIA_ENTRADA`, `NAO_IMPLEMENTADO` ou `FALHA_TECNIC
 |---|---|---|
 | Alíquotas por período | `site/src/dados/aliquotas.json` | pull request ([`manutencao.md`](manutencao.md)) |
 | Atividades do "o que você vende?" | `site/src/dados/atividades.json` | pull request |
+| Lista oficial de NCM e NBS (busca do T10) | `site/src/dados/codigos-oficiais.json`, exportada das tabelas oficiais | `npm run porte:tabelas` |
 | Lista de municípios (IBGE) | `site/src/dados/municipios.json` (gerada das tabelas oficiais) | regenerar se a Receita mudar |
 | Tabelas oficiais (NCM, NBS, reduções, fórmulas) | `site/src/motor/dados/tabelas.json`, exportadas do banco da imagem oficial | `npm run porte:tabelas` ao atualizar a calculadora |
 | Contas, empresas, histórico | Supabase (a fazer: T13, T15, T18) | o site |

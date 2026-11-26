@@ -19,7 +19,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
-| T05 | Vercel e Supabase | 🟡 | `site/vercel.json` pronto; falta criar os projetos nas contas ([`deploy.md`](deploy.md)). Fly.io não é mais necessário (porte) |
+| T05 | Vercel e Supabase | 🟡 | site no ar na Vercel (projeto `impostometro`, deploy automático da `main`). Supabase com o Codex; domínio depende do T04 |
 | T06 | Repositório, CI e deploy automático | 🟡 | CI pronto (`.github/workflows/`), com comparação porte × oficial. Falta ligar a Vercel ao repositório |
 | T08b | Porte da calculadora para TypeScript (roda dentro do site) | ✅ | `site/src/motor/`. 1.519 de 1.519 pedidos idênticos à oficial 1.7.2. Atualização em [`manutencao.md`](manutencao.md) |
 | T08 | Serviço de cálculo | ✅ | `site/src/lib/motor.ts`, agora chamando o porte. Falta gravar cada cálculo no banco (depende do Supabase) |
@@ -29,7 +29,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
 | T09 | Testes dourados no CI | ✅ | `calculadora.yml` |
-| T10 | Busca "o que você vende?" | 🟡 | 52 atividades. Falta: busca nas tabelas oficiais quando não acha, e registrar buscas sem resultado (precisa do banco) |
+| T10 | Busca "o que você vende?" | 🟡 | 52 atividades + busca nas 11 mil NCM/NBS oficiais, com escolha do tratamento especial. Falta registrar buscas sem resultado (precisa do banco) |
 | T11 | Simulação rápida sem cadastro | ✅ | página inicial. Medir tempo de carga em produção |
 
 ## Sprint 3 · Lançamento 1

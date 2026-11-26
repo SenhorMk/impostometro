@@ -14,7 +14,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | [T02](T02-montar-30-operacoes-de-referencia-testes.md) | Montar 30 operações de referência (testes dourados) | E0 Estudo e decisões | S0 | P0 | 3 | ✅ Feito |
 | [T03](T03-tabela-de-aliquotas-2027-versionada-com.md) | Tabela de alíquotas 2027 versionada, com fonte oficial | E0 Estudo e decisões | S0 | P0 | 2 | ✅ Feito (valor provisório) |
 | [T04](T04-decisoes-do-mateus-nome-dominio-preco.md) | Decisões do Mateus: nome, domínio, preço e regime | E0 Estudo e decisões | S0 | P0 | 1 | 🧑 Depende do Mateus |
-| [T05](T05-colocar-no-ar-vercel-e-supabase.md) | Colocar no ar: Vercel e Supabase | E1 Infraestrutura | S1 | P0 | 5 | 🟡 Parcial |
+| [T05](T05-colocar-no-ar-vercel-e-supabase.md) | Colocar no ar: Vercel e Supabase | E1 Infraestrutura | S1 | P0 | 5 | 🟡 Parcial (site no ar na Vercel) |
 | [T06](T06-repositorio-ci-e-deploy-automatico.md) | Repositório, CI e deploy automático | E1 Infraestrutura | S1 | P0 | 3 | 🟡 Parcial |
 | [T07](T07-backup-diario-e-monitoramento.md) | Backup diário e monitoramento | E1 Infraestrutura | S3 | P0 | 2 | ⏳ A fazer |
 | [T08](T08-servico-de-calculo.md) | Serviço de cálculo | E2 Motor de cálculo | S1 | P0 | 5 | ✅ Feito (falta gravar no banco) |

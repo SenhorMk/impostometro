@@ -1,2 +1,3 @@
 # Tabelas exportadas do banco oficial (npm run porte:tabelas): geradas, não editar à mão
 site/src/motor/dados/tabelas.json linguist-generated=true -diff
+site/src/dados/codigos-oficiais.json linguist-generated=true -diff
