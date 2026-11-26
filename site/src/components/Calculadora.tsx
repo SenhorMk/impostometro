@@ -5,6 +5,7 @@ import { buscarAtividades, SUGESTOES_INICIAIS, type Atividade } from "@/lib/busc
 import type { CodigoOficial } from "@/lib/codigos";
 import { lerValor } from "@/lib/formato";
 import type { ResultadoCalculo } from "@/lib/tipos";
+import type { RespostaBuscaOficial, ResultadoBuscaOficial } from "@/lib/busca-oficial-tipos";
 import { Resultado } from "./Resultado";
 
 const UFS = [
@@ -24,7 +25,10 @@ type Escolha =
   | { modo: "codigo"; tipo: "ncm" | "nbs"; codigo: string; cClassTrib: string }
   | { modo: "oficial"; oficial: CodigoOficial; cClassTrib: string };
 
-type Opcao = { tipo: "atividade"; atividade: Atividade } | { tipo: "oficial"; oficial: CodigoOficial };
+type Opcao =
+  | { tipo: "atividade"; atividade: Atividade }
+  | { tipo: "oficial"; oficial: CodigoOficial }
+  | { tipo: "classificacao"; item: ResultadoBuscaOficial };
 
 function lembrar<T>(chave: string, valor?: T): T | null {
   try {
@@ -52,7 +56,9 @@ export function Calculadora() {
   const [erro, setErro] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [oficiais, setOficiais] = useState<CodigoOficial[]>([]);
+  const [classificacoes, setClassificacoes] = useState<ResultadoBuscaOficial[]>([]);
   const [buscandoOficiais, setBuscandoOficiais] = useState(false);
+  const codigoRef = useRef<HTMLInputElement>(null);
   const resultadoRef = useRef<HTMLDivElement>(null);
   const listaId = useId();
 
@@ -70,8 +76,24 @@ export function Calculadora() {
       setBuscandoOficiais(true);
       fetch(`/api/codigos?q=${encodeURIComponent(termoOficial)}`)
         .then((r) => r.json())
-        .then((lista: CodigoOficial[]) => !cancelado && setOficiais(lista))
-        .catch(() => !cancelado && setOficiais([]))
+        .then(async (lista: CodigoOficial[]) => {
+          if (cancelado) return;
+          setOficiais(lista);
+          // Nada no dicionário nem nos produtos/serviços: procura nas descrições das classificações
+          // (cClassTrib). Esse endpoint também registra a busca sem resultado, para crescer o dicionário.
+          let achadas: ResultadoBuscaOficial[] = [];
+          if (lista.length === 0 && buscarAtividades(termoOficial).length === 0) {
+            const r = await fetch(`/api/busca-oficial?q=${encodeURIComponent(termoOficial)}`);
+            if (r.ok) achadas = ((await r.json()) as RespostaBuscaOficial).resultados.filter((x) => x.tipo === "classificacao");
+          }
+          if (!cancelado) setClassificacoes(achadas);
+        })
+        .catch(() => {
+          if (!cancelado) {
+            setOficiais([]);
+            setClassificacoes([]);
+          }
+        })
         .finally(() => !cancelado && setBuscandoOficiais(false));
     }, 250);
     return () => {
@@ -84,8 +106,9 @@ export function Calculadora() {
     () => [
       ...sugestoes.map((a) => ({ tipo: "atividade" as const, atividade: a })),
       ...(termoOficial ? oficiais.slice(0, sugestoes.length >= 3 ? 3 : 6) : []).map((o) => ({ tipo: "oficial" as const, oficial: o })),
+      ...(termoOficial ? classificacoes : []).map((c) => ({ tipo: "classificacao" as const, item: c })),
     ],
-    [sugestoes, oficiais, termoOficial],
+    [sugestoes, oficiais, classificacoes, termoOficial],
   );
 
   // Carrega as cidades do estado. Na primeira vez, recupera o último estado/cidade
@@ -134,9 +157,21 @@ export function Calculadora() {
     setErro(null);
   }
 
+  /** Classificação achada pela descrição: preenche o cClassTrib e pede o NCM/NBS. */
+  function escolherClassificacao(c: ResultadoBuscaOficial) {
+    setEscolha(null);
+    setCodigo("");
+    setCClassTrib(c.codigo);
+    setModoCodigo(true);
+    setAberto(false);
+    setErro(null);
+    requestAnimationFrame(() => codigoRef.current?.focus());
+  }
+
   function escolherOpcao(o: Opcao) {
     if (o.tipo === "atividade") escolherAtividade(o.atividade);
-    else escolherOficial(o.oficial);
+    else if (o.tipo === "oficial") escolherOficial(o.oficial);
+    else escolherClassificacao(o.item);
   }
 
   function teclado(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -222,6 +257,7 @@ export function Calculadora() {
               role="combobox"
               aria-expanded={aberto}
               aria-controls={listaId}
+              aria-activedescendant={aberto && opcoes.length > 0 ? `${listaId}-${destaque}` : undefined}
               aria-autocomplete="list"
               autoComplete="off"
               placeholder="Ex.: pizzaria, corte de cabelo, roupas"
@@ -248,7 +284,8 @@ export function Calculadora() {
                 )}
                 {opcoes.map((o, i) => (
                   <li
-                    key={o.tipo === "atividade" ? o.atividade.id : `${o.oficial.tipo}-${o.oficial.codigo}`}
+                    key={o.tipo === "atividade" ? o.atividade.id : o.tipo === "oficial" ? `${o.oficial.tipo}-${o.oficial.codigo}` : `cclasstrib-${o.item.codigo}`}
+                    id={`${listaId}-${i}`}
                     role="option"
                     aria-selected={i === destaque}
                     onMouseDown={(e) => {
@@ -257,13 +294,21 @@ export function Calculadora() {
                     }}
                     onMouseEnter={() => setDestaque(i)}
                     className={`cursor-pointer px-3 py-2.5 text-sm ${i === destaque ? "bg-marca-50 text-marca-900" : "text-tinta"} ${
-                      o.tipo === "oficial" && (i === 0 || opcoes[i - 1].tipo !== "oficial") ? "border-t border-borda" : ""
+                      o.tipo !== "atividade" && (i === 0 || opcoes[i - 1].tipo !== o.tipo) ? "border-t border-borda" : ""
                     }`}
                   >
                     {o.tipo === "oficial" && (i === 0 || opcoes[i - 1].tipo !== "oficial") && (
                       <span className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-suave">Nas tabelas oficiais da Receita</span>
                     )}
-                    {o.tipo === "atividade" ? (
+                    {o.tipo === "classificacao" && (i === 0 || opcoes[i - 1].tipo !== "classificacao") && (
+                      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-suave">Classificações da reforma</span>
+                    )}
+                    {o.tipo === "classificacao" ? (
+                      <span className="block">
+                        <span className="line-clamp-2">{o.item.descricao}</span>
+                        <span className="mt-0.5 block text-xs text-suave">cClassTrib {o.item.codigo} · depois informe o NCM ou NBS</span>
+                      </span>
+                    ) : o.tipo === "atividade" ? (
                       <span className="flex items-center justify-between gap-3">
                         <span>{o.atividade.nome}</span>
                         <span className="shrink-0 text-xs text-suave">{o.atividade.tipo === "nbs" ? "serviço" : "produto"}</span>
@@ -339,6 +384,7 @@ export function Calculadora() {
               </label>
               <input
                 id="codigo"
+                ref={codigoRef}
                 inputMode="numeric"
                 placeholder="Ex.: 61091000"
                 className="campo"

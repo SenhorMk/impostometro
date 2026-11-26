@@ -54,7 +54,7 @@ O que **não** foi portado (o site não usa; se alguém mandar, o porte recusa c
 
 ## Fluxo de um cálculo grátis
 
-1. A pessoa digita "pizzaria". A busca roda **no navegador**, no dicionário `site/src/dados/atividades.json` (sem chamar servidor).
+1. A pessoa digita "pizzaria". A primeira busca roda **no navegador**, no dicionário `site/src/dados/atividades.json` (sem chamar servidor). Sem correspondência, o formulário consulta `/api/busca-oficial` após 250 ms; o servidor lê descrições de cClassTrib e códigos NCM/NBS vigentes no banco exportado. O usuário completa o código ou a classificação restante antes de calcular. Contrato, limites e manutenção em [`busca.md`](busca.md).
 2. Ela escolhe "Restaurante / pizzaria / lanchonete" → NBS `103011000`, cClassTrib `200047`.
 3. O navegador manda `POST /api/calcular` com `{ tipo, codigo, cClassTrib, valor, municipio, uf }`.
 4. `route.ts` valida tudo e chama `calcular()` em `lib/motor.ts`.
