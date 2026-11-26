@@ -46,8 +46,8 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
-| T13 | Login com link por e-mail e Google | ⏳ | Supabase Auth. `/entrar` hoje só explica que abre em janeiro |
-| T15 | Cadastro mínimo da empresa | ⏳ | |
+| T13 | Login com link por e-mail e Google | 🟡 | `/entrar` e `/conta` prontos (aceite dos termos, sair, apagar conta). Falta aplicar a migração e configurar o login no painel do Supabase ([`banco.md`](banco.md)) |
+| T15 | Cadastro mínimo da empresa | 🟡 | formulário em `/conta`, tabela `empresas` com RLS. Falta aplicar a migração |
 | T16 | Upload e leitura de XML de NF-e/NFC-e | 🟡 | XML lido no navegador (não sai do computador). Prévia em `/importar`; falta restringir a assinantes (T13/T14) |
 | T14 | Assinatura recorrente (Pix e cartão) | ⏳ 🧑 | gateway a decidir (sugestão: Asaas) |
 | T17 | Calcular o lote item a item | 🟡 | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Em revisão |

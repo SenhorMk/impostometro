@@ -72,3 +72,27 @@ Resultados reais: inserção com `anon` aprovada; leitura, alteração, exclusã
 Advisor Center foi consultado com severidades Critical, Warning e Info, sem filtro de categoria. Os avisos de execução pública desapareceram após a revogação; permaneceu somente a mensagem operacional “Grace period started”. A conexão MCP sem acesso ao projeto impede obter relatórios pelo `get_advisors`; não confundir a consulta visual com execução dessa ferramenta.
 
 Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best-practices` (1.1.1), incluindo referências de RLS e menor privilégio. Os 41 testes locais, lint e build passaram na validação final. Provisionamento, aplicação manual e testes remotos concluídos. Faltam reconciliar o histórico de migrações quando o acesso de administração estiver conectado e configurar o deploy.
+
+## Contas: login, aceite dos termos e empresa (T13 e T15)
+
+Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. **Ainda não aplicada no projeto real.**
+
+| Tabela | O que guarda | Quem acessa |
+|---|---|---|
+| `perfis` | versão dos termos aceita e quando | só o dono da conta (ler e criar) |
+| `empresas` | UF, município (IBGE), regime, CNPJ e razão social opcionais. Uma por conta | só o dono da conta (ler, criar, alterar, apagar) |
+
+- As duas tabelas apontam para `auth.users` com `on delete cascade`: apagar a conta apaga tudo.
+- `apagar_minha_conta()` roda como dono da função (`security definer`), mas só apaga a linha de quem chamou (`auth.uid()`). `anon` não pode chamar.
+- Conferido num Postgres 17 local com um `auth` simulado: a conta A grava e lê a sua empresa; a conta B não vê nem altera a de A, nem grava em nome de A; `anon` não lê nada; apagar a conta remove perfil e empresa.
+
+### Passo a passo para ligar (no painel do Supabase, sem custo)
+
+1. **SQL Editor:** colar e rodar a migração acima (uma vez). Depois, conferir em Table Editor que `perfis` e `empresas` aparecem com RLS ligada. Como as anteriores, ela não entra no histórico de `supabase_migrations` (ver o aviso no começo deste arquivo).
+2. **Authentication → URL Configuration:**
+   - Site URL: o endereço de produção (o domínio que aparece em Settings → Domains do projeto na Vercel, ou o do T04).
+   - Redirect URLs: `https://<endereço de produção>/conta`, `https://*-orbita16.vercel.app/conta` (prévias) e `http://localhost:3000/conta`.
+3. **Authentication → Sign In / Providers → Email:** deixar ligado. O e-mail padrão do Supabase tem limite baixo de envios por hora; para o lançamento, configurar um SMTP próprio (por exemplo, Resend) em Authentication → Emails.
+4. **Google (opcional, pode ficar para depois):** criar um cliente OAuth "Aplicativo da Web" no Google Cloud Console, com a URL de retorno que o painel do Supabase mostra em Providers → Google, e colar o Client ID e o Secret ali. Sem isso, o botão do Google mostra erro e o link por e-mail continua funcionando.
+5. **Vercel:** as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (as mesmas do T10) ligam o login. O `next.config.ts` repassa as duas para o navegador; a chave publicável pode ficar visível, porque só dá o que as regras acima permitem. **Nunca** colocar a chave secreta (`service_role`) nessas variáveis.
+6. Testar: entrar com o próprio e-mail, salvar a empresa, sair, entrar de novo e apagar a conta.

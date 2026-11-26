@@ -10,3 +10,4 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 25/11/2026 | Banco e persistência: preparação e quota Supabase | [Preparação Supabase](2026-11-25-preparacao-supabase.md) |
 | 25/11/2026 | Banco Supabase aplicado, RLS e integração real | [Configuração Supabase](2026-11-25-configuracao-supabase.md) |
 | 26/11/2026 | T10, T16 e T17: busca oficial, importação de XML e cálculo do lote | [Entrega T10/T16/T17](2026-11-26-t10-t16-t17.md) |
+| 26/11/2026 | T13 e T15: login, aceite dos termos e empresa | [Entrega T13/T15](2026-11-26-t13-t15.md) |

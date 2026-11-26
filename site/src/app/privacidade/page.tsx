@@ -31,8 +31,9 @@ export default function Privacidade() {
         <h2>Contas de assinante (a partir de 2027)</h2>
         <p>
           Quando as contas abrirem, guardaremos o mínimo necessário: e-mail, dados da empresa que você informar e o
-          histórico de cálculos. Os XMLs das notas serão lidos e apagados logo em seguida, e dados de consumidores
-          finais (como CPF e nome) serão ignorados, conforme a LGPD.
+          histórico de cálculos. Os XMLs das notas são lidos no seu próprio navegador e não são enviados para nós:
+          para o cálculo vão só os dados fiscais de cada item. Dados de consumidores finais (como CPF e nome) são
+          ignorados, conforme a LGPD. Apagar a conta apaga o e-mail, a empresa e o aceite dos termos.
         </p>
         <h2>Seus direitos</h2>
         <p>Você poderá pedir acesso, correção ou exclusão dos seus dados a qualquer momento, inclusive apagando a conta.</p>
