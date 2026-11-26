@@ -11,7 +11,7 @@ A conexão MCP continua limitada à ORBITA. Por isso a estrutura foi aplicada pe
 - `20261125234712_criar_registro_buscas_sem_resultado.sql`: aplicada pelo painel, em transação.
 - `20261126010900_restringir_execucao_rls_automatica.sql`: aplicada pelo painel. Revoga execução pública da função administrativa criada pelo Supabase ao habilitar RLS automática. A função retorna `event_trigger`; a revogação preserva a automação administrativa e impede chamadas pelas roles da API.
 
-URL e chave publicável foram configuradas somente no `.env.local`, ignorado pelo Git. Nenhuma senha ou chave secreta foi lida ou versionada. A integração foi testada no site local. Vercel ainda não está conectada e a coleta não foi ativada em produção.
+URL e chave publicável estão configuradas no `.env.local`, ignorado pelo Git, e no ambiente Production da Vercel. A coleta foi validada no site local e no site publicado; a configuração de produção está registrada no [diário de 26/11](diario/2026-11-26-configuracao-producao.md). Nenhuma chave secreta foi versionada.
 
 ## Esquema aplicado para o T10
 
@@ -79,10 +79,10 @@ Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best
 |---|---|
 | Tabelas `perfis`, `empresas`, `assinaturas`, `asaas_eventos` e função `apagar_minha_conta` | ✅ criadas, com RLS (conferido pelo conector) |
 | Limpeza diária de `asaas_eventos` (`pg_cron`) | ✅ job 2 |
-| Site URL e Redirect URLs do login (Authentication → URL Configuration) | ⏳ falta: o conector não grava essa configuração; fazer no painel |
-| `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ⏳ conferir (ligam o login) |
+| Site URL e Redirect URLs do login (Authentication → URL Configuration) | ✅ endereço público e retorno exato `/conta` salvos no painel em 26/11/2026 |
+| `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ✅ configuradas em Production; novo deploy Ready e coleta testada |
 | `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY`, `ASAAS_WEBHOOK_TOKEN` na Vercel e webhook no Asaas | ⏳ falta (ligam a assinatura) |
-| Código das contas e da assinatura em produção | ⏳ depende do merge dos PRs #4 e #5 |
+| Código das contas e da assinatura em produção | ✅ commit `8362086` publicado; login real e cobrança ainda não validados |
 
 ## Contas: login, aceite dos termos e empresa (T13 e T15)
 
@@ -101,8 +101,8 @@ Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. *
 
 1. ~~**SQL Editor:** colar e rodar a migração acima (uma vez).~~ Feito em 26/11/2026. Depois, conferir em Table Editor que `perfis` e `empresas` aparecem com RLS ligada. Como as anteriores, ela não entra no histórico de `supabase_migrations` (ver o aviso no começo deste arquivo).
 2. **Authentication → URL Configuration:**
-   - Site URL: o endereço de produção (o domínio que aparece em Settings → Domains do projeto na Vercel, ou o do T04).
-   - Redirect URLs: `https://<endereço de produção>/conta`, `https://*-orbita16.vercel.app/conta` (prévias) e `http://localhost:3000/conta`.
+   - Site URL configurado: `https://impostometro-opal.vercel.app`.
+   - Redirect URL configurado: `https://impostometro-opal.vercel.app/conta`. Nenhum retorno genérico de prévias da equipe foi liberado no banco de produção.
 3. **Authentication → Sign In / Providers → Email:** deixar ligado. O e-mail padrão do Supabase tem limite baixo de envios por hora; para o lançamento, configurar um SMTP próprio (por exemplo, Resend) em Authentication → Emails.
 4. **Google (opcional, pode ficar para depois):** criar um cliente OAuth "Aplicativo da Web" no Google Cloud Console, com a URL de retorno que o painel do Supabase mostra em Providers → Google, e colar o Client ID e o Secret ali. Sem isso, o botão do Google mostra erro e o link por e-mail continua funcionando.
 5. **Vercel:** as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (as mesmas do T10) ligam o login. O `next.config.ts` repassa as duas para o navegador; a chave publicável pode ficar visível, porque só dá o que as regras acima permitem. **Nunca** colocar a chave secreta (`service_role`) nessas variáveis.

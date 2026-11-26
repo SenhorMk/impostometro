@@ -24,7 +24,7 @@ Como dono, quero subir o site sem administrar servidor, com cada parte num servi
 
 ## Notas
 
-Projeto Supabase criado em São Paulo na organização ReformaImposto, Free, ID `uivewvttfvaoqdzltrnc`. Registro do T10 aplicado e testado, com RLS e retenção; site local conectado. Login Google, configuração de e-mail para o produto e bucket privado de XMLs continuam pendentes e o primeiro critério permanece desmarcado. Vercel e domínio também pendentes. O histórico remoto das migrações aplicadas manualmente precisa ser reconciliado antes de automatizar o deploy do banco. Estado em [`banco.md`](../banco.md).
+Projeto Supabase criado em São Paulo na organização ReformaImposto, Free, ID `uivewvttfvaoqdzltrnc`. Vercel conectada em produção com URL e chave publicável; retorno do login configurado no Supabase. O deploy `EwEji29SvDFSSd9xsFK5dfZtdTUy` ficou Ready, e a gravação do T10 foi confirmada a partir do site publicado. Login Google, SMTP próprio, domínio e teste completo do login permanecem pendentes, por isso o primeiro critério segue desmarcado. O XML é lido no navegador e não exige bucket. O histórico das migrações precisa ser reconciliado antes de automatizar mudanças do banco. Evidências em [configuração de produção](../diario/2026-11-26-configuracao-producao.md).
 
 Custo esperado: Vercel (grátis no desenvolvimento, US$ 20/mês Pro quando cobrar) e Supabase (grátis, US$ 25/mês Pro depois). **Pedir confirmação ao Mateus antes de criar qualquer projeto ou recurso pago nas contas dele.**
 

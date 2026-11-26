@@ -12,3 +12,4 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 26/11/2026 | T10, T16 e T17: busca oficial, importação de XML e cálculo do lote | [Entrega T10/T16/T17](2026-11-26-t10-t16-t17.md) |
 | 26/11/2026 | T13 e T15: login, aceite dos termos e empresa | [Entrega T13/T15](2026-11-26-t13-t15.md) |
 | 26/11/2026 | T14: assinatura mensal pelo Asaas | [Entrega T14](2026-11-26-t14.md) |
+| 26/11/2026 | Vercel e Supabase conectados em produção | [Configuração de produção](2026-11-26-configuracao-producao.md) |
