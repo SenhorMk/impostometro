@@ -9,6 +9,8 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Decisões](decisoes.md) | Escolhas e seus motivos |
 | [Skills](skills.md) | Pesquisa de skills, disponibilidade e aplicação por ticket |
 | [Conteúdo editorial](conteudo.md) | Fontes, rotas e manutenção dos cinco artigos e glossário |
+| [Busca](busca.md) | Dicionário, consulta oficial, vigências, API e limites |
+| [Banco](banco.md) | Preparação Supabase, esquema, permissões e bloqueios de provisionamento |
 | [Diário de desenvolvimento](diario/README.md) | Histórico das entregas, evidências e pendências |
 | [Deploy](deploy.md) | Configuração de produção e indexação |
 | [Manutenção](manutencao.md) | Atualização do motor, tabelas e atividades |

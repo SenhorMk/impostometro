@@ -37,6 +37,10 @@ Para navegador, esta entrega usa as ferramentas integradas de browser do Codex, 
 
 ## Como manter esta seleção
 
+Preparação do banco: `supabase:supabase` e `supabase:supabase-postgres-best-practices` aplicadas ao esquema, grants, RLS e verificação planejada. Changelog e guias atuais consultados; CLI 3.4.0 fixada. Uso e limites no [registro Supabase](diario/2026-11-25-preparacao-supabase.md). Essas skills não removem a quota Free nem ampliam a permissão da conexão.
+
+Aplicação no T10: `vercel:react-best-practices` foi usada para revisar o formulário, cancelamento de requisições e separação do banco no servidor. `vercel:verification` orientou o fluxo busca → API → tabela → escolha → cálculo. Evidências e limites estão no [diário do T10](diario/2026-11-25-merges-e-t10.md). Nenhuma skill nova foi instalada.
+
 - Adicione skills somente quando houver uma tarefa concreta. Registre fonte, motivo e disponibilidade.
 - Antes de usar uma nova skill, leia seu `SKILL.md` e confira compatibilidade com o ambiente. Siga a autorização já dada pelo usuário e as regras de `AGENTS.md`.
 - Registre no diário quais skills foram usadas de fato. Uma skill listada como candidata não representa auditoria executada.
