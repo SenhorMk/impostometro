@@ -39,3 +39,7 @@ O formulário de criação em ReformaImposto voltou a permitir um projeto Free. 
 ## Próximo passo obrigatório
 
 Mateus define a senha diretamente no formulário preparado e cria o projeto. A conexão Supabase também precisa permitir ReformaImposto para aplicar e verificar via MCP; o acesso atual permanece limitado à ORBITA. Depois: aguardar saúde do projeto, inspecionar banco vazio, aplicar migração, testar permissões/retenção e integrar o site. T05 e o critério de persistência do T10 permanecem parciais. Entrega de código e documentação na [PR #4](https://github.com/SenhorMk/impostometro/pull/4).
+
+## Continuação concluída
+
+O Mateus criou o projeto e o banco foi configurado e validado. Este arquivo preserva o histórico da preparação; estado atual e evidências em [Configuração Supabase](2026-11-25-configuracao-supabase.md).

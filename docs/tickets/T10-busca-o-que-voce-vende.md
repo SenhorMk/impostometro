@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Parcial |
+| Status | ✅ Implementado e validado localmente |
 | Épico | E3 Calculadora grátis |
 | Sprint | S2 |
 | Prioridade | P0 |
@@ -17,7 +17,7 @@ Como empresário, quero digitar “pizzaria” ou “corte de cabelo” e o site
 
 - [x] Dicionário inicial com 50 atividades comuns (52 em `site/src/dados/atividades.json`, todas conferidas no CI).
 - [x] Busca também nas tabelas oficiais quando o termo não está no dicionário (descrições de cClassTrib e códigos NCM/NBS vigentes em `src/motor/dados/tabelas.json`).
-- [ ] Buscas sem resultado ficam registradas, para crescer o dicionário (precisa do banco).
+- [x] Buscas sem resultado ficam registradas, para crescer o dicionário (Supabase real, com integração local validada; deploy pendente do T05).
 - [x] Usuário avançado pode digitar o NCM/NBS direto.
 
 ## Notas
@@ -28,9 +28,7 @@ Suposição: a escolha do código para cada atividade foi feita por nós; vale u
 
 O fallback consulta o servidor após 250 ms sem digitação, limita seis opções e respeita a vigência da simulação. Descrições textuais vêm de cClassTrib; NCM/NBS no banco exportado têm apenas códigos e são buscados por número/prefixo. Selecionar um resultado oficial abre os campos de código e classificação, preenchendo somente o dado encontrado.
 
-O registro em banco continua pendente do T05. Não tratamos uma mensagem no terminal como persistência. [Funcionamento e manutenção](../busca.md) · [Merge dos PRs e evidências da entrega](../diario/2026-11-25-merges-e-t10.md).
-
-Código de persistência e migração preparados, mas ainda sem banco provisionado por quota Free e acesso à nova organização. O critério de registro só será marcado após testar a gravação real e as permissões. [Estado do Supabase](../banco.md).
+Persistência aplicada no projeto Supabase `uivewvttfvaoqdzltrnc`, com RLS, permissões de coluna e retenção de 30 dias. Consulta pelo endpoint local gravou uma linha confirmada no banco; acesso público de leitura, alteração e exclusão foi negado. A política de privacidade informa a coleta e seus limites. A ativação em produção depende do deploy do T05. [Funcionamento](../busca.md) · [Banco e evidências](../banco.md).
 
 ---
 [← Todos os tickets](README.md) · [Status geral](../backlog.md)

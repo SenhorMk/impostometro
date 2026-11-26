@@ -21,6 +21,13 @@ export default function Privacidade() {
           a calculadora só para fazer a conta e não é guardado com nenhum dado que identifique você. O estado e a
           cidade escolhidos ficam salvos apenas no seu navegador, para facilitar a próxima simulação.
         </p>
+        <h2>Buscas sem resultado</h2>
+        <p>
+          Quando a busca não encontra uma atividade, podemos guardar o termo pesquisado, a versão da tabela e a
+          data da simulação para melhorar o dicionário. Esses registros são eliminados após 30 dias, em uma limpeza
+          diária. O registro não inclui IP, conta, cookie nem identificador de visitante. Não digite dados pessoais
+          na busca: usamos um filtro preventivo de contatos e documentos, que não reconhece todos os dados pessoais.
+        </p>
         <h2>Contas de assinante (a partir de 2027)</h2>
         <p>
           Quando as contas abrirem, guardaremos o mínimo necessário: e-mail, dados da empresa que você informar e o

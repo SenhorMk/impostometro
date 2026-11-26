@@ -53,6 +53,6 @@ O exemplo usa a tabela e a data desta entrega. A resposta real informa a versão
 
 No navegador, testar busca por código, escolha por teclado, campo restante vazio, validação e cálculo. Testar também classificação por descrição, consulta sem resultado, celular e manutenção do atalho do dicionário. Ao atualizar a tabela pelo procedimento de `manutencao.md`, conferir nomes das colunas, vigências e os testes, sem corrigir os dados dentro do módulo de busca.
 
-## O que falta no T10
+## Registro de buscas sem resultado
 
-O registro persistente de buscas sem resultado continua pendente do banco do T05. Migração e integração com Supabase foram preparadas, com inserção restrita, leitura administrativa e retenção de 30 dias; a criação do projeto está bloqueada pela quota Free da conta e pelo acesso MCP à organização escolhida. Sem configuração, o registro continua desativado. Estado em [`banco.md`](banco.md). Antes de ativar, conferir permissões, atualizar a política de privacidade junto da ativação e testar a gravação real; o terminal de desenvolvimento não equivale à persistência.
+O servidor agenda o registro no Supabase após a resposta, somente quando o dicionário e as tabelas oficiais não encontram correspondência. Normaliza e filtra o termo preventivamente; grava termo, versão e data. RLS permite inserção restrita e impede leitura pública; limpeza diária mantém até 30 dias mais o intervalo até a execução. A integração real foi validada no site local e a política de privacidade foi atualizada. Sem variáveis de ambiente, a coleta fica desativada. Configuração, evidências e limitações em [`banco.md`](banco.md). Publicação depende do T05.

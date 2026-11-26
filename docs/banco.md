@@ -1,20 +1,21 @@
 # Banco Supabase: criação e registro de buscas
 
-## Estado da preparação
+## Estado atual
 
-O Mateus autorizou criar o banco e escolheu uma organização diferente de ORBITA, sugerindo um nome como “impostoreceita”. O painel autenticado já apresenta a organização separada `ReformaImposto` (`gevsvuvsekoxuwskixrg`), Free, sem projetos. Ela foi escolhida como destino técnico. Nenhum projeto novo foi criado nesta preparação. A limpeza da ORBITA, autorizada separadamente, está registrada abaixo.
+Projeto `impostometro` criado pelo Mateus na organização separada ReformaImposto (`gevsvuvsekoxuwskixrg`), plano Free, região São Paulo (`sa-east-1`). ID: `uivewvttfvaoqdzltrnc`. URL: `https://uivewvttfvaoqdzltrnc.supabase.co`. O painel confirmou estado Healthy.
 
-O limite Free impedia a criação inicialmente. Após confirmação explícita do Mateus, foram excluídos permanentemente `orbita-banca-2026-disposable` (`nbjrvxbjfgkneebmpsmw`) e `Orbita_Production` (`akudhaziungumdowzdkq`), incluindo seus bancos. O painel e a API confirmaram que somente `Orbita_Staging` (`etqjqeqqbjrzyyxodntv`) permaneceu na ORBITA; a API retornou `ACTIVE_HEALTHY`. Nenhuma configuração do staging foi modificada.
+A ORBITA ficou somente com `Orbita_Staging` (`etqjqeqqbjrzyyxodntv`), ativo e saudável, após exclusão permanente dos outros dois projetos expressamente confirmada pelo Mateus. Nenhuma configuração do staging foi modificada. Histórico em [preparação](diario/2026-11-25-preparacao-supabase.md).
 
-A criação em ReformaImposto agora está disponível no plano Free. O formulário foi preparado com nome `impostometro`, São Paulo, Data API habilitada, grants automáticos desabilitados e RLS automática habilitada. Falta o Mateus definir a senha diretamente no painel e enviar o formulário: a política do controle do navegador exige intervenção do usuário para entrada de credenciais novas. Nenhuma senha foi gerada, lida ou registrada pelo agente.
+A conexão MCP continua limitada à ORBITA. Por isso a estrutura foi aplicada pelo editor SQL autenticado do painel, após inspecionar o banco vazio. A aplicação manual **não criou histórico em `supabase_migrations`**. Antes de usar `db push` ou reaplicar migrações, reconciliar o histórico com as duas versões abaixo mediante a CLI oficial e conferir os objetos existentes. Não executar novamente a primeira migração sobre esta tabela.
 
-A conexão MCP continua limitada à ORBITA e recusou a consulta de custo para ReformaImposto por falta de permissão. Será necessário autorizar essa organização na conexão para aplicar e verificar o SQL pelo MCP.
+- `20261125234712_criar_registro_buscas_sem_resultado.sql`: aplicada pelo painel, em transação.
+- `20261126010900_restringir_execucao_rls_automatica.sql`: aplicada pelo painel. Revoga execução pública da função administrativa criada pelo Supabase ao habilitar RLS automática. A função retorna `event_trigger`; a revogação preserva a automação administrativa e impede chamadas pelas roles da API.
 
-Região planejada: São Paulo (`sa-east-1`). Nome técnico do projeto: `impostometro`, que acompanha o repositório e não decide o nome público do produto (T04). Conferir custo informado pelo Supabase e obter concordância para qualquer valor não zero antes de criar. Não pausar projetos ORBITA sem autorização específica do Mateus.
+URL e chave publicável foram configuradas somente no `.env.local`, ignorado pelo Git. Nenhuma senha ou chave secreta foi lida ou versionada. A integração foi testada no site local. Vercel ainda não está conectada e a coleta não foi ativada em produção.
 
-## Esquema preparado para o T10
+## Esquema aplicado para o T10
 
-Migração: `supabase/migrations/20261125234712_criar_registro_buscas_sem_resultado.sql`, gerada pela CLI oficial 3.4.0 após consultar seu `--help` e o changelog. A migração ainda não foi aplicada a um banco remoto.
+Migração: `supabase/migrations/20261125234712_criar_registro_buscas_sem_resultado.sql`, gerada pela CLI oficial 3.4.0 após consultar seu `--help` e o changelog. Aplicada e verificada no projeto acima.
 
 | Coluna | Uso |
 |---|---|
@@ -51,7 +52,7 @@ Quando dicionário e busca oficial não encontram resultado, o Route Handler age
 
 Sem as variáveis, a coleta permanece desativada. Criar o banco não significa que a produção esteja conectada; o estado de configuração e o teste de gravação precisam ser registrados separadamente.
 
-## Aplicar e verificar no destino escolhido
+## Verificações executadas e reprodução
 
 1. Criar o projeto na organização confirmada e região São Paulo; aguardar `ACTIVE_HEALTHY`.
 2. Inspecionar tabelas, extensões e migrações existentes. Aplicar somente a migração deste projeto pelo MCP; não redefinir nem apagar projetos existentes.
@@ -66,4 +67,8 @@ Sem as variáveis, a coleta permanece desativada. Criar o banco não significa q
 - [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security) e [chaves da API](https://supabase.com/docs/guides/getting-started/api-keys): permissões e política são verificadas separadamente; chave publicável não dá autorização de leitura por si só.
 - [Next.js after](https://nextjs.org/docs/app/api-reference/functions/after): trabalho de registro após a resposta, conforme a documentação local do Next.js 16.4.6.
 
-Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best-practices` (1.1.1), incluindo referências de RLS e menor privilégio. Os 41 testes locais, lint e build passaram nesta preparação. Provisionamento, aplicação do SQL e testes remotos continuam pendentes da criação com credencial pelo titular e do acesso à organização; o esquema não está validado em banco real.
+Resultados reais: inserção com `anon` aprovada; leitura, alteração, exclusão, data fora da simulação e preenchimento de `criado_em` negados. Inserção com `authenticated` negada. RLS ativa e um job de retenção ativo. Teste de retenção transacional removeu o registro de 31 dias e preservou o recente; rollback desfez o teste. Uma consulta fictícia pelo endpoint local gerou uma linha real confirmada por SQL. O filtro e a exclusão de atividades já encontradas também foram exercitados. O registro técnico de integração permanece identificado como teste e será removido pela retenção automática.
+
+Advisor Center foi consultado com severidades Critical, Warning e Info, sem filtro de categoria. Os avisos de execução pública desapareceram após a revogação; permaneceu somente a mensagem operacional “Grace period started”. A conexão MCP sem acesso ao projeto impede obter relatórios pelo `get_advisors`; não confundir a consulta visual com execução dessa ferramenta.
+
+Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best-practices` (1.1.1), incluindo referências de RLS e menor privilégio. Os 41 testes locais, lint e build passaram na validação final. Provisionamento, aplicação manual e testes remotos concluídos. Faltam reconciliar o histórico de migrações quando o acesso de administração estiver conectado e configurar o deploy.

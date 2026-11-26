@@ -19,7 +19,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
-| T05 | Vercel e Supabase | 🟡 | `site/vercel.json` pronto; Supabase preparado em organização separada; vaga Free liberada, formulário aguarda senha pelo titular e acesso MCP. Banco ainda não criado ([`banco.md`](banco.md)); Vercel pendente. Fly.io não é mais necessário (porte) |
+| T05 | Vercel e Supabase | 🟡 | `site/vercel.json` pronto; Supabase criado e registro do T10 validado no site local; login e bucket XML pendentes ([`banco.md`](banco.md)); Vercel pendente. Fly.io não é mais necessário (porte) |
 | T06 | Repositório, CI e deploy automático | 🟡 | CI pronto (`.github/workflows/`), com comparação porte × oficial. Falta ligar a Vercel ao repositório |
 | T08b | Porte da calculadora para TypeScript (roda dentro do site) | ✅ | `site/src/motor/`. 1.519 de 1.519 pedidos idênticos à oficial 1.7.2. Atualização em [`manutencao.md`](manutencao.md) |
 | T08 | Serviço de cálculo | ✅ | `site/src/lib/motor.ts`, agora chamando o porte. Falta gravar cada cálculo no banco (depende do Supabase) |
@@ -29,7 +29,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
 | T09 | Testes dourados no CI | ✅ | `calculadora.yml` |
-| T10 | Busca "o que você vende?" | 🟡 | 52 atividades + busca em descrições oficiais de cClassTrib e códigos NCM/NBS vigentes. Falta registrar buscas sem resultado no banco (T05). Detalhes em `docs/busca.md` |
+| T10 | Busca "o que você vende?" | ✅ | 52 atividades + busca oficial + registro real no Supabase com RLS e retenção; ativação em produção no T05. Detalhes em `docs/busca.md` |
 | T11 | Simulação rápida sem cadastro | ✅ | página inicial. Medir tempo de carga em produção |
 
 ## Sprint 3 · Lançamento 1

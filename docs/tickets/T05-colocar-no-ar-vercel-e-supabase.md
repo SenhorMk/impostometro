@@ -24,7 +24,7 @@ Como dono, quero subir o site sem administrar servidor, com cada parte num servi
 
 ## Notas
 
-Preparação Supabase iniciada: migração e integração do registro de buscas disponíveis, com 41 testes locais, lint e build aprovados. A organização separada ReformaImposto aparece no painel, mas o limite de dois projetos Free ativos da conta impede criar o projeto; MCP ainda não tem permissão nessa organização. Nenhum projeto ORBITA foi pausado. Estado e próximos passos em [`banco.md`](../banco.md) e no [`diário`](../diario/2026-11-25-preparacao-supabase.md).
+Projeto Supabase criado em São Paulo na organização ReformaImposto, Free, ID `uivewvttfvaoqdzltrnc`. Registro do T10 aplicado e testado, com RLS e retenção; site local conectado. Login Google, configuração de e-mail para o produto e bucket privado de XMLs continuam pendentes e o primeiro critério permanece desmarcado. Vercel e domínio também pendentes. O histórico remoto das migrações aplicadas manualmente precisa ser reconciliado antes de automatizar o deploy do banco. Estado em [`banco.md`](../banco.md).
 
 Custo esperado: Vercel (grátis no desenvolvimento, US$ 20/mês Pro quando cobrar) e Supabase (grátis, US$ 25/mês Pro depois). **Pedir confirmação ao Mateus antes de criar qualquer projeto ou recurso pago nas contas dele.**
 
