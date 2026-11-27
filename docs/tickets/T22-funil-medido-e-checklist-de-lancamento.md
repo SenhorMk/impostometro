@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Funil proposto no PR 6 |
+| Status | 🟡 Funil no main (PR 6); tabela aplicada; medição pendente |
 | Marco | A |
 | Prioridade | P1 gratuito |
 | Pontos | A estimar após revisar o código existente |
@@ -53,6 +53,18 @@ Skills: as pertinentes de [`docs/skills.md`](../skills.md), consultadas antes da
 Os critérios desta revisão medem a entrega no ambiente indicado. Código em PR, teste simulado e configuração salva não significam validação em produção. Em tickets usados por dois marcos, registrar separadamente quais critérios de cada marco foram verificados.
 
 Não contratar recursos pagos nem enviar mensagens a terceiros sem autorização. Não alterar o motor para atender a requisitos de interface ou relatório. Registrar evidências, limitações e próximo passo no diário.
+
+## Já feito (registro anterior à revisão dos critérios)
+
+- [x] Eventos contados: visita, cálculo grátis, cadastro, assinatura, cancelamento.
+- [ ] Checklist final (lista pronta em [`lancamento.md`](../lancamento.md); itens dependem do Mateus): planos pagos da Vercel e do Supabase ativos, HTTPS, backup testado, pagamento real testado, testes dourados e porte × oficial verdes, página de contato.
+
+## Como ficou
+
+- Tabela `funil_diario` (dia, etapa, total) e função `contar_evento()` (migração `supabase/migrations/20261126170000_funil_diario.sql`). Sem IP, cookie, conta ou identificador: só um contador por dia. Ninguém de fora lê a tabela; o Mateus vê com `select * from funil_semanal;` no SQL Editor.
+- Visita: uma por aba (`instrumentation-client.ts`, marca no `sessionStorage`). Cálculo grátis: cada resultado calculado. Cadastro: quando o aceite dos termos é gravado. Assinatura e cancelamento: no webhook do Asaas (primeiro pagamento confirmado; cancelamento da assinatura).
+- Limitação: qualquer um pode somar visita, cálculo grátis e cadastro chamando a função; desde a revisão de segurança (27/11), assinatura e cancelamento só o servidor soma. Serve para ver tendência, não como número exato.
+- Checklist de lançamento em [`docs/lancamento.md`](../lancamento.md).
 
 ---
 [← Todos os tickets](README.md) · [Plano de implementação](../plano-implementacao.md)

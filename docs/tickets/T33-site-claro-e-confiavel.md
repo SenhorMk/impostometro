@@ -55,6 +55,8 @@ Os critérios desta revisão medem a entrega no ambiente indicado. Código em PR
 
 Não contratar recursos pagos nem enviar mensagens a terceiros sem autorização. Não alterar o motor para atender a requisitos de interface ou relatório. Registrar evidências, limitações e próximo passo no diário.
 
+> **Atualização 27/11/2026 (merge do PR 9):** a parte visual do T33 (página inicial, cabeçalho, CSS, página `/sobre` e `ContaAberta`) **não entrou na `main`**: o redesign do PR 7 já tinha reescrito essas telas, e o contato ficou na página `/contato` do PR 29. Ficam valendo os critérios deste ticket, que precisam ser conferidos de novo sobre o visual atual. As evidências em `docs/evidencias/t33/` mostram a versão descartada.
+
 ---
 [← Todos os tickets](README.md) · [Plano de implementação](../plano-implementacao.md)
 

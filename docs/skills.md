@@ -47,3 +47,5 @@ Aplicação no T10: `vercel:react-best-practices` foi usada para revisar o formu
 - Para legislação e cálculo, confirme fontes primárias, mantenha a paridade do motor e solicite revisão contábil quando houver parceiro. Skills de escrita e programação não substituem essa revisão.
 
 Aplicação no T33: `humanizer:humanizer` para os textos, `vercel:react-best-practices` para componentes sem JavaScript cliente adicional, `vercel:verification` para a jornada da página ao resultado e `computer-use:computer-use` para inspeção e capturas. Foram consultados os guias locais do Next.js. Evidências e limites no [diário do T33](diario/2026-11-26-t33.md).
+
+Design e SEO (26/11/2026, Claude): busca no catálogo por landing page, SEO, motion e conversão sem resultado novo. Usadas `design:design-critique`, `design:ux-copy` e `design:accessibility-review`. Detalhes no [diário de design e SEO](diario/2026-11-26-design-e-seo.md).

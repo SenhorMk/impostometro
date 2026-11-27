@@ -32,6 +32,14 @@ O domínio calculareforma.mkautobots.site responde por HTTPS. SITE_URL foi salva
 - [ ] Prévia e desenvolvimento continuam fora da indexação.
 - [ ] Registrar a verificação do Search Console ou o impedimento de acesso específico; não confundir sitemap enviado com indexação garantida.
 
+## Já feito (registro anterior à revisão dos critérios)
+
+- [x] Título e descrição por página e dados estruturados de FAQ.
+- [x] Sitemap e robots.
+- [x] Páginas por setor ("imposto 2027 + atividade"), dados estruturados de aplicação, artigo e trilha de navegação, imagem de compartilhamento e ícone (PR de design e SEO, 26/11).
+- [ ] Site cadastrado no Google Search Console.
+- [ ] Plausible ou Google Analytics contando visitas e cálculos grátis.
+
 ## Verificação
 
 Inspecionar HTTP e HTML do deploy real; conferir inicial, guia, entrar, robots e sitemap. Não testar só localhost.
@@ -53,6 +61,8 @@ Skills: `vercel:env-vars`, `vercel:deployments-cicd` e `vercel:verification`.
 Os critérios desta revisão medem a entrega no ambiente indicado. Código em PR, teste simulado e configuração salva não significam validação em produção. Em tickets usados por dois marcos, registrar separadamente quais critérios de cada marco foram verificados.
 
 Não contratar recursos pagos nem enviar mensagens a terceiros sem autorização. Não alterar o motor para atender a requisitos de interface ou relatório. Registrar evidências, limitações e próximo passo no diário.
+
+Em 26/11 (design e SEO, [diário](../diario/2026-11-26-design-e-seo.md)): 52 páginas `/imposto-2027/[atividade]` com exemplo calculado pelo porte no build, índice `/imposto-2027`, schema `WebApplication`/`WebSite` na inicial, `Article` e `BreadcrumbList` nos guias, `FAQPage` e `BreadcrumbList` nos setores, `opengraph-image` gerada por código, `icon.svg`, `lastModified` dos guias no sitemap.
 
 ---
 [← Todos os tickets](README.md) · [Plano de implementação](../plano-implementacao.md)

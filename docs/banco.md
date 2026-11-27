@@ -11,7 +11,7 @@ A conexão MCP continua limitada à ORBITA. Por isso a estrutura foi aplicada pe
 - `20261125234712_criar_registro_buscas_sem_resultado.sql`: aplicada pelo painel, em transação.
 - `20261126010900_restringir_execucao_rls_automatica.sql`: aplicada pelo painel. Revoga execução pública da função administrativa criada pelo Supabase ao habilitar RLS automática. A função retorna `event_trigger`; a revogação preserva a automação administrativa e impede chamadas pelas roles da API.
 
-URL e chave publicável foram configuradas somente no `.env.local`, ignorado pelo Git. Nenhuma senha ou chave secreta foi lida ou versionada. A integração foi testada no site local. Vercel ainda não está conectada e a coleta não foi ativada em produção.
+URL e chave publicável estão configuradas no `.env.local`, ignorado pelo Git, e no ambiente Production da Vercel. A coleta foi validada no site local e no site publicado; a configuração de produção está registrada no [diário de 26/11](diario/2026-11-26-configuracao-producao.md). Nenhuma chave secreta foi versionada.
 
 ## Esquema aplicado para o T10
 
@@ -79,10 +79,12 @@ Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best
 |---|---|
 | Tabelas `perfis`, `empresas`, `assinaturas`, `asaas_eventos` e função `apagar_minha_conta` | ✅ criadas, com RLS (conferido pelo conector) |
 | Limpeza diária de `asaas_eventos` (`pg_cron`) | ✅ job 2 |
-| Site URL e Redirect URLs do login (Authentication → URL Configuration) | ⏳ falta: o conector não grava essa configuração; fazer no painel |
-| `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ⏳ conferir (ligam o login) |
+| Site URL e Redirect URLs do login (Authentication → URL Configuration) | ✅ endereço público e retorno exato `/conta` salvos no painel em 26/11/2026 |
+| `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ✅ configuradas em Production; novo deploy Ready e coleta testada |
 | `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY`, `ASAAS_WEBHOOK_TOKEN` na Vercel e webhook no Asaas | ⏳ falta (ligam a assinatura) |
-| Código das contas e da assinatura em produção | ⏳ depende do merge dos PRs #4 e #5 |
+| Código das contas e da assinatura em produção | ✅ commit `8362086` publicado; login real e cobrança ainda não validados |
+| Tabela `calculos` (histórico, T18) | ✅ existe no banco (conferido pelo conector em 27/11/2026) |
+| Tabela `funil_diario`, função `contar_evento` e visão `funil_semanal` (T22) | ✅ existem no banco (conferido pelo conector em 27/11/2026) |
 
 ## Contas: login, aceite dos termos e empresa (T13 e T15)
 
@@ -101,8 +103,8 @@ Migração: `supabase/migrations/20261126120000_contas_perfis_e_empresas.sql`. *
 
 1. ~~**SQL Editor:** colar e rodar a migração acima (uma vez).~~ Feito em 26/11/2026. Depois, conferir em Table Editor que `perfis` e `empresas` aparecem com RLS ligada. Como as anteriores, ela não entra no histórico de `supabase_migrations` (ver o aviso no começo deste arquivo).
 2. **Authentication → URL Configuration:**
-   - Site URL: o endereço de produção (o domínio que aparece em Settings → Domains do projeto na Vercel, ou o do T04).
-   - Redirect URLs: `https://<endereço de produção>/conta`, `https://*-orbita16.vercel.app/conta` (prévias) e `http://localhost:3000/conta`.
+   - Site URL configurado: `https://impostometro-opal.vercel.app`.
+   - Redirect URL configurado: `https://impostometro-opal.vercel.app/conta`. Nenhum retorno genérico de prévias da equipe foi liberado no banco de produção.
 3. **Authentication → Sign In / Providers → Email:** deixar ligado. O e-mail padrão do Supabase tem limite baixo de envios por hora; para o lançamento, configurar um SMTP próprio (por exemplo, Resend) em Authentication → Emails.
 4. **Google (opcional, pode ficar para depois):** criar um cliente OAuth "Aplicativo da Web" no Google Cloud Console, com a URL de retorno que o painel do Supabase mostra em Providers → Google, e colar o Client ID e o Secret ali. Sem isso, o botão do Google mostra erro e o link por e-mail continua funcionando.
 5. **Vercel:** as variáveis `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (as mesmas do T10) ligam o login. O `next.config.ts` repassa as duas para o navegador; a chave publicável pode ficar visível, porque só dá o que as regras acima permitem. **Nunca** colocar a chave secreta (`service_role`) nessas variáveis.
@@ -137,8 +139,30 @@ Conferido num Postgres 17 local: a pessoa lê a própria assinatura, não conseg
 4. Na Vercel (Settings → Environment Variables), sem colocar nada no git:
    - `SUPABASE_SECRET_KEY`: chave secreta do Supabase (Settings → API Keys, `sb_secret_...`);
    - `ASAAS_API_KEY`, `ASAAS_AMBIENTE=sandbox`, `ASAAS_WEBHOOK_TOKEN`.
-   Com `ASAAS_API_KEY` e `SUPABASE_SECRET_KEY` presentes, a cobrança liga e `/importar` passa a exigir assinatura.
+   Com `ASAAS_API_KEY`, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` presentes e `MODO_ACESSO` vazio ou `assinatura`, a cobrança liga e `/importar` passa a exigir assinatura. Se faltar alguma chave, a importação fica **fechada** (nunca aberta). Para a prévia gratuita, escreva `MODO_ACESSO=previa`. Matriz completa em [`acesso.md`](acesso.md) (T37).
 5. Testar no sandbox: assinar, pagar a cobrança pelo painel do sandbox (o Asaas simula o pagamento), conferir que `/importar` libera; cancelar e conferir.
 6. **Teste real de R$ 1:** trocar para a chave de produção e `ASAAS_AMBIENTE=producao`, colocar `ASSINATURA_PRECO_CENTAVOS=100`, assinar com o próprio CPF, pagar com Pix, conferir, cancelar e **apagar** `ASSINATURA_PRECO_CENTAVOS` (volta a R$ 29).
 
 **Suposições a confirmar no sandbox** (a rede deste ambiente não alcança o Asaas): endereço do sandbox (`https://api-sandbox.asaas.com/v3`; se mudar, use `ASAAS_URL`), formato da data `AAAA-MM-DD`, e que o link de pagamento vem em `invoiceUrl` da primeira cobrança.
+
+## Histórico de cálculos (T18)
+
+Migração: `supabase/migrations/20261126160000_historico_calculos.sql`. **Ainda não aplicada**: rodar no SQL Editor (não usa `pg_cron` nem extensão nova).
+
+- Tabela `calculos`: origem (`manual` ou `xml`), título, totais em centavos, itens calculados e com erro, as três versões (calculadora, tabelas da calculadora, nossa tabela de alíquotas) e `detalhe` (jsonb, resultado completo, até 5.000.000 bytes).
+- Quem grava é o navegador da pessoa logada, com a chave publicável. RLS: cada conta lê, grava e apaga só as próprias linhas; não há update (um cálculo guardado não muda). `usuario_id` é preenchido pelo banco (`auth.uid()`).
+- Gatilho `limitar_calculos_por_conta`: no máximo 2.000 cálculos por conta. (Primeiro tentei pôr o limite na própria regra de RLS e o Postgres recusou com "infinite recursion": regra não pode consultar a própria tabela. Por isso o gatilho.)
+- Apagar a conta apaga o histórico (`on delete cascade`).
+
+Conferido num Postgres 17 local: grava e lê o próprio; gravar em nome de outra conta é negado; outra conta não vê nem apaga; update negado; `detalhe` acima do limite e origem inválida são recusados; o 2.001º cálculo é recusado com mensagem; `anon` não lê; apagar a conta apaga tudo.
+
+## Funil sem dados pessoais (T22)
+
+Migração: `supabase/migrations/20261126170000_funil_diario.sql`. **Ainda não aplicada**.
+
+- Tabela `funil_diario (dia, evento, total)`: só um contador por dia (horário de Brasília) e etapa. Etapas aceitas: `visita`, `calculo_gratis`, `cadastro`, `assinatura`, `cancelamento`.
+- Função `contar_evento(evento)`: soma 1 no contador do dia. `anon` e `authenticated` só podem chamar a função; ninguém da API lê a tabela.
+- Para ver: no SQL Editor, `select * from funil_semanal;` (uma linha por semana, etapas lado a lado) ou `select * from funil_diario order by dia desc;`.
+- Limitação: como qualquer contador sem login, alguém pode chamar a função à toa e inflar números. Serve para tendência e taxas de conversão, não como número exato.
+
+Conferido num Postgres 17 local: soma por dia, recusa etapa desconhecida (ex.: um e-mail), `anon` e `authenticated` não leem a tabela nem a visão.

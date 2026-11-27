@@ -177,15 +177,16 @@ export function validarLote(corpo: unknown): string | null {
   for (const n of notas as NotaParaCalcular[]) {
     if (typeof n?.chave !== "string" || n.chave.length > 60) return "Nota sem identificação.";
     if (typeof n.data !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(n.data)) return "Data da nota inválida.";
-    if (!Number.isInteger(n.municipio)) return "Município da nota inválido.";
+    if (!Number.isInteger(n.municipio) || n.municipio < 1000000 || n.municipio > 9999999) return "Município da nota inválido.";
     if (typeof n.uf !== "string" || !/^[A-Z]{2}$/.test(n.uf)) return "UF da nota inválida.";
     if (!Array.isArray(n.itens) || n.itens.length === 0 || n.itens.length > LIMITE_ITENS_POR_NOTA) return "Itens da nota inválidos.";
     for (const i of n.itens) {
-      if (!Number.isInteger(i?.numero)) return "Item sem número.";
+      if (!Number.isInteger(i?.numero) || i.numero < 1 || i.numero > 9999) return "Item sem número.";
       if (typeof i.ncm !== "string" || !/^\d{8}$/.test(i.ncm)) return `Item ${i.numero}: NCM precisa ter 8 números.`;
       if (typeof i.cClassTrib !== "string" || !/^\d{6}$/.test(i.cClassTrib)) return `Item ${i.numero}: classificação tributária inválida.`;
       if (!Number.isInteger(i.baseCentavos) || i.baseCentavos < 0 || i.baseCentavos > 1e13) return `Item ${i.numero}: valor inválido.`;
-      if (typeof i.quantidade !== "string" || typeof i.unidade !== "string") return `Item ${i.numero}: quantidade inválida.`;
+      if (typeof i.quantidade !== "string" || i.quantidade.length > 30 || typeof i.unidade !== "string" || i.unidade.length > 10)
+        return `Item ${i.numero}: quantidade inválida.`;
     }
   }
   return null;

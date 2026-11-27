@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Newsreader } from "next/font/google";
 import { SITE } from "@/lib/config";
 import { INDEXAR_SITE, URL_SITE } from "@/lib/seo";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+// Identidade: títulos em serifa editorial (Newsreader), texto em IBM Plex Sans e números
+// em IBM Plex Mono, como num documento fiscal. Todas de código aberto (SIL OFL).
+const textoFonte = IBM_Plex_Sans({ variable: "--fonte-texto", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const numerosFonte = IBM_Plex_Mono({ variable: "--fonte-numeros", subsets: ["latin"], weight: ["400", "500", "600"] });
+const tituloFonte = Newsreader({ variable: "--fonte-titulo", subsets: ["latin"], weight: ["500", "600", "700"], style: ["normal", "italic"] });
 
 export const metadata: Metadata = {
   metadataBase: URL_SITE,
@@ -22,13 +25,16 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE.nome,
   },
+  twitter: { card: "summary_large_image" },
+  applicationName: SITE.nome,
+  formatDetection: { telephone: false },
 };
 
-export const viewport: Viewport = { themeColor: "#0b3d33" };
+export const viewport: Viewport = { themeColor: "#faf9f5" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${textoFonte.variable} ${numerosFonte.variable} ${tituloFonte.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );

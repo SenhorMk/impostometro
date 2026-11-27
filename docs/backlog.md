@@ -49,9 +49,9 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | ID | Ticket | Status | Notas |
 |---|---|---|---|
 | T05 | Vercel e Supabase | 🟡 | site no ar na Vercel (projeto `impostometro`, deploy automático da `main`). Supabase criado e registro do T10 validado no site local; login pendente ([`banco.md`](banco.md)). Domínio depende do T04 |
-| T06 | Repositório, CI e deploy automático | 🟡 | CI pronto (`.github/workflows/`), com comparação porte × oficial. Falta ligar a Vercel ao repositório |
+| T06 | Repositório, CI e deploy automático | ✅ | CI (`.github/workflows/`) com comparação porte × oficial; a Vercel publica a `main` e gera prévia de cada PR (comentário do bot da Vercel no PR #6) |
 | T08b | Porte da calculadora para TypeScript (roda dentro do site) | ✅ | `site/src/motor/`. 1.519 de 1.519 pedidos idênticos à oficial 1.7.2. Atualização em [`manutencao.md`](manutencao.md) |
-| T08 | Serviço de cálculo | ✅ | `site/src/lib/motor.ts`, agora chamando o porte. Falta gravar cada cálculo no banco (depende do Supabase) |
+| T08 | Serviço de cálculo | ✅ | `site/src/lib/motor.ts`, agora chamando o porte. Quem está logado tem cada cálculo guardado no histórico (T18) |
 
 ## Sprint 2 · Calculadora grátis
 
@@ -69,7 +69,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T19 | 5 artigos base e glossário | 🟡 | cinco artigos, glossário, fontes oficiais, links e metadados implementados; revisão contábil pendente. Fontes em `docs/conteudo.md`; evidências no diário |
 | T20 | SEO técnico, Search Console e medição | 🟡 | títulos, descrição, FAQ, sitemap, robots e canônicas feitos. `SITE_URL` configura o endereço; prévias e ambientes sem URL ficam fora da indexação. Falta: configurar URL de produção, Search Console e Plausible/GA |
 | T21 | Termos, privacidade e aviso "não oficial" | 🟡 | rodapé feito; termos e privacidade são rascunhos para advogado revisar |
-| T07 | Backup e monitoramento | ⏳ | Sentry + aviso se o site cair |
+| T07 | Backup e monitoramento | 🟡🧑 | Sentry e `/api/saude` prontos no código; falta criar Sentry e alerta, e o backup ([`monitoramento.md`](monitoramento.md)) |
 
 ## Sprints 4 a 6 · Conta, assinatura e XML
 
@@ -77,11 +77,13 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 |---|---|---|---|
 | T13 | Login com link por e-mail e Google | 🟡 | `/entrar` e `/conta` prontos (aceite dos termos, sair, apagar conta). Tabelas criadas no Supabase; faltam as URLs de login no painel ([`banco.md`](banco.md)) |
 | T15 | Cadastro mínimo da empresa | 🟡 | formulário em `/conta`, tabela `empresas` com RLS criada no Supabase |
-| T16 | Upload e leitura de XML de NF-e/NFC-e | 🟡 | XML lido no navegador (não sai do computador). Prévia em `/importar`; falta restringir a assinantes (T13/T14) |
+| T16 | Upload e leitura de XML de NF-e/NFC-e | ✅ | XML lido no navegador (não sai do computador). Com a cobrança ligada, só assinante importa (T14); sem ela, `/importar` é prévia aberta |
 | T14 | Assinatura recorrente (Pix e cartão) | 🟡 | Asaas (decisão do Mateus). Assinar, avisos, cancelar e XML só para assinante prontos; tabelas criadas no Supabase; falta ligar o Asaas, testar no sandbox e com R$ 1 ([`banco.md`](banco.md)) |
-| T17 | Calcular o lote item a item | 🟡 | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Em revisão |
-| T18 | Histórico de cálculos | ⏳ | |
-| T22 | Funil medido e checklist de lançamento | ⏳ | |
+| T17 | Calcular o lote item a item | ✅ | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Planilha CSV para o contador |
+| T37 | Acesso grátis, prévia e assinatura decididos no servidor | 🟡 | matriz em [`acesso.md`](acesso.md). `MODO_ACESSO` (`previa`, `assinatura`, `fechado`); chave faltando fecha a importação em vez de abrir. Em revisão |
+| T18 | Histórico de cálculos | 🟡 | `/conta/historico`: lista, reabrir com as versões e apagar. Falta rodar o SQL no Supabase |
+| T22 | Funil medido e checklist de lançamento | 🟡 | contadores por dia sem dado pessoal; checklist em [`lancamento.md`](lancamento.md); página `/contato` (e-mail em `CONTATO_EMAIL`). Falta rodar o SQL e os itens do Mateus no checklist |
+| SEG | Revisão de segurança severa | 🟡 | correções no código e SQL novo em revisão; Mateus roda o SQL e faz as tarefas de conta ([`seguranca.md`](seguranca.md)) |
 
 ## Depois do MVP (P2)
 
@@ -89,8 +91,13 @@ T23 aviso automático de versão nova da Receita (abre tarefa para um agente atu
 
 ## Próximo passo recomendado
 
-1. T33: revisar apresentação e confiança aproveitando o PR 7.
-2. T20 e T21: concluir indexação, endereço oficial e informações de uso e contato.
-3. T07 e T38: verificar operação e jornada gratuita; registrar o marco A no T39.
-4. Seguir o marco B para login, empresa, controle de acesso, Asaas, notas e relatório.
-5. T22 e T30: observar os primeiros usos e divulgar conteúdo útil organicamente.
+Todo o código do MVP existe. O que falta é configuração e revisão, quase tudo do Mateus (lista viva em `PARA-FAZER-MATEUS.txt` nos arquivos do projeto; checklist em [`lancamento.md`](lancamento.md)):
+
+1. 🧑 Rodar as migrações pendentes ([`banco.md`](banco.md)) e ligar o login (URLs no Supabase, variáveis na Vercel).
+2. 🧑 Asaas: sandbox, webhook e teste real de R$ 1 (T14).
+3. 🧑 Sentry, alerta do `/api/saude` e backup com teste de restauração (T07, [`monitoramento.md`](monitoramento.md)).
+4. 🧑 Nome, domínio e preço (T04); depois Search Console e medição (T20).
+5. 🧑 Revisão de advogado (T21) e de contador (T02, T19).
+6. Conferir a alíquota da CBS depois de 15/12/2026 ([`manutencao.md`](manutencao.md)).
+
+Plano por marcos (gratuito e pago) e tickets T33–T39: [`plano-implementacao.md`](plano-implementacao.md).

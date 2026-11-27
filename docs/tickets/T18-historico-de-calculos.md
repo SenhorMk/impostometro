@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Código proposto no PR 6 |
+| Status | 🟡 Código no main (PR 6); tabela aplicada; validação com contas reais pendente |
 | Marco | B |
 | Prioridade | P0 assinatura |
 | Pontos | A estimar após revisar o código existente |
@@ -53,6 +53,19 @@ Skills: `supabase:supabase`, `vercel:verification` e, para segredos, `vercel:env
 Os critérios desta revisão medem a entrega no ambiente indicado. Código em PR, teste simulado e configuração salva não significam validação em produção. Em tickets usados por dois marcos, registrar separadamente quais critérios de cada marco foram verificados.
 
 Não contratar recursos pagos nem enviar mensagens a terceiros sem autorização. Não alterar o motor para atender a requisitos de interface ou relatório. Registrar evidências, limitações e próximo passo no diário.
+
+## Já feito (registro anterior à revisão dos critérios)
+
+- [x] Lista de cálculos com data, origem (manual ou XML) e totais.
+- [x] Reabrir um cálculo mostra a versão da calculadora e das alíquotas com que foi feito.
+
+## Como ficou
+
+- Tabela `calculos` (migração `supabase/migrations/20261126160000_historico_calculos.sql`): totais em colunas, versões usadas e o resultado completo em `detalhe` (até ~5 MB). Cada conta só lê, grava e apaga as próprias linhas (RLS); limite de 2.000 cálculos por conta (gatilho). Apagar a conta apaga o histórico.
+- Quem está logado grava sozinho: a simulação manual (`Calculadora.tsx`) e o lote de XML (`Importador.tsx`). Funções puras em `site/src/lib/historico.ts` (testadas), banco em `historico-navegador.ts`.
+- Página `/conta/historico` (link em "Minha conta"): data, origem, título, CBS, IBS, base e % da base. **Reabrir** mostra o resultado salvo (nada é recalculado) com a versão da calculadora, das tabelas e das alíquotas. **Apagar** remove na hora.
+- Lote grande demais para o limite guarda só os totais e avisa ao reabrir.
+- Pendente: o Mateus rodar o SQL no Supabase.
 
 ---
 [← Todos os tickets](README.md) · [Plano de implementação](../plano-implementacao.md)

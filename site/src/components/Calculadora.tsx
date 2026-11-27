@@ -6,6 +6,7 @@ import type { CodigoOficial } from "@/lib/codigos";
 import { lerValor } from "@/lib/formato";
 import type { ResultadoCalculo } from "@/lib/tipos";
 import type { RespostaBuscaOficial, ResultadoBuscaOficial } from "@/lib/busca-oficial-tipos";
+import { contarEvento } from "@/lib/funil";
 import { Resultado } from "./Resultado";
 
 const UFS = [
@@ -38,6 +39,16 @@ function lembrar<T>(chave: string, valor?: T): T | null {
     /* navegação anônima: tudo bem, só não lembramos */
   }
   return null;
+}
+
+/** As contas (login) estão configuradas neste site? Sem elas, nada de histórico. */
+const CONTAS_LIGADAS = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+
+function descricaoDaEscolha(escolha: Escolha | null): string {
+  if (escolha?.modo === "atividade") return escolha.atividade.nome;
+  if (escolha?.modo === "codigo") return `${escolha.tipo.toUpperCase()} ${escolha.codigo}`;
+  if (escolha?.modo === "oficial") return `${escolha.oficial.tipo.toUpperCase()} ${escolha.oficial.codigo}`;
+  return "";
 }
 
 export function Calculadora() {
@@ -230,6 +241,20 @@ export function Calculadora() {
       });
       const json = (await r.json()) as ResultadoCalculo;
       setResultado(json);
+      if (json.ok) {
+        contarEvento("calculo_gratis");
+        // T18: quem está logado ganha o cálculo no histórico. O módulo de login só carrega
+        // quando as contas estão ligadas, para não pesar a página de quem não tem conta.
+        if (CONTAS_LIGADAS) {
+          const nome = municipios.find(([c]) => c === municipio)?.[1];
+          const descricao = descricaoDaEscolha(
+            modoCodigo ? { modo: "codigo", ...pedidoBase } : escolha,
+          );
+          void Promise.all([import("@/lib/historico"), import("@/lib/historico-navegador")]).then(([h, n]) =>
+            n.salvarNoHistorico(h.calculoManual(json, descricao, nome ? `${nome}/${uf}` : uf)),
+          );
+        }
+      }
       requestAnimationFrame(() =>
         resultadoRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
       );
@@ -476,20 +501,12 @@ export function Calculadora() {
         <p className="text-center text-xs text-suave">Grátis, sem cadastro. Mesma conta da calculadora oficial da Receita Federal.</p>
       </form>
 
-      <div ref={resultadoRef} aria-live="polite" className="scroll-mt-32">
+      <div ref={resultadoRef} aria-live="polite">
         {resultado && (
           <div className="mt-6">
             <Resultado
               resultado={resultado}
-              descricao={
-                escolha?.modo === "atividade"
-                  ? escolha.atividade.nome
-                  : escolha?.modo === "codigo"
-                    ? `${escolha.tipo.toUpperCase()} ${escolha.codigo}`
-                    : escolha?.modo === "oficial"
-                      ? `${escolha.oficial.tipo.toUpperCase()} ${escolha.oficial.codigo}`
-                      : ""
-              }
+              descricao={descricaoDaEscolha(escolha)}
               cidade={nomeCidade ? `${nomeCidade}/${uf}` : uf}
             />
           </div>

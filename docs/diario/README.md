@@ -15,3 +15,8 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 26/11/2026 | Pesquisa e planejamento da assinatura | [Estratégia comercial](2026-11-26-estrategia-assinatura.md) |
 | 26/11/2026 | Tickets para site confiável, assinatura e aquisição orgânica | [Plano de implementação](2026-11-26-plano-tickets.md) |
 | 26/11/2026 | T33: apresentação, oferta e contato com evidências visuais | [Entrega T33](2026-11-26-t33.md) |
+| 26/11/2026 | Vercel e Supabase conectados em produção | [Configuração de produção](2026-11-26-configuracao-producao.md) |
+| 26/11/2026 | T18, T22 e T07: histórico, funil e monitoramento | [Entrega T18/T22/T07](2026-11-26-t18-t22-t07.md) |
+| 26/11/2026 | Polimento: planilha para o contador, contato e backlog | [Polimento](2026-11-26-polimento-lancamento.md) |
+| 27/11/2026 | Revisão de segurança severa | [Revisão de segurança](2026-11-27-revisao-seguranca.md) |
+| 27/11/2026 | T37: acesso grátis, prévia e assinatura no servidor | [Entrega T37](2026-11-27-t37.md) |

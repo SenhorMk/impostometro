@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Pronto para revisão |
+| Status | ✅ Feito |
 | Épico | E5 Importação de XML |
 | Sprint | S5 |
 | Prioridade | P0 |
@@ -19,6 +19,7 @@ Como assinante, quero ver o total de CBS e IBS das minhas vendas do mês e o det
 - [x] Itens com erro aparecem marcados, com a mensagem em português, e ficam fora da soma.
 - [x] Quando a nota não tem cClassTrib, o site sugere tributação integral (000001) por NCM, mostra os tratamentos especiais que a calculadora aceita para aquele NCM e só calcula depois da caixa “Conferi e confirmo”.
 - [x] 500 notas calculadas em menos de 1 minuto: medido 1,7 s para 500 notas com 10 itens cada (5.000 itens), servidor local de produção.
+- [x] Extra (plano assinante promete "relatório para mandar ao contador"): botão **Baixar planilha para o contador**, um CSV que abre no Excel (separador ";", vírgula decimal, acentos certos), uma linha por item com base, CBS, IBS, redução, alíquota efetiva e o motivo do que não foi calculado, mais o total e as versões. Também no lote reaberto do histórico. Protegido contra fórmulas do Excel em descrições (`site/src/lib/planilha.ts`).
 
 ---
 [← Todos os tickets](README.md) · [Status geral](../backlog.md)
