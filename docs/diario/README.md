@@ -20,3 +20,4 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 26/11/2026 | Polimento: planilha para o contador, contato e backlog | [Polimento](2026-11-26-polimento-lancamento.md) |
 | 27/11/2026 | Revisão de segurança severa | [Revisão de segurança](2026-11-27-revisao-seguranca.md) |
 | 27/11/2026 | T37: acesso grátis, prévia e assinatura no servidor | [Entrega T37](2026-11-27-t37.md) |
+| 27/11/2026 | Nomes das variáveis do Asaas iguais aos da Vercel (T14) | [Nomes da Vercel](2026-11-27-nomes-vercel.md) |

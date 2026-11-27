@@ -16,12 +16,21 @@ import {
 
 // ---------- Modo (configuração) ----------
 
-const COMPLETO = { ASAAS_API_KEY: "x", SUPABASE_URL: "https://exemplo.supabase.co", SUPABASE_SECRET_KEY: "y" };
+const COMPLETO = { ASAAS_API_KEY_SANDBOX: "x", SUPABASE_URL: "https://exemplo.supabase.co", SUPABASE_SECRET_KEY: "y" };
 
 test("sem MODO_ACESSO e sem chaves: importação fechada, nunca aberta", () => {
   assert.equal(modoDeAcesso({}).modo, "fechado");
-  assert.equal(modoDeAcesso({ ASAAS_API_KEY: "x" }).modo, "fechado"); // falta a chave secreta do banco
+  assert.equal(modoDeAcesso({ ASAAS_API_KEY_SANDBOX: "x" }).modo, "fechado"); // falta a chave secreta do banco
   assert.equal(modoDeAcesso({ SUPABASE_URL: "u", SUPABASE_SECRET_KEY: "y" }).modo, "fechado"); // falta o Asaas
+});
+
+test("chave do Asaas conta só se for do ambiente de ASAAS_ENVIROMENT", () => {
+  const banco = { SUPABASE_URL: "u", SUPABASE_SECRET_KEY: "y" };
+  // só a chave de produção, ambiente vazio (sandbox): não conta
+  assert.equal(modoDeAcesso({ ...banco, ASAAS_API_KEY: "x" }).modo, "fechado");
+  assert.equal(modoDeAcesso({ ...banco, ASAAS_API_KEY: "x", ASAAS_ENVIROMENT: "producao" }).modo, "assinatura");
+  // ambiente de produção sem a chave de produção: fechado, mesmo com a do sandbox
+  assert.equal(modoDeAcesso({ ...banco, ASAAS_API_KEY_SANDBOX: "x", ASAAS_ENVIROMENT: "producao" }).modo, "fechado");
 });
 
 test("sem MODO_ACESSO e com a cobrança configurada: exige assinatura", () => {
@@ -127,7 +136,7 @@ function simularSupabase(banco: Banco) {
 
 afterEach(() => {
   globalThis.fetch = fetchOriginal;
-  delete process.env.ASAAS_API_KEY;
+  delete process.env.ASAAS_API_KEY_SANDBOX;
   delete process.env.MODO_ACESSO;
 });
 
@@ -157,7 +166,7 @@ test("pedido direto sem chave do Asaas: fechado (503), mesmo com token de assina
 });
 
 test("pedido direto com cobrança ligada: visitante 401, conta grátis 402, token falso 401, assinante liberado", async () => {
-  process.env.ASAAS_API_KEY = "teste";
+  process.env.ASAAS_API_KEY_SANDBOX = "teste";
   simularSupabase(banco);
   assert.equal((await acessoImportacao(pedido())).decisao.status, 401);
   assert.equal((await acessoImportacao(pedido("token-gratis"))).decisao.status, 402);
@@ -168,7 +177,7 @@ test("pedido direto com cobrança ligada: visitante 401, conta grátis 402, toke
 });
 
 test("falha ao ler a assinatura não libera (503)", async () => {
-  process.env.ASAAS_API_KEY = "teste";
+  process.env.ASAAS_API_KEY_SANDBOX = "teste";
   simularSupabase({ ...banco, bancoFora: true });
   const { decisao } = await silenciar(() => acessoImportacao(pedido("token-assinante")));
   assert.equal(decisao.status, 503);
