@@ -75,7 +75,42 @@ function grupoIbsCbs(imposto: No): No | null {
   return g && typeof g === "object" ? (g as No) : null;
 }
 
+/** Maior XML de nota aceito. Uma NF-e com 990 itens tem uns 2 MB; 10 MB dá folga. */
+export const LIMITE_BYTES_XML = 10 * 1024 * 1024;
+
+/**
+ * Segurança: nota fiscal de verdade nunca tem DOCTYPE nem ENTITY. Recusamos antes de ler,
+ * para fechar a porta a "XML bomba" (entidades que se multiplicam até travar o navegador)
+ * e a qualquer truque de entidade externa (XXE).
+ */
+export function xmlSuspeito(xml: string): boolean {
+  return /<!DOCTYPE|<!ENTITY/i.test(xml);
+}
+
+export class ErroZip extends Error {}
+
+/**
+ * Filtro para o unzipSync do fflate (segurança contra "zip bomba"): só abre .xml, recusa
+ * arquivo que descompactado passe de LIMITE_BYTES_XML, mais de `maxArquivos` XMLs ou mais
+ * de `maxTotal` bytes somando tudo. O tamanho vem do índice do .zip, antes de descompactar.
+ */
+export function filtroXmlDoZip(maxArquivos = 2000, maxTotal = 300 * 1024 * 1024) {
+  let arquivos = 0;
+  let total = 0;
+  return (a: { name: string; originalSize: number }): boolean => {
+    if (!a.name.toLowerCase().endsWith(".xml")) return false;
+    if (a.originalSize > LIMITE_BYTES_XML) throw new ErroZip(`O arquivo ${a.name.split("/").pop()} dentro do .zip é grande demais para uma nota.`);
+    arquivos++;
+    total += a.originalSize;
+    if (arquivos > maxArquivos) throw new ErroZip(`O .zip tem mais de ${maxArquivos} XMLs. Divida em partes menores.`);
+    if (total > maxTotal) throw new ErroZip("O .zip descompactado ficou grande demais. Divida em partes menores.");
+    return true;
+  };
+}
+
 export function lerNota(arquivo: string, xml: string): ResultadoLeitura {
+  if (xml.length > LIMITE_BYTES_XML) return { ok: false, arquivo, motivo: "O arquivo é grande demais para uma nota fiscal." };
+  if (xmlSuspeito(xml)) return { ok: false, arquivo, motivo: "O arquivo tem uma declaração DOCTYPE/ENTITY, que nota fiscal não tem. Por segurança, não lemos." };
   let raiz: No;
   try {
     raiz = no(leitor.parse(xml));

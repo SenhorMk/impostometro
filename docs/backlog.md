@@ -53,6 +53,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T17 | Calcular o lote item a item | 🟡 | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Em revisão |
 | T18 | Histórico de cálculos | ⏳ | |
 | T22 | Funil medido e checklist de lançamento | ⏳ | |
+| SEG | Revisão de segurança severa | 🟡 | correções no código e SQL novo em revisão; Mateus roda o SQL e faz as tarefas de conta ([`seguranca.md`](seguranca.md)) |
 
 ## Depois do MVP (P2)
 

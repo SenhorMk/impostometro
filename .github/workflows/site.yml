@@ -10,6 +10,10 @@ on:
     paths: ["site/**", "testes-dourados/esperados/**", "calculadora/exemplos/**", "calculadora/Dockerfile", ".github/workflows/site.yml"]
   workflow_dispatch:
 
+# Segurança: a CI só lê o repositório (não pode escrever, abrir PR nem mexer em segredos).
+permissions:
+  contents: read
+
 jobs:
   site:
     runs-on: ubuntu-latest

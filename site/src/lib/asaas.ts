@@ -19,8 +19,12 @@ function base(): string {
 }
 
 export class ErroAsaas extends Error {
-  constructor(public status: number, public detalhe: string) {
+  status: number;
+  detalhe: string;
+  constructor(status: number, detalhe: string) {
     super(`Asaas respondeu ${status}: ${detalhe}`);
+    this.status = status;
+    this.detalhe = detalhe;
   }
 }
 
@@ -37,7 +41,12 @@ async function chamar<T>(metodo: "GET" | "POST" | "DELETE", caminho: string, cor
     signal: AbortSignal.timeout(15000),
   });
   const texto = await r.text();
-  const json = texto ? JSON.parse(texto) : {};
+  let json: Record<string, unknown> = {};
+  try {
+    json = texto ? JSON.parse(texto) : {};
+  } catch {
+    throw new ErroAsaas(r.status, "resposta que não é JSON");
+  }
   if (!r.ok) {
     const detalhe = (json?.errors as { description?: string }[] | undefined)?.map((e) => e.description).join("; ") || r.statusText;
     throw new ErroAsaas(r.status, detalhe);
@@ -72,6 +81,33 @@ export async function linkDaPrimeiraCobranca(assinaturaId: string): Promise<stri
   const r = await chamar<{ data?: { invoiceUrl?: string; status?: string }[] }>("GET", `/subscriptions/${encodeURIComponent(assinaturaId)}/payments`);
   const pendente = r.data?.find((p) => p.status === "PENDING" || p.status === "OVERDUE") ?? r.data?.[0];
   return pendente?.invoiceUrl ?? null;
+}
+
+/** Uma cobrança, lida direto no Asaas (para conferir o que o webhook disse). */
+export function buscarCobranca(cobrancaId: string) {
+  return chamar<{ id: string; status?: string; subscription?: string | null; dueDate?: string; value?: number }>(
+    "GET",
+    `/payments/${encodeURIComponent(cobrancaId)}`,
+  );
+}
+
+/** Status de cobrança que significam "dinheiro confirmado" no Asaas. */
+export const COBRANCA_PAGA = new Set(["CONFIRMED", "RECEIVED", "RECEIVED_IN_CASH"]);
+
+/**
+ * Segurança: o site só manda a pessoa para links HTTPS do próprio Asaas
+ * (asaas.com e subdomínios, como sandbox.asaas.com). Qualquer outra coisa vira null.
+ */
+export function linkAsaasSeguro(link: unknown): string | null {
+  if (typeof link !== "string" || link.length > 500) return null;
+  try {
+    const u = new URL(link);
+    const host = u.hostname.toLowerCase();
+    if (u.protocol !== "https:" || u.username || u.password || u.port) return null;
+    return host === "asaas.com" || host.endsWith(".asaas.com") ? u.toString() : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Encerra a recorrência. Cobranças pendentes são apagadas; as pagas ficam. */

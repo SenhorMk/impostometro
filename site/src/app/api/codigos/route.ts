@@ -1,4 +1,5 @@
 import { buscarCodigos, especiaisPorCodigo } from "@/lib/codigos";
+import { limitarPorIp } from "@/lib/limite";
 
 /**
  * GET /api/codigos?q=pao de queijo  →  [{ tipo, codigo, descricao, especiais }]
@@ -9,10 +10,12 @@ import { buscarCodigos, especiaisPorCodigo } from "@/lib/codigos";
  * Código que não existe nas tabelas oficiais volta como null.
  */
 export async function GET(request: Request) {
+  const limite = limitarPorIp(request, "codigos", 120);
+  if (limite) return limite;
   const params = new URL(request.url).searchParams;
   const lista = params.get("codigos");
   if (lista !== null) {
-    const codigos = [...new Set(lista.split(",").filter((c) => /^\d{8,9}$/.test(c)))].slice(0, 500);
+    const codigos = [...new Set(lista.slice(0, 6_000).split(",").filter((c) => /^\d{8,9}$/.test(c)))].slice(0, 500);
     return Response.json(especiaisPorCodigo(codigos), { headers: { "Cache-Control": "public, max-age=3600" } });
   }
   const q = (params.get("q") ?? "").slice(0, 80);
