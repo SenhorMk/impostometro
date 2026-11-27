@@ -1,5 +1,21 @@
 # Planejamento da assinatura do Calcula Reforma
 
+## Plano revisto para orçamento zero e aquisição orgânica
+
+Atualização de 26/11/2026 após esclarecimento do Mateus: não há orçamento para aquisição, rede de empresas ou parceiro disponível para recrutamento. O lançamento será público, com divulgação orgânica. O piloto de dez empresas descrito na pesquisa abaixo deixa de ser pré-requisito, tarefa de recrutamento ou compromisso de prazo. As metas numéricas permanecem apenas como hipóteses para uma fase em que houver usuários.
+
+A prioridade passa a ser concluir uma versão utilizável, permitir que seja descoberta e aprender com os primeiros usos. Começar pela calculadora gratuita e por uma entrega paga pequena baseada na importação já existente e em um relatório útil. Validar login, cobrança e entrega antes de anunciar a assinatura como disponível.
+
+Primeiro, conferir rastreamento e indexação no endereço público, sitemap, canônicas e Search Console. Depois, revisar e publicar poucas páginas úteis para dúvidas específicas, aproveitando o trabalho de SEO já proposto no PR 7. Cada página deve explicar uma questão real, apresentar premissas e fontes e levar à ferramenta. Evitar produzir muitas páginas semelhantes apenas para ocupar buscas.
+
+A divulgação manual pode começar com uma demonstração curta por semana em um único canal público, usando exemplo identificado como fictício e link para a ferramenta onde a publicação for permitida. A frequência é uma proposta ajustável à disponibilidade do dono, sem meta garantida de alcance ou prazo de vendas. O trabalho de preparar os textos e exemplos integra o desenvolvimento do produto.
+
+Medir a sequência disponível: descoberta da página, uso da calculadora, tentativa de importação, entrega aproveitável e compra. Se não chegam visitantes, ainda não há evidência sobre disposição de pagar. Se chegam e usam, mas não avançam para a entrega paga, investigar a oferta. Conversas de feedback passam a ser convites opcionais aos visitantes que aparecerem, não uma dependência anterior à publicação.
+
+Referências para esse ajuste: [guia de SEO do Google](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) e [conteúdo útil](https://developers.google.com/search/docs/fundamentals/creating-helpful-content). O Google informa que mudanças podem levar de horas a meses e não garante indexação ou posição. Divulgação orgânica economiza desembolso, mas exige trabalho e tem resultado incerto.
+
+O plano e os prazos da pesquisa original abaixo devem ser lidos com esta atualização. Nenhum preço, cobrança ou código da aplicação foi alterado por este ajuste de estratégia.
+
 Proposta de valor e plano de validação comercial
 
 26 de novembro de 2026
