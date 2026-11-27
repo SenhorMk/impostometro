@@ -9,7 +9,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { REGIMES, UFS, VERSAO_TERMOS, validarEmpresa, type Empresa } from "@/lib/contas";
-import { ASSINATURA_ATIVA, cabecalhoLogin, useSessao } from "@/lib/sessao";
+import { useAcesso, type EstadoAcesso } from "@/lib/acesso-cliente";
+import { cabecalhoLogin, useSessao } from "@/lib/sessao";
 import { supabase } from "@/lib/supabase-navegador";
 import { AssinaturaConta } from "./AssinaturaConta";
 import { CHAVE_ACEITE } from "./Entrar";
@@ -25,6 +26,7 @@ function aceitePendente(): boolean {
 export function Conta() {
   const sessao = useSessao();
   const router = useRouter();
+  const acesso = useAcesso();
   const [perfil, setPerfil] = useState<"carregando" | "ok" | "falta" | "erro">("carregando");
 
   const usuario = sessao.configurado ? sessao.usuario : null;
@@ -112,7 +114,7 @@ export function Conta() {
         </section>
       ) : perfil === "ok" ? (
         <>
-          <AssinaturaConta usuarioId={usuario.id} />
+          <AssinaturaConta usuarioId={usuario.id} acesso={acesso} />
           <FormEmpresa usuarioId={usuario.id} />
           <section className="rounded-2xl border border-borda bg-white p-5">
             <h2 className="text-lg font-semibold">Notas do mês</h2>
@@ -124,7 +126,7 @@ export function Conta() {
         </>
       ) : null}
 
-      <ApagarConta />
+      <ApagarConta acesso={acesso} usuarioId={usuario.id} />
     </div>
   );
 }
@@ -278,7 +280,7 @@ function FormEmpresa({ usuarioId }: { usuarioId: string }) {
   );
 }
 
-function ApagarConta() {
+function ApagarConta({ acesso, usuarioId }: { acesso: EstadoAcesso | null; usuarioId: string }) {
   const router = useRouter();
   const [confirmacao, setConfirmacao] = useState("");
   const [apagando, setApagando] = useState(false);
@@ -288,10 +290,19 @@ function ApagarConta() {
     setApagando(true);
     const sb = supabase()!;
     // T14: antes de apagar, encerra a assinatura no Asaas para não haver cobranças futuras.
-    if (ASSINATURA_ATIVA) {
+    // T37: vale em qualquer modo. Se o cancelamento estiver fora do ar e houver assinatura viva, não apaga.
+    if (acesso?.cancelamentoDisponivel) {
       const r = await fetch("/api/assinatura", { method: "DELETE", headers: await cabecalhoLogin() });
       if (!r.ok) {
         setErro("Não conseguimos cancelar a assinatura antes de apagar a conta. Tente de novo.");
+        setApagando(false);
+        return;
+      }
+    } else {
+      const { data, error } = await sb.from("assinaturas").select("status, asaas_assinatura_id, link_pagamento").eq("usuario_id", usuarioId).maybeSingle();
+      // "cancelada" com link = voltou a assinar e a cobrança nova ainda está aberta no Asaas.
+      if (error || (data?.asaas_assinatura_id && (data.status !== "cancelada" || data.link_pagamento))) {
+        setErro("Não conseguimos cancelar a sua assinatura agora, então a conta não foi apagada. Tente mais tarde ou fale com a gente.");
         setApagando(false);
         return;
       }

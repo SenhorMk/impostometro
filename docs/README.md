@@ -15,6 +15,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Deploy](deploy.md) | Configuração de produção e indexação |
 | [Manutenção](manutencao.md) | Atualização do motor, tabelas e atividades |
 | [Segurança](seguranca.md) | Revisão de segurança, o que foi corrigido, tarefas nas contas e limitações |
+| [Acesso](acesso.md) | Quem pode usar o quê: simulação grátis, prévia, assinatura e `MODO_ACESSO` (T37) |
 
 ## Fluxo de uma entrega
 

@@ -1,5 +1,5 @@
 import { cancelarAssinatura, criarAssinatura, criarCliente, ErroAsaas, linkAsaasSeguro, linkDaPrimeiraCobranca } from "@/lib/asaas";
-import { assinaturaDe, assinaturaObrigatoria } from "@/lib/acesso";
+import { assinaturaDe, assinaturaObrigatoria, cobrancaDisponivel } from "@/lib/acesso";
 import { hojeBrasil, precoCentavos, temAcesso } from "@/lib/assinatura";
 import { documentoPagador } from "@/lib/contas";
 import { CorpoInvalido, dentroDoLimite, ipDoPedido, lerJson, muitosPedidos } from "@/lib/limite";
@@ -12,6 +12,7 @@ import { admin, usuarioDoPedido } from "@/lib/supabase-servidor";
  *
  * DELETE /api/assinatura  →  { ok }
  * Cancela sozinho, sem falar com ninguém. O acesso vale até o fim do mês já pago.
+ * Assinar só abre com MODO_ACESSO "assinatura"; cancelar funciona em qualquer modo (T37).
  *
  * As duas pedem "Authorization: Bearer <token do login>".
  *
@@ -118,7 +119,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!assinaturaObrigatoria()) return indisponivel();
+  // T37: cancelar funciona em qualquer modo (até na prévia), desde que a cobrança esteja configurada.
+  if (!cobrancaDisponivel()) return indisponivel();
   const usuario = await usuarioDoPedido(request);
   if (!usuario) return Response.json({ erro: "Entre na sua conta." }, { status: 401 });
   if (!dentroDoLimite(`assinatura:conta:${usuario.id}`, 5)) return muitosPedidos();

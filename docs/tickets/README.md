@@ -33,6 +33,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | [T20](T20-seo-tecnico-e-medicao.md) | SEO técnico e medição | E6 Conteúdo e SEO | S3 | P0 | 2 | 🟡 Parcial |
 | [T21](T21-termos-privacidade-e-aviso-nao-oficial.md) | Termos, privacidade e aviso “não oficial” | E7 Lançamento | S3 | P0 | 2 | 🟡 Parcial |
 | [T22](T22-funil-medido-e-checklist-de-lancamento.md) | Funil medido e checklist de lançamento | E7 Lançamento | S6 | P1 | 2 | ⏳ A fazer |
+| [T37](T37-acesso-gratis-previa-e-assinatura.md) | Separar acesso grátis, prévia e assinatura no servidor | E4 Conta e assinatura | S5 | P0 | 3 | 🟡 Em revisão |
 
 ## Sprints
 
