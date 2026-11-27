@@ -14,6 +14,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Diário de desenvolvimento](diario/README.md) | Histórico das entregas, evidências e pendências |
 | [Deploy](deploy.md) | Configuração de produção e indexação |
 | [Manutenção](manutencao.md) | Atualização do motor, tabelas e atividades |
+| [Estratégia da assinatura](estrategia-assinatura.md) | Pesquisa de referências internacionais, proposta paga e plano de validação comercial |
 
 ## Fluxo de uma entrega
 
