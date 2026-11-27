@@ -93,6 +93,10 @@ export async function POST(request: Request) {
         .update({ ...novo, atualizado_em: new Date().toISOString(), ...(novo.status === "ativa" ? { link_pagamento: null } : {}) })
         .eq("asaas_assinatura_id", assinaturaId);
       if (r.error) return desistir();
+      // Funil (T22): só contadores do dia, sem dado pessoal.
+      const antes = (linha.data as Assinatura).status;
+      const etapa = novo.status === "ativa" && (antes === "pendente" || antes === "cancelada") ? "assinatura" : novo.status === "cancelada" && antes !== "cancelada" ? "cancelamento" : null;
+      if (etapa) await sb.rpc("contar_evento", { evento: etapa }).then(() => {}, () => {});
     }
     return Response.json({ ok: true });
   } catch (e) {

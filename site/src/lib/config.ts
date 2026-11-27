@@ -10,6 +10,9 @@ export const SITE = {
     "Descubra em 2 minutos quanto sua empresa vai pagar de CBS e IBS em 2027. Grátis, sem cadastro e com a conta aberta, usando a calculadora oficial da Receita Federal.",
 };
 
+/** Preço em número, para os dados estruturados do Google. Manter igual a PLANOS.assinante.preco. */
+export const PRECO_ASSINATURA_NUMERO = "29.00"; // SUPOSIÇÃO: preço a definir no T04
+
 export const PLANOS = {
   gratis: {
     nome: "Grátis",

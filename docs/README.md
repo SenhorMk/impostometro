@@ -11,6 +11,8 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Conteúdo editorial](conteudo.md) | Fontes, rotas e manutenção dos cinco artigos e glossário |
 | [Busca](busca.md) | Dicionário, consulta oficial, vigências, API e limites |
 | [Banco](banco.md) | Preparação Supabase, esquema, permissões e bloqueios de provisionamento |
+| [Monitoramento e backup](monitoramento.md) | Sentry, `/api/saude`, alerta de site fora do ar, backup e restauração |
+| [Checklist de lançamento](lancamento.md) | O que precisa estar pronto antes de abrir a assinatura |
 | [Diário de desenvolvimento](diario/README.md) | Histórico das entregas, evidências e pendências |
 | [Deploy](deploy.md) | Configuração de produção e indexação |
 | [Manutenção](manutencao.md) | Atualização do motor, tabelas e atividades |

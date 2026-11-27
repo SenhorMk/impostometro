@@ -25,14 +25,15 @@ export function PaginaConteudo({ titulo, descricao, children }: {
     <>
       <Cabecalho />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-16">
-        <nav aria-label="Navegação do conteúdo" className="mb-8 flex flex-wrap gap-4 text-sm text-marca-800">
+        <nav aria-label="Navegação do conteúdo" className="mb-8 flex flex-wrap gap-4 font-mono text-xs uppercase tracking-[0.1em] text-suave">
           <Link href="/artigos" className="underline underline-offset-4">Guias da reforma</Link>
+          <Link href="/imposto-2027" className="underline underline-offset-4">Imposto 2027 por setor</Link>
           <Link href="/glossario" className="underline underline-offset-4">Glossário</Link>
         </nav>
-        <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">{titulo}</h1>
+        <h1 className="font-serif text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">{titulo}</h1>
         <p className="mt-4 text-lg leading-relaxed text-suave">{descricao}</p>
         {children}
-        <aside className="mt-10 rounded-2xl border border-borda bg-fundo p-5 text-sm leading-relaxed text-suave">
+        <aside className="mt-10 border-l-2 border-tinta pl-4 text-sm leading-relaxed text-suave">
           Conteúdo educativo. A revisão por contador está pendente. Confirme o enquadramento e as regras vigentes antes de emitir notas ou tomar decisões tributárias. Este site não é do governo.
         </aside>
         <div className="mt-8 border-t border-borda pt-8">
