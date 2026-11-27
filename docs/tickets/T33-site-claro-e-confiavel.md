@@ -60,6 +60,8 @@ Não contratar recursos pagos nem enviar mensagens a terceiros sem autorização
 
 ## Evidências desta implementação
 
+Implementação: [PR 27](https://github.com/SenhorMk/impostometro/pull/27), commit `d6fb203`. Base: planejamento no PR 9.
+
 Verificação no build de produção local: 360, 390 e 1366 px, sem rolagem horizontal. Busca e simulação de pizzaria, R$ 1.000 em São Paulo, retornaram R$ 67,80. O exemplo escolar é calculado pelo serviço, com data, versões e fontes. Lint, tipos, 55 testes e build passaram. Capturas e limites estão no [diário](../diario/2026-11-26-t33.md) e em [evidências](../evidencias/t33/README.md).
 
 Os checks acima registram a implementação local, sem marcar deploy público ou revisão jurídica como feitos. A issue permanece aberta até revisão e publicação.
