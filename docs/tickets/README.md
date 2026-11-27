@@ -42,8 +42,8 @@ A divulgação gratuita e a abertura da assinatura têm critérios separados no 
 | [T33](T33-site-claro-e-confiavel.md) | Apresentar um site claro e confiável com oferta verdadeira | Lançamento confiável | A | P0 gratuito | A estimar | 🟡 Visual substituído pelo redesign (PR 7); textos e critérios a revisar sobre o novo visual |
 | [T38](T38-jornada-acessivel-e-sem-falhas.md) | Validar navegação cálculo e importação no celular e computador | Lançamento confiável | A | P0 gratuito e assinatura | A estimar | ⏳ A fazer |
 | [T37](T37-acesso-gratis-previa-e-assinatura.md) | Separar acesso gratuito prévia e assinatura no servidor | Lançamento confiável | B | P0 assinatura | A estimar | 🟡 Código no main (PR 30); validação real pendente |
-| [T34](T34-periodo-e-integridade-das-notas.md) | Preparar o período e mostrar a cobertura real das notas | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
-| [T35](T35-premissas-e-classificacoes-confirmadas.md) | Registrar premissas e confirmação das classificações | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
+| [T34](T34-periodo-e-integridade-das-notas.md) | Preparar o período e mostrar a cobertura real das notas | Lançamento confiável | B | P0 assinatura | 5 | 🟡 Em revisão |
+| [T35](T35-premissas-e-classificacoes-confirmadas.md) | Registrar premissas e confirmação das classificações | Lançamento confiável | B | P0 assinatura | 5 | 🟡 Em revisão |
 | [T27](T27-relatorio-revisavel-do-periodo.md) | Entregar relatório revisável do período em PDF e planilha | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
 | [T36](T36-cenarios-versionados-e-comparacao.md) | Comparar cenários da mesma análise preservando premissas | Lançamento confiável | C | P1 após primeira entrega paga | A estimar | ⏳ A fazer |
 | [T30](T30-conteudo-util-e-divulgacao-organica.md) | Publicar conteúdo útil e preparar divulgação orgânica sustentável | Lançamento confiável | C | P1 gratuito | A estimar | 🟡 Páginas por setor no main (PR 7); revisão pendente |

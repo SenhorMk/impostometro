@@ -20,3 +20,5 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 26/11/2026 | Polimento: planilha para o contador, contato e backlog | [Polimento](2026-11-26-polimento-lancamento.md) |
 | 27/11/2026 | Revisão de segurança severa | [Revisão de segurança](2026-11-27-revisao-seguranca.md) |
 | 27/11/2026 | T37: acesso grátis, prévia e assinatura no servidor | [Entrega T37](2026-11-27-t37.md) |
+| 27/11/2026 | T34: o que entra na análise das notas e a cobertura real | [Entrega T34](2026-11-27-t34.md) |
+| 27/11/2026 | T35: premissas e classificações confirmadas | [Entrega T35](2026-11-27-t35.md) |

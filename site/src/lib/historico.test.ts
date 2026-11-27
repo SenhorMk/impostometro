@@ -45,7 +45,7 @@ test("erro de cálculo não vai para o histórico", () => {
 
 const nota = (chave: string, data: string, base: number, cbs: number, ibs: number, erros = 0): [NotaCalculada, NotaLida] => [
   { chave, dataCalculo: data, itens: [], totais: { baseCentavos: base, cbsCentavos: cbs, ibsCentavos: ibs, itensCalculados: 2, itensComErro: erros } },
-  { arquivo: "segredo.xml", chave, modelo: "NF-e", numero: "1", serie: "1", data, municipio: 3550308, uf: "SP", itens: [], avisos: ["x"] },
+  { arquivo: "segredo.xml", chave, modelo: "NF-e", numero: "1", serie: "1", data, municipio: 3550308, uf: "SP", itens: [], avisos: ["x"], emitente: "00000000000000", autorizacao: { situacao: "sem_protocolo" } },
 ];
 
 test("lote soma as notas, mostra o período e não guarda nome de arquivo", () => {

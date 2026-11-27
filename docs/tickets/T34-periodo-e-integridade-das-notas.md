@@ -2,10 +2,10 @@
 
 | Campo | Valor |
 |---|---|
-| Status | ⏳ A fazer |
+| Status | 🟡 Em revisão (PR) |
 | Marco | B |
 | Prioridade | P0 assinatura |
-| Pontos | A estimar após revisar o código existente |
+| Pontos | 5 |
 | Depende de | T15, T16 |
 | GitHub | https://github.com/SenhorMk/impostometro/issues/19 |
 
@@ -25,13 +25,15 @@ O importador lê XML e ZIP, recusa entradas, devoluções e modelos incompatíve
 
 ## Critérios de aceite
 
-- [ ] A mesma chave não soma duas vezes e o usuário vê a duplicidade.
-- [ ] Documento de outra empresa, período incompatível, ausência de identificação e formato inválido têm tratamento explícito, sem exclusão silenciosa.
-- [ ] Devolução, cancelamento e evento não suportado aparecem como limitação ou pendência; ausência de evento não é tratada como prova de nota válida.
-- [ ] Contagens de arquivos, notas e itens reconciliam com a lista apresentada; o total não é rotulado como mês completo quando há lacunas.
-- [ ] Valores não calculados ficam fora do total, com quantidade e motivo visíveis.
-- [ ] Distinguir data original da nota de data do cenário projetado para 2027.
-- [ ] Limites de arquivo, ZIP, quantidade e itens impedem travamento e processamento excessivo; arquivos permanecem no navegador conforme a política vigente.
+- [x] A mesma chave não soma duas vezes e o usuário vê a duplicidade. (vale também para arquivos somados depois, no mesmo envio da tela; entre análises salvas no histórico ainda não)
+- [x] Documento de outra empresa, período incompatível, ausência de identificação e formato inválido têm tratamento explícito, sem exclusão silenciosa. (empresa e mês escolhidos na tela; nota sem chave vira pendência; arquivo inválido aparece em "não lidos")
+- [x] Devolução, cancelamento e evento não suportado aparecem como limitação ou pendência; ausência de evento não é tratada como prova de nota válida. (devolução já era recusada com motivo; cancelada/denegada pelo protocolo ou por XML de evento sai da soma; nota sem protocolo e evento desconhecido viram pendência)
+- [x] Contagens de arquivos, notas e itens reconciliam com a lista apresentada; o total não é rotulado como mês completo quando há lacunas. (arquivos = notas + eventos + não lidos; notas = na análise + fora; buraco na numeração marca "cobertura parcial")
+- [x] Valores não calculados ficam fora do total, com quantidade e motivo visíveis. (agrupados por motivo no resultado)
+- [x] Distinguir data original da nota de data do cenário projetado para 2027. ("emitida em" × "cenário calculado com a data de")
+- [x] Limites de arquivo, ZIP, quantidade e itens impedem travamento e processamento excessivo; arquivos permanecem no navegador conforme a política vigente. (200 MB, filtro do .zip, notas por lote e novo teto de 20.000 itens por lote)
+
+Verificado em: testes automáticos (amostras sintéticas) e site local no celular e no computador. Não verificado em produção nem com XMLs reais de um mês inteiro.
 
 ## Verificação
 

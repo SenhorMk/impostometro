@@ -20,9 +20,9 @@ test("planilha no jeito do Excel brasileiro, com os números da tela", () => {
   const csv = planilhaDoLote([nota], [lida], versoes);
   assert.ok(csv.startsWith("﻿Modelo;Número;"));
   const linhas = csv.split("\r\n");
-  assert.equal(linhas[1], `NF-e;123;1;10/03/2027;SP;="${lida.chave}";1;"Camiseta ""algodão""; azul";="61091000";5102;;estimada;104,50;11,70;0,10;11,80;0,00;11,20;calculado`);
+  assert.equal(linhas[1], `NF-e;123;1;10/03/2027;SP;="${lida.chave}";1;"Camiseta ""algodão""; azul";="61091000";5102;;;estimada;104,50;11,70;0,10;11,80;0,00;11,20;calculado`);
   assert.match(linhas[2], /^NF-e;123;.*;'=HYPERLINK\(1\);.*;;;;;;;não calculado: A nota não informa o NCM deste item\.$/);
-  assert.equal(linhas[4], "Total dos itens calculados;;;;;;;;;;;;104,50;11,70;0,10;11,80");
+  assert.equal(linhas[4], "Total dos itens calculados;;;;;;;;;;;;;104,50;11,70;0,10;11,80");
   assert.match(linhas[5], /versão 1\.7\.2, tabelas V0073/);
 });
 
