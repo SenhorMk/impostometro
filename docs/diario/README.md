@@ -15,3 +15,4 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 26/11/2026 | T18, T22 e T07: histórico, funil e monitoramento | [Entrega T18/T22/T07](2026-11-26-t18-t22-t07.md) |
 | 26/11/2026 | Polimento: planilha para o contador, contato e backlog | [Polimento](2026-11-26-polimento-lancamento.md) |
 | 27/11/2026 | Revisão de segurança severa | [Revisão de segurança](2026-11-27-revisao-seguranca.md) |
+| 27/11/2026 | T37: acesso grátis, prévia e assinatura no servidor | [Entrega T37](2026-11-27-t37.md) |

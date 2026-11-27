@@ -51,6 +51,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T16 | Upload e leitura de XML de NF-e/NFC-e | ✅ | XML lido no navegador (não sai do computador). Com a cobrança ligada, só assinante importa (T14); sem ela, `/importar` é prévia aberta |
 | T14 | Assinatura recorrente (Pix e cartão) | 🟡 | Asaas (decisão do Mateus). Assinar, avisos, cancelar e XML só para assinante prontos; tabelas criadas no Supabase; falta ligar o Asaas, testar no sandbox e com R$ 1 ([`banco.md`](banco.md)) |
 | T17 | Calcular o lote item a item | ✅ | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Planilha CSV para o contador |
+| T37 | Acesso grátis, prévia e assinatura decididos no servidor | 🟡 | matriz em [`acesso.md`](acesso.md). `MODO_ACESSO` (`previa`, `assinatura`, `fechado`); chave faltando fecha a importação em vez de abrir. Em revisão |
 | T18 | Histórico de cálculos | 🟡 | `/conta/historico`: lista, reabrir com as versões e apagar. Falta rodar o SQL no Supabase |
 | T22 | Funil medido e checklist de lançamento | 🟡 | contadores por dia sem dado pessoal; checklist em [`lancamento.md`](lancamento.md); página `/contato` (e-mail em `CONTATO_EMAIL`). Falta rodar o SQL e os itens do Mateus no checklist |
 | SEG | Revisão de segurança severa | 🟡 | correções no código e SQL novo em revisão; Mateus roda o SQL e faz as tarefas de conta ([`seguranca.md`](seguranca.md)) |

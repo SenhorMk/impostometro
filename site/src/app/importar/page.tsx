@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Cabecalho } from "@/components/Cabecalho";
-import { Importador } from "@/components/Importador";
 import { PortaoAssinante } from "@/components/PortaoAssinante";
 import { Rodape } from "@/components/Rodape";
 
-// Área de assinante (T16/T17). Com a cobrança ligada (T14), só assinante importa; sem ela, fica como prévia aberta. Fora do Google.
+// Área de assinante (T16/T17). Quem pode importar é decidido no servidor (T37, docs/acesso.md). Fora do Google.
 export const metadata: Metadata = {
   title: "Importar notas (XML)",
   robots: { index: false },
@@ -15,7 +14,7 @@ export default function Importar() {
     <>
       <Cabecalho />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <p className="text-sm font-medium text-marca-700">Prévia da área de assinante</p>
+        <p className="text-sm font-medium text-marca-700">Área de assinante</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight">CBS e IBS das notas do mês</h1>
         <p className="mt-2 text-suave">
           Envie os XMLs das suas notas de venda (NF-e e NFC-e) e veja o imposto da reforma em cada item, calculado pela
@@ -27,9 +26,7 @@ export default function Importar() {
           login, o resultado fica no histórico da sua conta (com a descrição dos produtos) e você pode apagar quando quiser.
         </p>
         <div className="mt-8">
-          <PortaoAssinante>
-            <Importador />
-          </PortaoAssinante>
+          <PortaoAssinante />
         </div>
       </main>
       <Rodape />

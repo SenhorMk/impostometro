@@ -53,7 +53,8 @@ async function abrirArquivos(arquivos: File[]): Promise<{ xmls: { nome: string; 
   return { xmls, rejeitadas };
 }
 
-export function Importador() {
+/** limiteNotas: quantas notas por lote esta pessoa pode mandar (o servidor decide; T37). */
+export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: number }) {
   const [notas, setNotas] = useState<NotaLida[]>([]);
   const [rejeitadas, setRejeitadas] = useState<Rejeitada[]>([]);
   const [lendo, setLendo] = useState(false);
@@ -98,7 +99,7 @@ export function Importador() {
         const r = lerNota(x.nome, x.texto);
         if (!r.ok) rej.push({ arquivo: r.arquivo, motivo: r.motivo });
         else if (r.nota.chave && vistas.has(r.nota.chave)) rej.push({ arquivo: x.nome, motivo: "Nota repetida (mesma chave de acesso de outro arquivo)." });
-        else if (lidas.length >= LIMITE_NOTAS) rej.push({ arquivo: x.nome, motivo: `Passou do limite de ${LIMITE_NOTAS} notas por lote.` });
+        else if (lidas.length >= limiteNotas) rej.push({ arquivo: x.nome, motivo: `Passou do limite de ${limiteNotas} notas por lote.` });
         else {
           vistas.add(r.nota.chave);
           lidas.push(r.nota);
@@ -211,7 +212,7 @@ export function Importador() {
           className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-borda bg-white px-6 py-12 text-center hover:border-marca-500"
         >
           <span className="text-lg font-semibold text-tinta">Escolha os XMLs das suas notas</span>
-          <span className="mt-1 text-sm text-suave">Vários arquivos .xml ou um .zip, até {LIMITE_NOTAS} notas (NF-e e NFC-e de venda)</span>
+          <span className="mt-1 text-sm text-suave">Vários arquivos .xml ou um .zip, até {limiteNotas} notas (NF-e e NFC-e de venda)</span>
           <span className="botao-primario mt-5 px-5 py-2.5 text-sm">Escolher arquivos</span>
           <input
             id="arquivos"

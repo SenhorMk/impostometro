@@ -139,7 +139,7 @@ Conferido num Postgres 17 local: a pessoa lê a própria assinatura, não conseg
 4. Na Vercel (Settings → Environment Variables), sem colocar nada no git:
    - `SUPABASE_SECRET_KEY`: chave secreta do Supabase (Settings → API Keys, `sb_secret_...`);
    - `ASAAS_API_KEY`, `ASAAS_AMBIENTE=sandbox`, `ASAAS_WEBHOOK_TOKEN`.
-   Com `ASAAS_API_KEY` e `SUPABASE_SECRET_KEY` presentes, a cobrança liga e `/importar` passa a exigir assinatura.
+   Com `ASAAS_API_KEY`, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` presentes e `MODO_ACESSO` vazio ou `assinatura`, a cobrança liga e `/importar` passa a exigir assinatura. Se faltar alguma chave, a importação fica **fechada** (nunca aberta). Para a prévia gratuita, escreva `MODO_ACESSO=previa`. Matriz completa em [`acesso.md`](acesso.md) (T37).
 5. Testar no sandbox: assinar, pagar a cobrança pelo painel do sandbox (o Asaas simula o pagamento), conferir que `/importar` libera; cancelar e conferir.
 6. **Teste real de R$ 1:** trocar para a chave de produção e `ASAAS_AMBIENTE=producao`, colocar `ASSINATURA_PRECO_CENTAVOS=100`, assinar com o próprio CPF, pagar com Pix, conferir, cancelar e **apagar** `ASSINATURA_PRECO_CENTAVOS` (volta a R$ 29).
 

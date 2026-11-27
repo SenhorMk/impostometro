@@ -30,3 +30,4 @@ Registro curto do que foi decidido, quando e por quê. Novas decisões entram no
 | 2026-11-25 | Site na Vercel, banco/login no Supabase | Supabase junta banco, login e arquivos em São Paulo. (O "motor Java separado" foi trocado pelo porte, acima) | decidido com o Mateus |
 | 2026-11-25 | Regime regular primeiro; Simples Nacional depois | a calculadora oficial do Simples ainda só cobre a 1ª faixa | recomendado |
 | 2026-11-25 | Fora do escopo: ORBITA | era só um exemplo do Mateus | decidido |
+| 2026-11-27 | Acesso à importação decidido por `MODO_ACESSO` no servidor; sem a variável e sem as chaves, a importação fica **fechada** (antes ficava aberta). Prévia gratuita só com `MODO_ACESSO=previa`, até 20 notas por vez | segredo faltando não pode liberar recurso pago por acidente (T37) | recomendado; Mateus aprova no PR |
