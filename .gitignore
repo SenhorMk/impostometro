@@ -3,3 +3,8 @@ calculadora/certs/*.crt
 calculadora/exemplos/saida/
 __pycache__/
 *.pyc
+
+# Variáveis de ambiente com segredos (nunca versionar). Só o .env.example vai para o git.
+.env
+.env.*
+!.env.example

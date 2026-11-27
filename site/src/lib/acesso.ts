@@ -18,6 +18,7 @@ export type LinhaAssinatura = Assinatura & {
   asaas_assinatura_id: string | null;
   link_pagamento: string | null;
   valor_centavos: number;
+  atualizado_em: string;
 };
 
 export async function assinaturaDe(usuarioId: string): Promise<LinhaAssinatura | null> {

@@ -5,9 +5,13 @@ import { buscarCodigos } from "@/lib/codigos";
 import { registrarBuscaSemResultado } from "@/lib/registro-buscas";
 import { dataDoCalculo } from "@/lib/motor";
 import type { RespostaBuscaOficial } from "@/lib/busca-oficial-tipos";
+import { dentroDoLimite, ipDoPedido, limitarPorIp } from "@/lib/limite";
 
 /** Busca somente no servidor; o banco oficial não entra no JavaScript do formulário. */
 export function GET(request: Request) {
+  // Segurança: a busca roda a cada letra digitada, então o limite é folgado.
+  const limite = limitarPorIp(request, "busca-oficial", 120);
+  if (limite) return limite;
   const q = new URL(request.url).searchParams.get("q")?.trim() ?? "";
   if (q.length < 2 || q.length > 120) {
     return Response.json({ mensagem: "Digite de 2 a 120 caracteres para buscar." }, { status: 400 });
@@ -19,7 +23,13 @@ export function GET(request: Request) {
     versaoTabela: VERSAO_TABELA_OFICIAL,
   };
   // Só registra quando nada achou nada: dicionário, nomes de NCM/NBS (T10, PR #5) e classificações.
-  if (resposta.resultados.length === 0 && buscarAtividades(q).length === 0 && buscarCodigos(q, 1).length === 0) {
+  // Segurança: no máximo 20 registros por IP a cada hora, para ninguém encher a tabela.
+  if (
+    resposta.resultados.length === 0 &&
+    buscarAtividades(q).length === 0 &&
+    buscarCodigos(q, 1).length === 0 &&
+    dentroDoLimite(`registro-busca:${ipDoPedido(request)}`, 20, 3_600_000)
+  ) {
     after(async () => {
       await registrarBuscaSemResultado(q, VERSAO_TABELA_OFICIAL, data);
     });

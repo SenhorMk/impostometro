@@ -1,3 +1,4 @@
+import { CorpoInvalido, lerJson, limitarPorIp } from "@/lib/limite";
 import { calcular } from "@/lib/motor";
 import type { PedidoCalculo } from "@/lib/tipos";
 
@@ -7,10 +8,17 @@ import type { PedidoCalculo } from "@/lib/tipos";
  * Valida tudo antes de chamar a calculadora oficial.
  */
 export async function POST(request: Request) {
+  // Segurança: no máximo 60 simulações por minuto por IP (uma pessoa de verdade faz poucas).
+  const limite = limitarPorIp(request, "calcular", 60);
+  if (limite) return limite;
   let corpo: Partial<PedidoCalculo>;
   try {
-    corpo = await request.json();
-  } catch {
+    corpo = (await lerJson(request, 4_096)) as Partial<PedidoCalculo>; // o pedido real tem ~150 bytes
+  } catch (e) {
+    const status = e instanceof CorpoInvalido ? e.status : 400;
+    return Response.json({ ok: false, estado: "ENTRADA_INVALIDA", mensagem: "Pedido inválido." }, { status });
+  }
+  if (!corpo || typeof corpo !== "object" || Array.isArray(corpo)) {
     return Response.json({ ok: false, estado: "ENTRADA_INVALIDA", mensagem: "Pedido inválido." }, { status: 400 });
   }
 
@@ -31,7 +39,7 @@ function validar(p: Partial<PedidoCalculo>): string | null {
   if (typeof p.cClassTrib !== "string" || !/^\d{6}$/.test(p.cClassTrib)) return "Classificação tributária inválida.";
   if (typeof p.valor !== "number" || !Number.isFinite(p.valor) || p.valor <= 0) return "Informe o valor da venda.";
   if (p.valor > 1_000_000_000) return "Valor muito alto para uma simulação.";
-  if (typeof p.municipio !== "number" || !Number.isInteger(p.municipio)) return "Escolha a cidade.";
+  if (typeof p.municipio !== "number" || !Number.isInteger(p.municipio) || p.municipio < 1000000 || p.municipio > 9999999) return "Escolha a cidade.";
   if (typeof p.uf !== "string" || !/^[A-Z]{2}$/.test(p.uf)) return "Escolha o estado.";
   if (p.data !== undefined && (typeof p.data !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(p.data))) return "Data inválida.";
   return null;

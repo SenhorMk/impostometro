@@ -53,6 +53,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T17 | Calcular o lote item a item | ✅ | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Planilha CSV para o contador |
 | T18 | Histórico de cálculos | 🟡 | `/conta/historico`: lista, reabrir com as versões e apagar. Falta rodar o SQL no Supabase |
 | T22 | Funil medido e checklist de lançamento | 🟡 | contadores por dia sem dado pessoal; checklist em [`lancamento.md`](lancamento.md); página `/contato` (e-mail em `CONTATO_EMAIL`). Falta rodar o SQL e os itens do Mateus no checklist |
+| SEG | Revisão de segurança severa | 🟡 | correções no código e SQL novo em revisão; Mateus roda o SQL e faz as tarefas de conta ([`seguranca.md`](seguranca.md)) |
 
 ## Depois do MVP (P2)
 

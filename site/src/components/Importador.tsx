@@ -11,7 +11,7 @@
 import { unzipSync } from "fflate";
 import { useMemo, useState } from "react";
 import type { ItemCalculado, NotaCalculada, NotaParaCalcular, RespostaLote } from "@/lib/lote";
-import { lerNota, type ItemNota, type NotaLida } from "@/lib/nfe";
+import { ErroZip, filtroXmlDoZip, lerNota, type ItemNota, type NotaLida } from "@/lib/nfe";
 import { calculoLote } from "@/lib/historico";
 import { salvarNoHistorico } from "@/lib/historico-navegador";
 import { cabecalhoLogin } from "@/lib/sessao";
@@ -36,12 +36,13 @@ async function abrirArquivos(arquivos: File[]): Promise<{ xmls: { nome: string; 
     const nome = f.name.toLowerCase();
     if (nome.endsWith(".zip")) {
       try {
-        const conteudo = unzipSync(new Uint8Array(await f.arrayBuffer()), { filter: (a) => a.name.toLowerCase().endsWith(".xml") });
+        // Segurança: o filtro recusa "zip bomba" antes de descompactar (src/lib/nfe.ts).
+        const conteudo = unzipSync(new Uint8Array(await f.arrayBuffer()), { filter: filtroXmlDoZip() });
         const nomes = Object.keys(conteudo);
         if (nomes.length === 0) rejeitadas.push({ arquivo: f.name, motivo: "O .zip não tem nenhum arquivo .xml." });
         for (const n of nomes) xmls.push({ nome: `${f.name} › ${n.split("/").pop()}`, texto: decodificar.decode(conteudo[n]) });
-      } catch {
-        rejeitadas.push({ arquivo: f.name, motivo: "Não conseguimos abrir este .zip." });
+      } catch (e) {
+        rejeitadas.push({ arquivo: f.name, motivo: e instanceof ErroZip ? e.message : "Não conseguimos abrir este .zip." });
       }
     } else if (nome.endsWith(".xml")) {
       xmls.push({ nome: f.name, texto: await f.text() });
