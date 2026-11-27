@@ -89,12 +89,12 @@ export function Resultado({ resultado, descricao, cidade }: Props) {
         </p>
 
         <div className="mt-5 rounded-xl bg-fundo p-4">
-          <p className="font-medium">Quer o total do mês, nota por nota?</p>
+          <p className="font-medium">Quer conhecer a análise das notas?</p>
           <p className="mt-1 text-sm text-suave">
-            Assinantes enviam os XMLs das notas e veem a CBS e o IBS de todas as vendas de uma vez.
+            Existe uma prévia para XMLs de NF-e e NFC-e. A assinatura, o histórico e o relatório ainda estão em preparação.
           </p>
           <Link href="/#planos" className="mt-3 inline-block text-sm font-semibold text-marca-700 underline">
-            Ver como funciona a assinatura
+            Ver o que está disponível
           </Link>
         </div>
       </div>

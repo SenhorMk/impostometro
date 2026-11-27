@@ -7,7 +7,7 @@ A prioridade é tornar o site confiável e utilizável, depois abrir a entrega p
 | Ticket | Marco | Estado | Issue |
 |---|---|---|---|
 | [T20](tickets/T20-seo-tecnico-e-medicao.md) · Publicar o domínio oficial com indexação verificável | A | 🟡 Configuração parcial; produção a conferir | https://github.com/SenhorMk/impostometro/issues/11 |
-| [T33](tickets/T33-site-claro-e-confiavel.md) · Apresentar um site claro e confiável com oferta verdadeira | A | ⏳ A fazer; aproveitar PR 7 | https://github.com/SenhorMk/impostometro/issues/10 |
+| [T33](tickets/T33-site-claro-e-confiavel.md) · Apresentar um site claro e confiável com oferta verdadeira | A | 🟡 Implementado e verificado localmente; revisão e publicação pendentes | https://github.com/SenhorMk/impostometro/issues/10 |
 | [T21](tickets/T21-termos-privacidade-e-aviso-nao-oficial.md) · Publicar identidade contato e informações de uso verdadeiras | A | 🟡 Textos existentes; revisão pendente | https://github.com/SenhorMk/impostometro/issues/12 |
 | [T38](tickets/T38-jornada-acessivel-e-sem-falhas.md) · Validar navegação cálculo e importação no celular e computador | A | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/13 |
 | [T07](tickets/T07-backup-diario-e-monitoramento.md) · Operar com verificação de saúde e recuperação dos dados | A | 🟡 Implementação proposta no PR 6 | https://github.com/SenhorMk/impostometro/issues/14 |

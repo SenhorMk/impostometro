@@ -9,9 +9,9 @@ export function Rodape() {
         <div>
           <p className="font-semibold text-tinta">{SITE.nome}</p>
           <p className="mt-2 max-w-md leading-relaxed">
-            Este site <strong>não é do governo</strong> e não tem ligação com a Receita Federal. Os cálculos usam a
-            calculadora de tributos publicada pela Receita Federal do Brasil como software livre (licença MIT,
-            Copyright © 2026 Receita Federal do Brasil), sem alterações. Os resultados são simulações e não
+            Este site <strong>não é do governo</strong> e não tem ligação com a Receita Federal. Os cálculos usam
+            um porte para TypeScript da calculadora de tributos publicada pela Receita Federal do Brasil como software livre (licença MIT,
+            Copyright © 2026 Receita Federal do Brasil). Os resultados são simulações e não
             substituem a orientação do seu contador.
           </p>
         </div>
@@ -21,6 +21,7 @@ export function Rodape() {
             <li><Link href="/#calculadora" className="hover:text-tinta">Calculadora</Link></li>
             <li><Link href="/artigos" className="hover:text-tinta">Guias da reforma</Link></li>
             <li><Link href="/glossario" className="hover:text-tinta">Glossário</Link></li>
+            <li><Link href="/sobre" className="hover:text-tinta">Sobre e contato</Link></li>
             <li><Link href="/#planos" className="hover:text-tinta">Planos</Link></li>
             <li><Link href="/entrar" className="hover:text-tinta">Entrar</Link></li>
           </ul>

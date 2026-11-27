@@ -39,7 +39,7 @@ A divulgação gratuita e a abertura da assinatura têm critérios separados no 
 | [T20](T20-seo-tecnico-e-medicao.md) | Publicar o domínio oficial com indexação verificável | Lançamento confiável | A | P0 gratuito | A estimar | 🟡 Configuração parcial; produção a conferir |
 | [T21](T21-termos-privacidade-e-aviso-nao-oficial.md) | Publicar identidade contato e informações de uso verdadeiras | Lançamento confiável | A | P0 gratuito | A estimar | 🟡 Textos existentes; revisão pendente |
 | [T22](T22-funil-medido-e-checklist-de-lancamento.md) | Medir os primeiros usos e recolher feedback sem recrutar empresas | Lançamento confiável | A | P1 gratuito | A estimar | 🟡 Funil proposto no PR 6 |
-| [T33](T33-site-claro-e-confiavel.md) | Apresentar um site claro e confiável com oferta verdadeira | Lançamento confiável | A | P0 gratuito | A estimar | ⏳ A fazer; aproveitar PR 7 |
+| [T33](T33-site-claro-e-confiavel.md) | Apresentar um site claro e confiável com oferta verdadeira | Lançamento confiável | A | P0 gratuito | A estimar | 🟡 Implementado e verificado localmente; revisão e publicação pendentes |
 | [T38](T38-jornada-acessivel-e-sem-falhas.md) | Validar navegação cálculo e importação no celular e computador | Lançamento confiável | A | P0 gratuito e assinatura | A estimar | ⏳ A fazer |
 | [T37](T37-acesso-gratis-previa-e-assinatura.md) | Separar acesso gratuito prévia e assinatura no servidor | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
 | [T34](T34-periodo-e-integridade-das-notas.md) | Preparar o período e mostrar a cobertura real das notas | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |

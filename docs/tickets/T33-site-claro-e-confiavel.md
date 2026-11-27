@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | ⏳ A fazer; aproveitar PR 7 |
+| Status | 🟡 Implementado e verificado localmente; revisão e publicação pendentes |
 | Marco | A |
 | Prioridade | P0 gratuito |
 | Pontos | A estimar após revisar o código existente |
@@ -25,13 +25,13 @@ O PR 7 propõe melhorias de design, demonstração e SEO. Revisar e reaproveitar
 
 ## Critérios de aceite
 
-- [ ] A primeira tela explica a tarefa e oferece uma chamada principal para usar a ferramenta.
-- [ ] Exemplo de resultado usa o motor e mostra premissas, data e status simulado; não há valores tributários fixos digitados para a demonstração.
-- [ ] Texto e botões refletem o estado real: assinatura indisponível não leva a um checkout quebrado nem promete recurso ainda em PR.
-- [ ] Planos separam claramente o que está disponível, o que é prévia e o que será pago, sem depoimentos, contagens de clientes ou garantias inventados.
-- [ ] Escopo NF-e/NFC-e e regime regular fica claro no importador; serviços na calculadora manual não são apresentados como suporte à importação de NFS-e.
-- [ ] Navegação, rodapé e páginas principais incluem caminho para explicação, termos, privacidade e contato real do T21.
-- [ ] Revisar computador e celular e registrar capturas antes/depois, incluindo movimento reduzido quando houver animação.
+- [x] A primeira tela explica a tarefa e oferece uma chamada principal para usar a ferramenta.
+- [x] Exemplo de resultado usa o motor e mostra premissas, data e status simulado; não há valores tributários fixos digitados para a demonstração.
+- [x] Texto e botões refletem o estado real: assinatura indisponível não leva a um checkout quebrado nem promete recurso ainda em PR.
+- [x] Planos separam claramente o que está disponível, o que é prévia e o que será pago, sem depoimentos, contagens de clientes ou garantias inventados.
+- [x] Escopo NF-e/NFC-e e regime regular fica claro no importador; serviços na calculadora manual não são apresentados como suporte à importação de NFS-e.
+- [x] Navegação, rodapé e páginas principais incluem caminho para explicação, termos, privacidade e contato real do T21.
+- [x] Revisar computador e celular e registrar capturas antes/depois, incluindo movimento reduzido quando houver animação.
 
 ## Verificação
 
@@ -57,3 +57,9 @@ Não contratar recursos pagos nem enviar mensagens a terceiros sem autorização
 
 ---
 [← Todos os tickets](README.md) · [Plano de implementação](../plano-implementacao.md)
+
+## Evidências desta implementação
+
+Verificação no build de produção local: 360, 390 e 1366 px, sem rolagem horizontal. Busca e simulação de pizzaria, R$ 1.000 em São Paulo, retornaram R$ 67,80. O exemplo escolar é calculado pelo serviço, com data, versões e fontes. Lint, tipos, 55 testes e build passaram. Capturas e limites estão no [diário](../diario/2026-11-26-t33.md) e em [evidências](../evidencias/t33/README.md).
+
+Os checks acima registram a implementação local, sem marcar deploy público ou revisão jurídica como feitos. A issue permanece aberta até revisão e publicação.

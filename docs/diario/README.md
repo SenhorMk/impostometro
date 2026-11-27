@@ -14,3 +14,4 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 26/11/2026 | T14: assinatura mensal pelo Asaas | [Entrega T14](2026-11-26-t14.md) |
 | 26/11/2026 | Pesquisa e planejamento da assinatura | [Estratégia comercial](2026-11-26-estrategia-assinatura.md) |
 | 26/11/2026 | Tickets para site confiável, assinatura e aquisição orgânica | [Plano de implementação](2026-11-26-plano-tickets.md) |
+| 26/11/2026 | T33: apresentação, oferta e contato com evidências visuais | [Entrega T33](2026-11-26-t33.md) |

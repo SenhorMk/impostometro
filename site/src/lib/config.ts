@@ -6,8 +6,9 @@ export const SITE = {
   // Nome provisório. "Impostômetro" já é marca conhecida da Associação Comercial de SP,
   // então não usamos esse nome no site. Trocar quando o T04 decidir.
   nome: "Calcula Reforma",
+  contatoUrl: "https://github.com/SenhorMk/impostometro/issues/new",
   descricao:
-    "Descubra em 2 minutos quanto sua empresa vai pagar de CBS e IBS em 2027. Grátis, sem cadastro e com a conta aberta, usando a calculadora oficial da Receita Federal.",
+    "Simule a CBS e o IBS de uma venda em 2027 no regime regular. Grátis, sem cadastro, com alíquotas, fontes e premissas para conferir.",
 };
 
 export const PLANOS = {
