@@ -17,7 +17,7 @@ Uma skill orienta o trabalho do agente. Ela não instala o serviço, não conect
 | `supabase:supabase` | Trabalhar com banco, Auth, Storage e políticas de acesso | T05, T08, T13, T15–T18 | Reservada para a integração Supabase |
 | `supabase:supabase-postgres-best-practices` | Projetar e revisar consultas, índices e esquema | T08, T15, T18 | Reservada para o banco |
 | `domain-modeling` | Esclarecer termos do domínio e registrar ADRs ou CONTEXT.md | mudanças de modelo | Disponível; não necessária ao conteúdo desta entrega |
-| `pdf:pdf` | Criar e conferir visualmente relatórios em PDF | T27 | Disponível para depois do MVP |
+| `pdf:pdf` | Criar e conferir visualmente relatórios em PDF | T27 | Prevista para a entrega paga mínima |
 
 As skills de Vercel e Supabase acima são fornecidas pelos plugins conectados ao ambiente. Seus nomes são os identificadores do catálogo local; não são nomes para instalar pelo catálogo `openai/skills`. Os `SKILL.md` das skills de React e verificação consultados vieram do pacote Vercel 0.54.1. `humanizer` consultada: versão 3.0.0. `skill-installer`: skill de sistema do Codex.
 

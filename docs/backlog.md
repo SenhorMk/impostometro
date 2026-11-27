@@ -1,5 +1,34 @@
 # Backlog e status
 
+## Plano vigente para implementar
+
+A prioridade é tornar o site confiável e utilizável, depois abrir a entrega paga e aprender com aquisição orgânica. O [plano de implementação](plano-implementacao.md) é a ordem vigente; não há requisito de dez empresas, parceiros ou verba de anúncio.
+
+| Ticket | Marco | Estado | Issue |
+|---|---|---|---|
+| [T20](tickets/T20-seo-tecnico-e-medicao.md) · Publicar o domínio oficial com indexação verificável | A | 🟡 Configuração parcial; produção a conferir | A criar |
+| [T33](tickets/T33-site-claro-e-confiavel.md) · Apresentar um site claro e confiável com oferta verdadeira | A | ⏳ A fazer; aproveitar PR 7 | A criar |
+| [T21](tickets/T21-termos-privacidade-e-aviso-nao-oficial.md) · Publicar identidade contato e informações de uso verdadeiras | A | 🟡 Textos existentes; revisão pendente | A criar |
+| [T38](tickets/T38-jornada-acessivel-e-sem-falhas.md) · Validar navegação cálculo e importação no celular e computador | A | ⏳ A fazer | A criar |
+| [T07](tickets/T07-backup-diario-e-monitoramento.md) · Operar com verificação de saúde e recuperação dos dados | A | 🟡 Implementação proposta no PR 6 | A criar |
+| [T13](tickets/T13-login-com-link-por-e-mail.md) · Validar o acesso real por e-mail e esconder provedores indisponíveis | B | 🟡 Código e SMTP existentes; sessão real pendente | A criar |
+| [T15](tickets/T15-cadastro-minimo-da-empresa.md) · Validar empresa e isolamento entre contas reais de teste | B | 🟡 Formulário e tabela existentes; integração a validar | A criar |
+| [T14](tickets/T14-assinatura-recorrente-e-limite-do-plano.md) · Concluir Asaas com pagamento acesso e cancelamento verificáveis | B | 🟡 Código existente; Asaas completo não validado | A criar |
+| [T37](tickets/T37-acesso-gratis-previa-e-assinatura.md) · Separar acesso gratuito prévia e assinatura no servidor | B | ⏳ A fazer | A criar |
+| [T34](tickets/T34-periodo-e-integridade-das-notas.md) · Preparar o período e mostrar a cobertura real das notas | B | ⏳ A fazer | A criar |
+| [T35](tickets/T35-premissas-e-classificacoes-confirmadas.md) · Registrar premissas e confirmação das classificações | B | ⏳ A fazer | A criar |
+| [T18](tickets/T18-historico-de-calculos.md) · Integrar histórico com reabertura fiel e isolamento | B | 🟡 Código proposto no PR 6 | A criar |
+| [T27](tickets/T27-relatorio-revisavel-do-periodo.md) · Entregar relatório revisável do período em PDF e planilha | B | ⏳ A fazer | A criar |
+| [T36](tickets/T36-cenarios-versionados-e-comparacao.md) · Comparar cenários da mesma análise preservando premissas | C | ⏳ A fazer | A criar |
+| [T22](tickets/T22-funil-medido-e-checklist-de-lancamento.md) · Medir os primeiros usos e recolher feedback sem recrutar empresas | A | 🟡 Funil proposto no PR 6 | A criar |
+| [T30](tickets/T30-conteudo-util-e-divulgacao-organica.md) · Publicar conteúdo útil e preparar divulgação orgânica sustentável | C | 🟡 Páginas propostas no PR 7; revisão pendente | A criar |
+| [T39](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) · Registrar os critérios e evidências dos dois lançamentos | A | ⏳ A fazer | A criar |
+
+Os quadros originais abaixo registram o planejamento anterior e serão reconciliados conforme cada entrega; a ordem desta revisão prevalece. Nenhum critério novo foi marcado como concluído nesta decomposição.
+
+## Histórico do planejamento
+
+
 **Cada ticket tem um arquivo em [`docs/tickets/`](tickets/README.md)**, com história, critérios de aceite (marcados quando prontos), prioridade, pontos e dependências. Este arquivo é o **resumo do status**: atualize-o junto com o arquivo do ticket em cada pull request. (Fonte original: [Backlog do MVP](https://claude.ai/artifact/Hr4U1WJddcMCdYTgVGzvJy).)
 
 Legenda: ✅ feito · 🟡 em andamento ou parcial · ⏳ a fazer · 🧑 depende do Mateus
@@ -56,12 +85,12 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 
 ## Depois do MVP (P2)
 
-T23 aviso automático de versão nova da Receita (abre tarefa para um agente atualizar o porte) · T24 Simples Nacional · T25 NFS-e · T26 créditos das compras · T27 PDF para o contador · T28 alertas · T29 painel de alíquotas · T30 páginas por setor/cidade · T31 comparar com o imposto atual · T32 painel do contador.
+T23 aviso automático de versão nova da Receita (abre tarefa para um agente atualizar o porte) · T24 Simples Nacional · T25 NFS-e · T26 créditos das compras · T28 alertas · T29 painel de alíquotas · T31 comparar com o imposto atual · T32 painel do contador.
 
 ## Próximo passo recomendado
 
-1. 🧑 Mateus: decidir nome, domínio e preço (T04).
-2. Subir o site na Vercel ([`deploy.md`](deploy.md)) → calculadora grátis no ar. Não precisa mais de Fly.io.
-3. T20: configurar URL de produção, Search Console e medição. T19: artigos e glossário integrados; revisão contábil pendente.
-4. T10: concluir persistência de buscas sem resultado quando o banco do T05 existir.
-5. T13 + T15 (login e empresa) com Supabase.
+1. T33: revisar apresentação e confiança aproveitando o PR 7.
+2. T20 e T21: concluir indexação, endereço oficial e informações de uso e contato.
+3. T07 e T38: verificar operação e jornada gratuita; registrar o marco A no T39.
+4. Seguir o marco B para login, empresa, controle de acesso, Asaas, notas e relatório.
+5. T22 e T30: observar os primeiros usos e divulgar conteúdo útil organicamente.

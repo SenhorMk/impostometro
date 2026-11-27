@@ -1,14 +1,20 @@
 # Tickets do MVP
 
+## Sequência revisada para lançamento orgânico
+
+A ordem vigente está no [plano de implementação](../plano-implementacao.md), com marcos gratuito e pago separados. Os arquivos abaixo preservam os identificadores existentes; T27 e T30 foram promovidos e T33 a T39 detalham os novos gaps do relatório. Pontos e datas do planejamento original são históricos, sem compromisso atual. Não exigir recrutamento de empresas ou compra de serviços para começar.
+
+## Catálogo
+
 Um arquivo por ticket, com a história, os critérios de aceite (marcados quando prontos), a prioridade, os pontos e as dependências. Fonte original: o [Backlog do MVP](https://claude.ai/artifact/Hr4U1WJddcMCdYTgVGzvJy); **esta pasta é a versão oficial e atualizada**, junto com o resumo em [`../backlog.md`](../backlog.md).
 
 **Como usar:** ao trabalhar num ticket, marque os critérios cumpridos (`- [x]`), mude o Status no arquivo e na tabela abaixo, e atualize o [`backlog.md`](../backlog.md) no mesmo pull request. Ticket novo: copie um arquivo, use o próximo número livre e adicione aqui.
 
-Legenda: P0 = sem isso não lança · P1 = importante, pode atrasar uns dias · P2 = depois do MVP. 1 ponto ≈ meio dia de uma pessoa em tempo integral. Status: ✅ feito · 🟡 parcial · ⏳ a fazer · 🧑 depende do Mateus.
+Legenda: P0 = sem isso não lança · P1 = importante, pode atrasar uns dias · P2 = depois do MVP. Pontos antigos precisam de reestimativa; não equivalem a prazo confirmado. Status: ✅ feito · 🟡 parcial · ⏳ a fazer · 🧑 depende do Mateus.
 
-Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (assinatura + XML): meta 25/01/2027.
+A divulgação gratuita e a abertura da assinatura têm critérios separados no T39; datas serão definidas a partir das entregas verificadas.
 
-| ID | Ticket | Épico | Sprint | Prioridade | Pontos | Status |
+| ID | Ticket | Épico | Marco / sprint original | Prioridade | Pontos | Status |
 |---|---|---|---|---|---|---|
 | [T01](T01-rodar-o-motor-oficial-e-medir.md) | Rodar o motor oficial e medir RAM e tempo | E0 Estudo e decisões | S0 | P0 | 3 | ✅ Feito |
 | [T02](T02-montar-30-operacoes-de-referencia-testes.md) | Montar 30 operações de referência (testes dourados) | E0 Estudo e decisões | S0 | P0 | 3 | ✅ Feito |
@@ -16,38 +22,36 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | [T04](T04-decisoes-do-mateus-nome-dominio-preco.md) | Decisões do Mateus: nome, domínio, preço e regime | E0 Estudo e decisões | S0 | P0 | 1 | 🧑 Depende do Mateus |
 | [T05](T05-colocar-no-ar-vercel-e-supabase.md) | Colocar no ar: Vercel e Supabase | E1 Infraestrutura | S1 | P0 | 5 | 🟡 Parcial (site no ar na Vercel) |
 | [T06](T06-repositorio-ci-e-deploy-automatico.md) | Repositório, CI e deploy automático | E1 Infraestrutura | S1 | P0 | 3 | 🟡 Parcial |
-| [T07](T07-backup-diario-e-monitoramento.md) | Backup diário e monitoramento | E1 Infraestrutura | S3 | P0 | 2 | ⏳ A fazer |
+| [T07](T07-backup-diario-e-monitoramento.md) | Operar com verificação de saúde e recuperação dos dados | Lançamento confiável | A | P0 gratuito básico; P0 assinatura recuperação | A estimar | 🟡 Implementação proposta no PR 6 |
 | [T08](T08-servico-de-calculo.md) | Serviço de cálculo | E2 Motor de cálculo | S1 | P0 | 5 | ✅ Feito (falta gravar no banco) |
 | [T08b](T08b-porte-da-calculadora-para-typescript-roda.md) | Porte da calculadora para TypeScript (roda dentro do site) | E2 Motor de cálculo | S1 | P0 | 8 | ✅ Feito |
 | [T09](T09-testes-dourados-no-ci.md) | Testes dourados no CI | E2 Motor de cálculo | S2 | P0 | 2 | ✅ Feito |
 | [T10](T10-busca-o-que-voce-vende.md) | Busca “o que você vende?” | E3 Calculadora grátis | S2 | P0 | 5 | ✅ Busca e registro validados; deploy no T05 |
 | [T11](T11-simulacao-rapida-sem-cadastro.md) | Simulação rápida sem cadastro | E3 Calculadora grátis | S2 | P0 | 5 | ✅ Feito |
 | [T12](T12-como-chegamos-nisso.md) | “Como chegamos nisso” | E3 Calculadora grátis | S3 | P0 | 3 | ✅ Feito |
-| [T13](T13-login-com-link-por-e-mail.md) | Login com link por e-mail e Google | E4 Conta e assinatura | S4 | P0 | 3 | 🟡 Em revisão |
-| [T14](T14-assinatura-recorrente-e-limite-do-plano.md) | Assinatura recorrente e limite do plano grátis | E4 Conta e assinatura | S5 | P0 | 5 | 🟡 Em revisão |
-| [T15](T15-cadastro-minimo-da-empresa.md) | Cadastro mínimo da empresa | E4 Conta e assinatura | S4 | P0 | 2 | 🟡 Em revisão |
+| [T13](T13-login-com-link-por-e-mail.md) | Validar o acesso real por e-mail e esconder provedores indisponíveis | Lançamento confiável | B | P0 assinatura | A estimar | 🟡 Código e SMTP existentes; sessão real pendente |
+| [T14](T14-assinatura-recorrente-e-limite-do-plano.md) | Concluir Asaas com pagamento acesso e cancelamento verificáveis | Lançamento confiável | B | P0 assinatura | A estimar | 🟡 Código existente; Asaas completo não validado |
+| [T15](T15-cadastro-minimo-da-empresa.md) | Validar empresa e isolamento entre contas reais de teste | Lançamento confiável | B | P0 assinatura | A estimar | 🟡 Formulário e tabela existentes; integração a validar |
 | [T16](T16-upload-e-leitura-de-xml-de.md) | Upload e leitura de XML de NF-e/NFC-e | E5 Importação de XML | S4 | P0 | 5 | 🟡 Em revisão |
 | [T17](T17-calcular-o-lote-item-a-item.md) | Calcular o lote item a item | E5 Importação de XML | S5 | P0 | 5 | 🟡 Em revisão |
-| [T18](T18-historico-de-calculos.md) | Histórico de cálculos | E4 Conta e assinatura | S6 | P1 | 3 | ⏳ A fazer |
+| [T18](T18-historico-de-calculos.md) | Integrar histórico com reabertura fiel e isolamento | Lançamento confiável | B | P0 assinatura | A estimar | 🟡 Código proposto no PR 6 |
 | [T19](T19-5-artigos-base-e-glossario.md) | 5 artigos base e glossário | E6 Conteúdo e SEO | S3 | P1 | 3 | 🟡 Implementado; revisão contábil pendente |
-| [T20](T20-seo-tecnico-e-medicao.md) | SEO técnico e medição | E6 Conteúdo e SEO | S3 | P0 | 2 | 🟡 Parcial |
-| [T21](T21-termos-privacidade-e-aviso-nao-oficial.md) | Termos, privacidade e aviso “não oficial” | E7 Lançamento | S3 | P0 | 2 | 🟡 Parcial |
-| [T22](T22-funil-medido-e-checklist-de-lancamento.md) | Funil medido e checklist de lançamento | E7 Lançamento | S6 | P1 | 2 | ⏳ A fazer |
+| [T20](T20-seo-tecnico-e-medicao.md) | Publicar o domínio oficial com indexação verificável | Lançamento confiável | A | P0 gratuito | A estimar | 🟡 Configuração parcial; produção a conferir |
+| [T21](T21-termos-privacidade-e-aviso-nao-oficial.md) | Publicar identidade contato e informações de uso verdadeiras | Lançamento confiável | A | P0 gratuito | A estimar | 🟡 Textos existentes; revisão pendente |
+| [T22](T22-funil-medido-e-checklist-de-lancamento.md) | Medir os primeiros usos e recolher feedback sem recrutar empresas | Lançamento confiável | A | P1 gratuito | A estimar | 🟡 Funil proposto no PR 6 |
+| [T33](T33-site-claro-e-confiavel.md) | Apresentar um site claro e confiável com oferta verdadeira | Lançamento confiável | A | P0 gratuito | A estimar | ⏳ A fazer; aproveitar PR 7 |
+| [T38](T38-jornada-acessivel-e-sem-falhas.md) | Validar navegação cálculo e importação no celular e computador | Lançamento confiável | A | P0 gratuito e assinatura | A estimar | ⏳ A fazer |
+| [T37](T37-acesso-gratis-previa-e-assinatura.md) | Separar acesso gratuito prévia e assinatura no servidor | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
+| [T34](T34-periodo-e-integridade-das-notas.md) | Preparar o período e mostrar a cobertura real das notas | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
+| [T35](T35-premissas-e-classificacoes-confirmadas.md) | Registrar premissas e confirmação das classificações | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
+| [T27](T27-relatorio-revisavel-do-periodo.md) | Entregar relatório revisável do período em PDF e planilha | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
+| [T36](T36-cenarios-versionados-e-comparacao.md) | Comparar cenários da mesma análise preservando premissas | Lançamento confiável | C | P1 após primeira entrega paga | A estimar | ⏳ A fazer |
+| [T30](T30-conteudo-util-e-divulgacao-organica.md) | Publicar conteúdo útil e preparar divulgação orgânica sustentável | Lançamento confiável | C | P1 gratuito | A estimar | 🟡 Páginas propostas no PR 7; revisão pendente |
+| [T39](T39-criterios-de-lancamento-gratuito-e-pago.md) | Registrar os critérios e evidências dos dois lançamentos | Lançamento confiável | A | P0 por marco | A estimar | ⏳ A fazer |
 
-## Sprints
+## Marcos de implementação
 
-| Sprint | Datas | Meta | Tickets |
-|---|---|---|---|
-| S0 | 26/11 a 02/12/2026 | motor rodando, medido e com testes; decisões tomadas | T01, T02, T03, T04 |
-| S1 | 03/12 a 09/12 | site no ar com domínio, chamando a calculadora | T05, T06, T08, T08b |
-| S2 | 10/12 a 16/12 | calculadora grátis de ponta a ponta | T09, T10, T11 |
-| S3 | 17/12 a 23/12 | **Lançamento 1**: calculadora grátis pública, conteúdo e aviso legal | T12, T19, T20, T21, T07 |
-| Pausa | 24/12 a 04/01/2027 | festas; só correções | — |
-| S4 | 05/01 a 11/01/2027 | conta, empresa e leitura de XML | T13, T15, T16 |
-| S5 | 12/01 a 18/01 | cobrança e cálculo do lote | T14, T17 |
-| S6 | 19/01 a 25/01 | **Lançamento 2**: assinatura aberta | T18, T22 |
-
-Caminho crítico: T01 → T08 → T11 → T12 (Lançamento 1) e T13 → T16 → T17, com T14 em paralelo (Lançamento 2). O T04 (domínio) trava o T05.
+A ordem, dependências e evidências dos marcos A, B e C estão no [plano de implementação](../plano-implementacao.md). As datas originais não regem esta revisão.
 
 ## Depois do MVP (P2)
 
@@ -57,9 +61,7 @@ Caminho crítico: T01 → T08 → T11 → T12 (Lançamento 1) e T13 → T16 → 
 | T24 | Motor do Simples Nacional | a calculadora oficial ainda usa só a primeira faixa do Simples |
 | T25 | Importar NFS-e | o padrão varia por município; NF-e e NFC-e cobrem comércio primeiro |
 | T26 | Estimativa mensal com créditos das compras | exige XMLs de compra e a soma débito menos crédito, que a calculadora não faz |
-| T27 | Relatório em PDF para o contador | útil, mas não decide a primeira venda |
 | T28 | Alertas por e-mail quando a lei ou a alíquota muda | precisa do T23 e de assinantes |
 | T29 | Painel de administração de alíquotas | no MVP basta o arquivo versionado do T03 |
-| T30 | Páginas por setor e por cidade para SEO | depois que os artigos mostrarem quais buscas trazem visitas |
 | T31 | Comparar com o imposto atual (PIS, Cofins, ICMS, ISS) | lógica toda nossa; a calculadora oficial não faz |
 | T32 | Painel do contador com várias empresas | segundo público; quando houver contadores interessados |

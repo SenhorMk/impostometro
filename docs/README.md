@@ -4,6 +4,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 
 | Documento | Conteúdo |
 |---|---|
+| [Plano de implementação](plano-implementacao.md) | Ordem dos tickets, marcos gratuito e pago, dependências e evidências |
 | [Tickets](tickets/README.md) | Histórias, critérios de aceite, dependências e status |
 | [Arquitetura](arquitetura.md) | Componentes, fluxo de cálculo e vocabulário técnico |
 | [Decisões](decisoes.md) | Escolhas e seus motivos |
