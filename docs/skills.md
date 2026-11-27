@@ -45,3 +45,5 @@ Aplicação no T10: `vercel:react-best-practices` foi usada para revisar o formu
 - Antes de usar uma nova skill, leia seu `SKILL.md` e confira compatibilidade com o ambiente. Siga a autorização já dada pelo usuário e as regras de `AGENTS.md`.
 - Registre no diário quais skills foram usadas de fato. Uma skill listada como candidata não representa auditoria executada.
 - Para legislação e cálculo, confirme fontes primárias, mantenha a paridade do motor e solicite revisão contábil quando houver parceiro. Skills de escrita e programação não substituem essa revisão.
+
+Design e SEO (26/11/2026, Claude): busca no catálogo por landing page, SEO, motion e conversão sem resultado novo. Usadas `design:design-critique`, `design:ux-copy` e `design:accessibility-review`. Detalhes no [diário de design e SEO](diario/2026-11-26-design-e-seo.md).
