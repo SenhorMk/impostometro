@@ -7,11 +7,17 @@
  * e jogar fora o que é do cliente final (nome, CPF, endereço). Para o servidor só
  * vão os dados fiscais de cada item (NCM, valor, quantidade, classificação, data e
  * município), em pedidos de até 50 notas.
+ *
+ * T34: antes de calcular, a análise é "preparada" (src/lib/preparo.ts): empresa, mês,
+ * notas repetidas, canceladas, de outra empresa ou de outro mês ficam de fora COM motivo,
+ * e a pessoa vê se a cobertura é parcial. Dá para somar arquivos de mais de um envio.
  */
 import { unzipSync } from "fflate";
 import { useMemo, useState } from "react";
+import { dataBR } from "@/lib/formato";
 import type { ItemCalculado, NotaCalculada, NotaParaCalcular, RespostaLote } from "@/lib/lote";
-import { ErroZip, filtroXmlDoZip, lerNota, type ItemNota, type NotaLida } from "@/lib/nfe";
+import { ErroZip, filtroXmlDoZip, lerNota, type EventoNota, type ItemNota, type NotaLida } from "@/lib/nfe";
+import { documentoLegivel, mesLegivel, nomeDoMotivo, prepararAnalise, type Escopo, type MotivoFora } from "@/lib/preparo";
 import { calculoLote } from "@/lib/historico";
 import { salvarNoHistorico } from "@/lib/historico-navegador";
 import { cabecalhoLogin } from "@/lib/sessao";
@@ -55,8 +61,11 @@ async function abrirArquivos(arquivos: File[]): Promise<{ xmls: { nome: string; 
 
 /** limiteNotas: quantas notas por lote esta pessoa pode mandar (o servidor decide; T37). */
 export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: number }) {
-  const [notas, setNotas] = useState<NotaLida[]>([]);
+  // Tudo que foi lido (de um ou mais envios). O que entra na conta sai do "preparo" abaixo.
+  const [lidas, setLidas] = useState<NotaLida[]>([]);
+  const [eventos, setEventos] = useState<EventoNota[]>([]);
   const [rejeitadas, setRejeitadas] = useState<Rejeitada[]>([]);
+  const [escopo, setEscopo] = useState<Escopo>({ empresa: null, periodo: null });
   const [lendo, setLendo] = useState(false);
   const [infoCodigos, setInfoCodigos] = useState<Record<string, InfoCodigo>>({});
   const [escolhas, setEscolhas] = useState<Record<string, string>>({});
@@ -64,6 +73,12 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
   const [progresso, setProgresso] = useState<{ feitas: number; total: number } | null>(null);
   const [resultado, setResultado] = useState<LoteCalculado | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+
+  const preparo = useMemo(
+    () => prepararAnalise({ lidas, eventos, escopo, limiteNotas, arquivosNaoLidos: rejeitadas.length }),
+    [lidas, eventos, escopo, limiteNotas, rejeitadas.length],
+  );
+  const notas = preparo.aceitas;
 
   /** NCMs dos itens que vieram sem cClassTrib, com quantos itens cada um tem. */
   const aClassificar = useMemo(() => {
@@ -78,9 +93,8 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
     return [...m.values()].sort((a, b) => b.itens - a.itens);
   }, [notas]);
 
-  const totalItens = notas.reduce((s, n) => s + n.itens.length, 0);
-
-  async function escolherArquivos(lista: FileList | null) {
+  /** somar = juntar com o que já foi enviado (repetidas são detectadas pela chave). */
+  async function escolherArquivos(lista: FileList | null, somar = false) {
     const arquivos = Array.from(lista ?? []);
     if (arquivos.length === 0) return;
     setErro(null);
@@ -93,26 +107,29 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
     setLendo(true);
     try {
       const { xmls, rejeitadas: rej } = await abrirArquivos(arquivos);
-      const lidas: NotaLida[] = [];
-      const vistas = new Set<string>();
+      const novas: NotaLida[] = [];
+      const novosEventos: EventoNota[] = [];
       for (const x of xmls) {
         const r = lerNota(x.nome, x.texto);
-        if (!r.ok) rej.push({ arquivo: r.arquivo, motivo: r.motivo });
-        else if (r.nota.chave && vistas.has(r.nota.chave)) rej.push({ arquivo: x.nome, motivo: "Nota repetida (mesma chave de acesso de outro arquivo)." });
-        else if (lidas.length >= limiteNotas) rej.push({ arquivo: x.nome, motivo: `Passou do limite de ${limiteNotas} notas por lote.` });
-        else {
-          vistas.add(r.nota.chave);
-          lidas.push(r.nota);
-        }
+        if (r.ok) novas.push(r.nota);
+        else if (r.evento) novosEventos.push(r.evento);
+        else rej.push({ arquivo: r.arquivo, motivo: r.motivo });
       }
-      setNotas(lidas);
-      setRejeitadas(rej);
+      const todas = somar ? [...lidas, ...novas] : novas;
+      setLidas(todas);
+      setEventos(somar ? [...eventos, ...novosEventos] : novosEventos);
+      setRejeitadas(somar ? [...rejeitadas, ...rej] : rej);
+      if (!somar) setEscopo({ empresa: null, periodo: null });
 
-      const ncms = [...new Set(lidas.flatMap((n) => n.itens.filter(precisaClassificar).map((i) => i.ncm)))];
-      setEscolhas(Object.fromEntries(ncms.map((c) => [c, "000001"])));
-      if (ncms.length > 0) {
-        const r = await fetch(`/api/codigos?codigos=${ncms.slice(0, 500).join(",")}`);
-        if (r.ok) setInfoCodigos(await r.json());
+      const ncms = [...new Set(todas.flatMap((n) => n.itens.filter(precisaClassificar).map((i) => i.ncm)))];
+      const novosNcms = ncms.filter((c) => !(c in infoCodigos) || !somar);
+      setEscolhas((antes) => Object.fromEntries(ncms.map((c) => [c, (somar && antes[c]) || "000001"])));
+      if (novosNcms.length > 0) {
+        const r = await fetch(`/api/codigos?codigos=${novosNcms.slice(0, 500).join(",")}`);
+        if (r.ok) {
+          const info = await r.json();
+          setInfoCodigos((antes) => (somar ? { ...antes, ...info } : info));
+        }
       }
     } catch (e) {
       console.error(e);
@@ -196,8 +213,15 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
     void salvarNoHistorico(calculoLote({ notas: final, lidas: notas, ...versoes }));
   }
 
+  function mudarEscopo(novo: Partial<Escopo>) {
+    setEscopo({ ...preparo.escopo, ...novo });
+    setResultado(null);
+  }
+
   function recomecar() {
-    setNotas([]);
+    setLidas([]);
+    setEventos([]);
+    setEscopo({ empresa: null, periodo: null });
     setRejeitadas([]);
     setResultado(null);
     setConfirmado(false);
@@ -206,7 +230,7 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
 
   return (
     <div className="space-y-6">
-      {notas.length === 0 && !lendo && (
+      {lidas.length === 0 && !lendo && (
         <label
           htmlFor="arquivos"
           className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-borda bg-white px-6 py-12 text-center hover:border-marca-500"
@@ -228,44 +252,17 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
       {lendo && <p className="rounded-2xl border border-borda bg-white p-6 text-center text-suave">Lendo as notas no seu computador…</p>}
       {erro && <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{erro}</p>}
 
-      {(notas.length > 0 || rejeitadas.length > 0) && !lendo && (
-        <section className="rounded-2xl border border-borda bg-white p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="text-lg font-semibold">
-              {notas.length} {notas.length === 1 ? "nota lida" : "notas lidas"} · {totalItens} {totalItens === 1 ? "item" : "itens"}
-            </h2>
-            <button type="button" onClick={recomecar} className="text-sm text-suave underline hover:text-tinta">
-              Escolher outros arquivos
-            </button>
-          </div>
-          {rejeitadas.length > 0 && (
-            <details className="mt-3 text-sm" open={notas.length === 0}>
-              <summary className="cursor-pointer text-amber-800">
-                {rejeitadas.length} {rejeitadas.length === 1 ? "arquivo ficou de fora" : "arquivos ficaram de fora"}
-              </summary>
-              <ul className="mt-2 space-y-1">
-                {rejeitadas.map((r, k) => (
-                  <li key={k} className="break-words text-suave">
-                    <strong className="text-tinta">{r.arquivo}</strong>: {r.motivo}
-                  </li>
-                ))}
-              </ul>
-            </details>
-          )}
-          {notas.some((n) => n.avisos.length > 0) && (
-            <details className="mt-2 text-sm">
-              <summary className="cursor-pointer text-amber-800">Avisos da leitura</summary>
-              <ul className="mt-2 space-y-1 text-suave">
-                {notas.flatMap((n) => n.avisos.map((a, k) => <li key={`${n.arquivo}-${k}`}>{n.modelo} {n.numero}: {a}</li>))}
-              </ul>
-            </details>
-          )}
-          {notas.some((n) => n.data < "2027-01-01") && (
-            <p className="mt-3 text-sm text-suave">
-              Notas de antes de 2027 são calculadas como se fossem de 01/01/2027, porque a CBS e o IBS só começam em 2027.
-            </p>
-          )}
-        </section>
+      {(lidas.length > 0 || rejeitadas.length > 0 || eventos.length > 0) && !lendo && (
+        <Cobertura
+          preparo={preparo}
+          lidas={lidas.length}
+          eventos={eventos.length}
+          rejeitadas={rejeitadas}
+          avisos={notas.flatMap((n) => n.avisos.map((a) => `${n.modelo} ${n.numero}: ${a}`))}
+          onEscopo={mudarEscopo}
+          onSomar={(f) => escolherArquivos(f, true)}
+          onRecomecar={recomecar}
+        />
       )}
 
       {notas.length > 0 && !resultado && !lendo && (
@@ -329,7 +326,208 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
         </section>
       )}
 
-      {resultado && <ResultadoLote resultado={resultado} notas={notas} />}
+      {resultado && (
+        <ResultadoLote
+          resultado={resultado}
+          notas={notas}
+          cobertura={{ resumo: resumoDoEscopo(preparo.escopo), parcial: preparo.parcial, motivos: preparo.motivosParcial }}
+        />
+      )}
     </div>
+  );
+}
+
+function resumoDoEscopo(e: { empresa: string; periodo: string }): string {
+  const empresa = e.empresa === "todas" ? "todas as empresas" : documentoLegivel(e.empresa);
+  return `${empresa} · ${e.periodo === "todos" ? "todos os meses enviados" : mesLegivel(e.periodo)}`;
+}
+
+/** O que entra na análise e o que ficou de fora, com contagens que batem (T34). */
+function Cobertura({
+  preparo,
+  lidas,
+  eventos,
+  rejeitadas,
+  avisos,
+  onEscopo,
+  onSomar,
+  onRecomecar,
+}: {
+  preparo: ReturnType<typeof prepararAnalise>;
+  lidas: number;
+  eventos: number;
+  rejeitadas: Rejeitada[];
+  avisos: string[];
+  onEscopo: (e: Partial<Escopo>) => void;
+  onSomar: (f: FileList | null) => void;
+  onRecomecar: () => void;
+}) {
+  const p = preparo;
+  const n = p.aceitas.length;
+  const porMotivo = new Map<MotivoFora, number>();
+  for (const f of p.fora) porMotivo.set(f.motivo, (porMotivo.get(f.motivo) ?? 0) + 1);
+  const arquivos = lidas + eventos + rejeitadas.length;
+
+  return (
+    <section className="rounded-2xl border border-borda bg-white p-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-lg font-semibold">
+          {n} {n === 1 ? "nota entra" : "notas entram"} na análise · {p.itens} {p.itens === 1 ? "item" : "itens"}
+        </h2>
+        <button type="button" onClick={onRecomecar} className="text-sm text-suave underline hover:text-tinta">
+          Recomeçar
+        </button>
+      </div>
+
+      {(p.empresas.length > 1 || p.periodos.length > 1) && (
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          {p.empresas.length > 1 && (
+            <div>
+              <label htmlFor="escopo-empresa" className="rotulo">
+                Empresa que emitiu
+              </label>
+              <select id="escopo-empresa" className="campo text-sm" value={p.escopo.empresa} onChange={(e) => onEscopo({ empresa: e.target.value })}>
+                {p.empresas.map((e) => (
+                  <option key={e.doc} value={e.doc}>
+                    {documentoLegivel(e.doc)} ({e.notas} {e.notas === 1 ? "nota" : "notas"})
+                  </option>
+                ))}
+                <option value="todas">Todas juntas</option>
+              </select>
+            </div>
+          )}
+          {p.periodos.length > 1 && (
+            <div>
+              <label htmlFor="escopo-periodo" className="rotulo">
+                Mês da emissão
+              </label>
+              <select id="escopo-periodo" className="campo text-sm" value={p.escopo.periodo} onChange={(e) => onEscopo({ periodo: e.target.value })}>
+                {p.periodos.map((x) => (
+                  <option key={x.periodo} value={x.periodo}>
+                    {mesLegivel(x.periodo)} ({x.notas} {x.notas === 1 ? "nota" : "notas"})
+                  </option>
+                ))}
+                <option value="todos">Todos os meses</option>
+              </select>
+            </div>
+          )}
+        </div>
+      )}
+
+      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
+        <div>
+          <dt className="text-xs text-suave">Arquivos enviados</dt>
+          <dd className="font-medium">{arquivos}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-suave">Notas lidas</dt>
+          <dd className="font-medium">{lidas}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-suave">Na análise</dt>
+          <dd className="font-medium text-marca-700">{n}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-suave">Fora da soma</dt>
+          <dd className="font-medium">{p.fora.length}</dd>
+        </div>
+      </dl>
+      <p className="mt-2 text-xs text-suave">
+        {resumoDoEscopo(p.escopo)}
+        {p.datas && ` · emitidas de ${dataBR(p.datas.primeira)} a ${dataBR(p.datas.ultima)}`}
+        {eventos > 0 && ` · ${eventos} ${eventos === 1 ? "arquivo de evento" : "arquivos de evento"}`}
+        {rejeitadas.length > 0 && ` · ${rejeitadas.length} ${rejeitadas.length === 1 ? "arquivo não lido" : "arquivos não lidos"}`}
+      </p>
+
+      {p.parcial && (
+        <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" role="note">
+          <strong>Cobertura parcial:</strong> {p.motivosParcial.join("; ")}. A soma vai mostrar só as notas incluídas, não o mês completo.
+        </p>
+      )}
+
+      {p.fora.length > 0 && (
+        <details className="mt-3 text-sm">
+          <summary className="cursor-pointer text-amber-800">
+            {p.fora.length} {p.fora.length === 1 ? "nota ficou" : "notas ficaram"} fora da soma (
+            {[...porMotivo].map(([m, q]) => nomeDoMotivo(m, q)).join(", ")})
+          </summary>
+          <ul className="mt-2 space-y-1">
+            {p.fora.map((f, k) => (
+              <li key={k} className="break-words text-suave">
+                <strong className="text-tinta">{f.arquivo}</strong>: {f.explicacao}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {rejeitadas.length > 0 && (
+        <details className="mt-2 text-sm" open={n === 0}>
+          <summary className="cursor-pointer text-amber-800">
+            {rejeitadas.length} {rejeitadas.length === 1 ? "arquivo não foi lido" : "arquivos não foram lidos"}
+          </summary>
+          <ul className="mt-2 space-y-1">
+            {rejeitadas.map((r, k) => (
+              <li key={k} className="break-words text-suave">
+                <strong className="text-tinta">{r.arquivo}</strong>: {r.motivo}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {(p.pendencias.length > 0 || p.lacunas.length > 0) && (
+        <details className="mt-2 text-sm">
+          <summary className="cursor-pointer text-amber-800">
+            {p.pendencias.length + p.lacunas.length} {p.pendencias.length + p.lacunas.length === 1 ? "ponto para conferir" : "pontos para conferir"}
+          </summary>
+          <ul className="mt-2 space-y-1 text-suave">
+            {p.lacunas.map((l) => (
+              <li key={`${l.modelo}-${l.serie}`}>
+                <strong className="text-tinta">
+                  {l.modelo} série {l.serie || "—"}
+                </strong>
+                : {l.faltando} {l.faltando === 1 ? "número faltando" : "números faltando"} na sequência (ex.: {l.exemplos.join(", ")}). Pode ser nota não
+                enviada, cancelada ou inutilizada.
+              </li>
+            ))}
+            {p.pendencias.map((x, k) => (
+              <li key={k} className="break-words">
+                <strong className="text-tinta">{x.arquivo}</strong>: {x.explicacao}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {avisos.length > 0 && (
+        <details className="mt-2 text-sm">
+          <summary className="cursor-pointer text-amber-800">Avisos da leitura</summary>
+          <ul className="mt-2 space-y-1 text-suave">
+            {avisos.map((a, k) => (
+              <li key={k}>{a}</li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {p.aceitas.some((x) => x.data < "2027-01-01") && (
+        <p className="mt-3 text-sm text-suave">
+          A data de emissão de cada nota fica guardada como está. Para o cenário da reforma, notas de antes de 2027 são calculadas com a data de 01/01/2027,
+          porque a CBS e o IBS só começam em 2027.
+        </p>
+      )}
+
+      <label htmlFor="mais-arquivos" className="mt-4 inline-block cursor-pointer text-sm text-marca-700 underline">
+        Somar mais arquivos a esta análise
+        <input
+          id="mais-arquivos"
+          type="file"
+          accept=".xml,.zip,text/xml,application/xml,application/zip"
+          multiple
+          className="sr-only"
+          onChange={(e) => {
+            onSomar(e.target.files);
+            e.target.value = "";
+          }}
+        />
+      </label>
+    </section>
   );
 }

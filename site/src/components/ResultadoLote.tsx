@@ -9,13 +9,17 @@ import { dataBR, emPercentual, emReais } from "@/lib/formato";
 import type { ItemCalculado, NotaCalculada } from "@/lib/lote";
 import type { ItemNota, NotaLida } from "@/lib/nfe";
 import { nomeDaPlanilha, planilhaDoLote } from "@/lib/planilha";
+import { motivosNaoCalculados } from "@/lib/preparo";
 
 export type LoteCalculado = { notas: NotaCalculada[]; versaoMotor: string; versaoTabelaMotor: string; versaoTabelaAliquotas: string };
 export type NotaParaMostrar = Pick<NotaLida, "chave" | "modelo" | "numero" | "serie" | "data" | "uf" | "itens">;
 
 const reais = (centavos: number) => emReais(centavos / 100);
 
-export function ResultadoLote({ resultado, notas }: { resultado: LoteCalculado; notas: NotaParaMostrar[] }) {
+/** cobertura (T34): o que esta soma representa. Ausente ao reabrir do histórico. */
+export type Cobertura = { resumo: string; parcial: boolean; motivos: string[] };
+
+export function ResultadoLote({ resultado, notas, cobertura }: { resultado: LoteCalculado; notas: NotaParaMostrar[]; cobertura?: Cobertura }) {
   const t = resultado.notas.reduce(
     (s, n) => ({
       base: s.base + n.totais.baseCentavos,
@@ -28,6 +32,7 @@ export function ResultadoLote({ resultado, notas }: { resultado: LoteCalculado; 
   );
   const total = t.cbs + t.ibs;
   const aliq = resultado.notas.find((n) => n.aliquotas)?.aliquotas;
+  const naoCalculados = motivosNaoCalculados(resultado.notas.flatMap((n) => n.itens));
 
   return (
     <section className="space-y-4">
@@ -40,6 +45,12 @@ export function ResultadoLote({ resultado, notas }: { resultado: LoteCalculado; 
           <p className="mt-1 text-sm text-marca-100">
             de CBS + IBS nessas vendas{t.base > 0 && <>, ou <strong className="text-white">{emPercentual((total / t.base) * 100)}</strong> da base</>}
           </p>
+          {cobertura && (
+            <p className="mt-2 text-xs text-marca-100">
+              Soma das {resultado.notas.length} notas incluídas ({cobertura.resumo}).{" "}
+              {cobertura.parcial ? <strong className="text-white">Cobertura parcial: {cobertura.motivos.join("; ")}.</strong> : "Não é a apuração oficial do mês."}
+            </p>
+          )}
         </div>
         <dl className="grid grid-cols-2 divide-x divide-borda border-b border-borda text-center">
           <div className="p-3">
@@ -53,7 +64,10 @@ export function ResultadoLote({ resultado, notas }: { resultado: LoteCalculado; 
         </dl>
         {t.erros > 0 && (
           <p className="border-b border-borda bg-red-50 px-5 py-3 text-sm text-red-800">
-            {t.erros} {t.erros === 1 ? "item não foi calculado e ficou" : "itens não foram calculados e ficaram"} fora da soma. Veja o motivo em cada nota.
+            {t.erros} {t.erros === 1 ? "item não foi calculado e ficou" : "itens não foram calculados e ficaram"} fora da soma:
+            <span className="mt-1 block text-xs">
+              {naoCalculados.map((m) => `${m.quantidade} × ${m.motivo}`).join(" · ")}
+            </span>
           </p>
         )}
         <div className="space-y-1 p-5 text-xs text-suave">
@@ -94,7 +108,10 @@ function NotaResultado({ calculada, lida }: { calculada: NotaCalculada; lida: No
         <summary className="flex cursor-pointer flex-wrap items-baseline justify-between gap-x-4 gap-y-1 p-4">
           <span className="font-medium">
             {lida.modelo} {lida.numero}
-            {lida.serie && `/${lida.serie}`} · {dataBR(lida.data)} · {lida.uf}
+            {lida.serie && `/${lida.serie}`} · emitida em {dataBR(lida.data)} · {lida.uf}
+            {calculada.dataCalculo && calculada.dataCalculo !== lida.data && (
+              <span className="block text-xs font-normal text-suave">Cenário calculado com a data de {dataBR(calculada.dataCalculo)}</span>
+            )}
           </span>
           <span className="text-sm">
             {reais(t.cbsCentavos + t.ibsCentavos)} <span className="text-suave">sobre {reais(t.baseCentavos)}</span>

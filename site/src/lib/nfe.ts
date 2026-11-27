@@ -35,9 +35,22 @@ export type NotaLida = {
   uf: string;
   itens: ItemNota[];
   avisos: string[];
+  /** CNPJ (ou CPF) de quem EMITIU a nota: a sua empresa. Do cliente final nada é guardado. (T34) */
+  emitente: string;
+  /** O que o protocolo da SEFAZ diz da nota (T34). Sem protocolo = não sabemos se foi autorizada. */
+  autorizacao: Autorizacao;
 };
 
-export type ResultadoLeitura = { ok: true; nota: NotaLida } | { ok: false; arquivo: string; motivo: string };
+export type Autorizacao =
+  | { situacao: "autorizada"; codigo: string }
+  | { situacao: "sem_protocolo" }
+  | { situacao: "cancelada" | "denegada" | "outra"; codigo: string; descricao: string };
+
+/** Evento da NF-e enviado como arquivo separado (por exemplo, o cancelamento). (T34) */
+export type EventoNota = { arquivo: string; chave: string; tipo: string; descricao: string; cancelamento: boolean };
+
+/** Um XML de evento (cancelamento etc.) não é nota: volta ok=false com o evento lido em `evento`. */
+export type ResultadoLeitura = { ok: true; nota: NotaLida } | { ok: false; arquivo: string; motivo: string; evento?: EventoNota };
 
 /** Código IBGE da UF (2 primeiros dígitos do município) → sigla. */
 export const UF_POR_CODIGO: Record<string, string> = {
@@ -122,6 +135,8 @@ export function lerNota(arquivo: string, xml: string): ResultadoLeitura {
   const nfe = no(no(raiz.nfeProc).NFe ?? raiz.NFe);
   const inf = no(nfe.infNFe);
   if (!inf.ide) {
+    const evento = lerEvento(arquivo, raiz);
+    if (evento) return { ok: false, arquivo, motivo: `É um evento da nota (${evento.descricao}), não uma nota.`, evento };
     if (raiz.CompNfse || raiz.NFSe || raiz.nfse) return { ok: false, arquivo, motivo: "É uma NFS-e (nota de serviço). Por enquanto lemos só NF-e e NFC-e." };
     if (raiz.cteProc || raiz.CTe) return { ok: false, arquivo, motivo: "É um CT-e (conhecimento de transporte), não uma nota de venda." };
     return { ok: false, arquivo, motivo: "Não encontramos uma NF-e ou NFC-e neste arquivo." };
@@ -188,9 +203,14 @@ export function lerNota(arquivo: string, xml: string): ResultadoLeitura {
     });
   }
 
+  const emit = no(inf.emit);
+  const emitente = (texto(emit.CNPJ) || texto(emit.CPF)).replace(/\D/g, "");
+
   return {
     ok: true,
     nota: {
+      emitente,
+      autorizacao: autorizacaoDe(no(no(raiz.nfeProc).protNFe)),
       arquivo,
       chave,
       modelo: mod === "55" ? "NF-e" : "NFC-e",
@@ -203,4 +223,35 @@ export function lerNota(arquivo: string, xml: string): ResultadoLeitura {
       avisos,
     },
   };
+}
+
+/**
+ * Situação da nota pelo protocolo da SEFAZ (protNFe/infProt/cStat), quando o XML traz o protocolo.
+ * 100 e 150 = autorizada; 101, 151 e 155 = cancelada; 110, 301, 302 e 303 = denegada.
+ * Fonte: Manual de Orientação do Contribuinte da NF-e, tabela de códigos de status.
+ */
+export function autorizacaoDe(prot: No): Autorizacao {
+  const info = no(prot.infProt);
+  const codigo = texto(info.cStat);
+  if (!codigo) return { situacao: "sem_protocolo" };
+  const descricao = texto(info.xMotivo).slice(0, 120);
+  if (codigo === "100" || codigo === "150") return { situacao: "autorizada", codigo };
+  if (["101", "151", "155"].includes(codigo)) return { situacao: "cancelada", codigo, descricao: descricao || "Cancelamento homologado" };
+  if (["110", "301", "302", "303"].includes(codigo)) return { situacao: "denegada", codigo, descricao: descricao || "Uso denegado" };
+  return { situacao: "outra", codigo, descricao: descricao || "Situação não reconhecida" };
+}
+
+/** Códigos de evento de cancelamento da NF-e (110111 cancelamento, 110112 cancelamento por substituição). */
+const EVENTOS_CANCELAMENTO = new Set(["110111", "110112"]);
+
+/** Lê um XML de evento (procEventoNFe ou evento solto). null se não for evento de NF-e. */
+function lerEvento(arquivo: string, raiz: No): EventoNota | null {
+  const proc = no(raiz.procEventoNFe);
+  const evento = no(proc.evento ?? raiz.evento);
+  const inf = no(evento.infEvento);
+  const chave = texto(inf.chNFe);
+  const tipo = texto(inf.tpEvento);
+  if (!/^\d{44}$/.test(chave) || !tipo) return null;
+  const descricao = (texto(no(inf.detEvento).descEvento) || `Evento ${tipo}`).slice(0, 80);
+  return { arquivo, chave, tipo, descricao, cancelamento: EVENTOS_CANCELAMENTO.has(tipo) };
 }

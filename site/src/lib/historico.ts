@@ -16,7 +16,7 @@ export type DetalheXml = {
   tipo: "xml";
   notas: NotaCalculada[];
   /** dados fiscais das notas (sem cliente final: o importador já descartou nome, CPF e endereço) */
-  lidas: Omit<NotaLida, "arquivo" | "avisos">[];
+  lidas: Omit<NotaLida, "arquivo" | "avisos" | "emitente" | "autorizacao">[];
 };
 export type Detalhe = DetalheManual | DetalheXml;
 
