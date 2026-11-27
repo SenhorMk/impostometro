@@ -22,7 +22,7 @@ Antes de abrir a assinatura para o público. Cada item precisa de evidência (li
 
 ## Legal e contato
 - [ ] Termos e privacidade revisados por advogado (T21)
-- [ ] Página ou e-mail de contato visível no site
+- [ ] Página de contato no ar (`/contato`, pronta) com um e-mail do produto em `CONTATO_EMAIL` na Vercel
 - [ ] Nome e preço finais decididos (T04)
 
 ## Medição

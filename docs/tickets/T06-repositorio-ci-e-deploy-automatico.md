@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Parcial |
+| Status | ✅ Feito |
 | Épico | E1 Infraestrutura |
 | Sprint | S1 |
 | Prioridade | P0 |
@@ -17,7 +17,7 @@ Como time, quero que cada mudança aprovada vá para o ar sozinha, para lançar 
 
 - [x] Repositório no GitHub com o projeto Next.js + TypeScript.
 - [x] GitHub Actions roda lint, testes, tipos e build, compila a imagem oficial e compara porte × oficial (`.github/workflows/`).
-- [ ] Push na `main` publica o site na Vercel sozinho (falta ligar a Vercel ao repositório).
+- [x] Push na `main` publica o site na Vercel sozinho, e cada PR ganha uma prévia (o bot da Vercel comenta no PR, visto no #6).
 - [x] ~~Motor publicado no Fly.io pelo Actions~~ → não existe mais motor separado.
 - [x] Segredos fora do código (só `.env.example` versionado).
 

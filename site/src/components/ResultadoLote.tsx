@@ -8,9 +8,10 @@ import { useState } from "react";
 import { dataBR, emPercentual, emReais } from "@/lib/formato";
 import type { ItemCalculado, NotaCalculada } from "@/lib/lote";
 import type { ItemNota, NotaLida } from "@/lib/nfe";
+import { nomeDaPlanilha, planilhaDoLote } from "@/lib/planilha";
 
 export type LoteCalculado = { notas: NotaCalculada[]; versaoMotor: string; versaoTabelaMotor: string; versaoTabelaAliquotas: string };
-export type NotaParaMostrar = Pick<NotaLida, "modelo" | "numero" | "serie" | "data" | "uf" | "itens">;
+export type NotaParaMostrar = Pick<NotaLida, "chave" | "modelo" | "numero" | "serie" | "data" | "uf" | "itens">;
 
 const reais = (centavos: number) => emReais(centavos / 100);
 
@@ -67,6 +68,13 @@ export function ResultadoLote({ resultado, notas }: { resultado: LoteCalculado; 
             {resultado.versaoTabelaAliquotas}. Simulação: não substitui a apuração oficial nem o seu contador.
           </p>
         </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" className="botao-secundario" onClick={() => baixarPlanilha(resultado, notas)}>
+          Baixar planilha para o contador
+        </button>
+        <span className="text-xs text-suave">Arquivo .csv que abre no Excel: uma linha por item, com base, CBS, IBS e o motivo do que não foi calculado.</span>
       </div>
 
       <ul className="space-y-3">
@@ -160,4 +168,16 @@ function ItemResultado({ item, calc }: { item: ItemNota; calc: ItemCalculado }) 
       )}
     </li>
   );
+}
+
+function baixarPlanilha(resultado: LoteCalculado, notas: NotaParaMostrar[]) {
+  const csv = planilhaDoLote(resultado.notas, notas, resultado);
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nomeDaPlanilha(notas);
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
