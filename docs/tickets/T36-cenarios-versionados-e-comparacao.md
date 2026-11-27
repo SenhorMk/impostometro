@@ -7,7 +7,7 @@
 | Prioridade | P1 após primeira entrega paga |
 | Pontos | A estimar após revisar o código existente |
 | Depende de | T18, T35, T27 |
-| GitHub | A criar |
+| GitHub | https://github.com/SenhorMk/impostometro/issues/23 |
 
 ## História
 

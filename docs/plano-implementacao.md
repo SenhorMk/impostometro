@@ -16,33 +16,33 @@ Não há compromisso de datas nem conversão fixa de pontos para dias. Estimar c
 
 | Ordem | Ticket | Prioridade | Depende de | Issue |
 |---|---|---|---|---|
-| 1 | [T33 · Apresentar um site claro e confiável com oferta verdadeira](tickets/T33-site-claro-e-confiavel.md) | P0 gratuito | — | A criar |
-| 2 | [T21 · Publicar identidade contato e informações de uso verdadeiras](tickets/T21-termos-privacidade-e-aviso-nao-oficial.md) | P0 gratuito | — | A criar |
-| 3 | [T20 · Publicar o domínio oficial com indexação verificável](tickets/T20-seo-tecnico-e-medicao.md) | P0 gratuito | T05 | A criar |
-| 4 | [T07 · Operar com verificação de saúde e recuperação dos dados](tickets/T07-backup-diario-e-monitoramento.md) | P0 gratuito básico; P0 assinatura recuperação | T05 | A criar |
-| 5 | [T38 · Validar navegação cálculo e importação no celular e computador](tickets/T38-jornada-acessivel-e-sem-falhas.md) | P0 gratuito e assinatura | T33 | A criar |
-| 6 | [T22 · Medir os primeiros usos e recolher feedback sem recrutar empresas](tickets/T22-funil-medido-e-checklist-de-lancamento.md) | P1 gratuito | T11 | A criar |
-| 7 | [T39 · Registrar os critérios e evidências dos dois lançamentos](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) | P0 por marco | T20, T33, T21, T38, T07 | A criar |
+| 1 | [T33 · Apresentar um site claro e confiável com oferta verdadeira](tickets/T33-site-claro-e-confiavel.md) | P0 gratuito | — | https://github.com/SenhorMk/impostometro/issues/10 |
+| 2 | [T21 · Publicar identidade contato e informações de uso verdadeiras](tickets/T21-termos-privacidade-e-aviso-nao-oficial.md) | P0 gratuito | — | https://github.com/SenhorMk/impostometro/issues/12 |
+| 3 | [T20 · Publicar o domínio oficial com indexação verificável](tickets/T20-seo-tecnico-e-medicao.md) | P0 gratuito | T05 | https://github.com/SenhorMk/impostometro/issues/11 |
+| 4 | [T07 · Operar com verificação de saúde e recuperação dos dados](tickets/T07-backup-diario-e-monitoramento.md) | P0 gratuito básico; P0 assinatura recuperação | T05 | https://github.com/SenhorMk/impostometro/issues/14 |
+| 5 | [T38 · Validar navegação cálculo e importação no celular e computador](tickets/T38-jornada-acessivel-e-sem-falhas.md) | P0 gratuito e assinatura | T33 | https://github.com/SenhorMk/impostometro/issues/13 |
+| 6 | [T22 · Medir os primeiros usos e recolher feedback sem recrutar empresas](tickets/T22-funil-medido-e-checklist-de-lancamento.md) | P1 gratuito | T11 | https://github.com/SenhorMk/impostometro/issues/24 |
+| 7 | [T39 · Registrar os critérios e evidências dos dois lançamentos](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) | P0 por marco | T20, T33, T21, T38, T07 | https://github.com/SenhorMk/impostometro/issues/26 |
 
 ### Marco B · Entrega paga mínima
 
 | Ordem | Ticket | Prioridade | Depende de | Issue |
 |---|---|---|---|---|
-| 1 | [T13 · Validar o acesso real por e-mail e esconder provedores indisponíveis](tickets/T13-login-com-link-por-e-mail.md) | P0 assinatura | T05, T21 | A criar |
-| 2 | [T15 · Validar empresa e isolamento entre contas reais de teste](tickets/T15-cadastro-minimo-da-empresa.md) | P0 assinatura | T13 | A criar |
-| 3 | [T37 · Separar acesso gratuito prévia e assinatura no servidor](tickets/T37-acesso-gratis-previa-e-assinatura.md) | P0 assinatura | T13 | A criar |
-| 4 | [T14 · Concluir Asaas com pagamento acesso e cancelamento verificáveis](tickets/T14-assinatura-recorrente-e-limite-do-plano.md) | P0 assinatura | T13, T15, T37 | A criar |
-| 5 | [T34 · Preparar o período e mostrar a cobertura real das notas](tickets/T34-periodo-e-integridade-das-notas.md) | P0 assinatura | T15, T16 | A criar |
-| 6 | [T35 · Registrar premissas e confirmação das classificações](tickets/T35-premissas-e-classificacoes-confirmadas.md) | P0 assinatura | T34 | A criar |
-| 7 | [T18 · Integrar histórico com reabertura fiel e isolamento](tickets/T18-historico-de-calculos.md) | P0 assinatura | T13, T15 | A criar |
-| 8 | [T27 · Entregar relatório revisável do período em PDF e planilha](tickets/T27-relatorio-revisavel-do-periodo.md) | P0 assinatura | T34, T35, T18, T37 | A criar |
+| 1 | [T13 · Validar o acesso real por e-mail e esconder provedores indisponíveis](tickets/T13-login-com-link-por-e-mail.md) | P0 assinatura | T05, T21 | https://github.com/SenhorMk/impostometro/issues/15 |
+| 2 | [T15 · Validar empresa e isolamento entre contas reais de teste](tickets/T15-cadastro-minimo-da-empresa.md) | P0 assinatura | T13 | https://github.com/SenhorMk/impostometro/issues/16 |
+| 3 | [T37 · Separar acesso gratuito prévia e assinatura no servidor](tickets/T37-acesso-gratis-previa-e-assinatura.md) | P0 assinatura | T13 | https://github.com/SenhorMk/impostometro/issues/18 |
+| 4 | [T14 · Concluir Asaas com pagamento acesso e cancelamento verificáveis](tickets/T14-assinatura-recorrente-e-limite-do-plano.md) | P0 assinatura | T13, T15, T37 | https://github.com/SenhorMk/impostometro/issues/17 |
+| 5 | [T34 · Preparar o período e mostrar a cobertura real das notas](tickets/T34-periodo-e-integridade-das-notas.md) | P0 assinatura | T15, T16 | https://github.com/SenhorMk/impostometro/issues/19 |
+| 6 | [T35 · Registrar premissas e confirmação das classificações](tickets/T35-premissas-e-classificacoes-confirmadas.md) | P0 assinatura | T34 | https://github.com/SenhorMk/impostometro/issues/20 |
+| 7 | [T18 · Integrar histórico com reabertura fiel e isolamento](tickets/T18-historico-de-calculos.md) | P0 assinatura | T13, T15 | https://github.com/SenhorMk/impostometro/issues/21 |
+| 8 | [T27 · Entregar relatório revisável do período em PDF e planilha](tickets/T27-relatorio-revisavel-do-periodo.md) | P0 assinatura | T34, T35, T18, T37 | https://github.com/SenhorMk/impostometro/issues/22 |
 
 ### Marco C · Evolução e descoberta orgânica
 
 | Ordem | Ticket | Prioridade | Depende de | Issue |
 |---|---|---|---|---|
-| 1 | [T36 · Comparar cenários da mesma análise preservando premissas](tickets/T36-cenarios-versionados-e-comparacao.md) | P1 após primeira entrega paga | T18, T35, T27 | A criar |
-| 2 | [T30 · Publicar conteúdo útil e preparar divulgação orgânica sustentável](tickets/T30-conteudo-util-e-divulgacao-organica.md) | P1 gratuito | T20, T33 | A criar |
+| 1 | [T36 · Comparar cenários da mesma análise preservando premissas](tickets/T36-cenarios-versionados-e-comparacao.md) | P1 após primeira entrega paga | T18, T35, T27 | https://github.com/SenhorMk/impostometro/issues/23 |
+| 2 | [T30 · Publicar conteúdo útil e preparar divulgação orgânica sustentável](tickets/T30-conteudo-util-e-divulgacao-organica.md) | P1 gratuito | T20, T33 | https://github.com/SenhorMk/impostometro/issues/25 |
 
 O marco C não é uma fila que precise bloquear a aquisição: T30 pode começar assim que T20 e T33 estiverem verificados, com poucas páginas úteis. T36 pode entrar depois da primeira entrega paga conforme as dificuldades observadas.
 

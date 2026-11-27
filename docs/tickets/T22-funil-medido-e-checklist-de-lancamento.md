@@ -7,7 +7,7 @@
 | Prioridade | P1 gratuito |
 | Pontos | A estimar após revisar o código existente |
 | Depende de | T11 |
-| GitHub | A criar |
+| GitHub | https://github.com/SenhorMk/impostometro/issues/24 |
 
 ## História
 

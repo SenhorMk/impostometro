@@ -7,7 +7,7 @@
 | Prioridade | P0 assinatura |
 | Pontos | A estimar após revisar o código existente |
 | Depende de | T05, T21 |
-| GitHub | A criar |
+| GitHub | https://github.com/SenhorMk/impostometro/issues/15 |
 
 ## História
 

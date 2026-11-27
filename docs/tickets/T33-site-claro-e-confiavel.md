@@ -7,7 +7,7 @@
 | Prioridade | P0 gratuito |
 | Pontos | A estimar após revisar o código existente |
 | Depende de | nenhum bloqueio técnico anterior |
-| GitHub | A criar |
+| GitHub | https://github.com/SenhorMk/impostometro/issues/10 |
 
 ## História
 

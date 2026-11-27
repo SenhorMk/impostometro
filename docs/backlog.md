@@ -6,23 +6,23 @@ A prioridade é tornar o site confiável e utilizável, depois abrir a entrega p
 
 | Ticket | Marco | Estado | Issue |
 |---|---|---|---|
-| [T20](tickets/T20-seo-tecnico-e-medicao.md) · Publicar o domínio oficial com indexação verificável | A | 🟡 Configuração parcial; produção a conferir | A criar |
-| [T33](tickets/T33-site-claro-e-confiavel.md) · Apresentar um site claro e confiável com oferta verdadeira | A | ⏳ A fazer; aproveitar PR 7 | A criar |
-| [T21](tickets/T21-termos-privacidade-e-aviso-nao-oficial.md) · Publicar identidade contato e informações de uso verdadeiras | A | 🟡 Textos existentes; revisão pendente | A criar |
-| [T38](tickets/T38-jornada-acessivel-e-sem-falhas.md) · Validar navegação cálculo e importação no celular e computador | A | ⏳ A fazer | A criar |
-| [T07](tickets/T07-backup-diario-e-monitoramento.md) · Operar com verificação de saúde e recuperação dos dados | A | 🟡 Implementação proposta no PR 6 | A criar |
-| [T13](tickets/T13-login-com-link-por-e-mail.md) · Validar o acesso real por e-mail e esconder provedores indisponíveis | B | 🟡 Código e SMTP existentes; sessão real pendente | A criar |
-| [T15](tickets/T15-cadastro-minimo-da-empresa.md) · Validar empresa e isolamento entre contas reais de teste | B | 🟡 Formulário e tabela existentes; integração a validar | A criar |
-| [T14](tickets/T14-assinatura-recorrente-e-limite-do-plano.md) · Concluir Asaas com pagamento acesso e cancelamento verificáveis | B | 🟡 Código existente; Asaas completo não validado | A criar |
-| [T37](tickets/T37-acesso-gratis-previa-e-assinatura.md) · Separar acesso gratuito prévia e assinatura no servidor | B | ⏳ A fazer | A criar |
-| [T34](tickets/T34-periodo-e-integridade-das-notas.md) · Preparar o período e mostrar a cobertura real das notas | B | ⏳ A fazer | A criar |
-| [T35](tickets/T35-premissas-e-classificacoes-confirmadas.md) · Registrar premissas e confirmação das classificações | B | ⏳ A fazer | A criar |
-| [T18](tickets/T18-historico-de-calculos.md) · Integrar histórico com reabertura fiel e isolamento | B | 🟡 Código proposto no PR 6 | A criar |
-| [T27](tickets/T27-relatorio-revisavel-do-periodo.md) · Entregar relatório revisável do período em PDF e planilha | B | ⏳ A fazer | A criar |
-| [T36](tickets/T36-cenarios-versionados-e-comparacao.md) · Comparar cenários da mesma análise preservando premissas | C | ⏳ A fazer | A criar |
-| [T22](tickets/T22-funil-medido-e-checklist-de-lancamento.md) · Medir os primeiros usos e recolher feedback sem recrutar empresas | A | 🟡 Funil proposto no PR 6 | A criar |
-| [T30](tickets/T30-conteudo-util-e-divulgacao-organica.md) · Publicar conteúdo útil e preparar divulgação orgânica sustentável | C | 🟡 Páginas propostas no PR 7; revisão pendente | A criar |
-| [T39](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) · Registrar os critérios e evidências dos dois lançamentos | A | ⏳ A fazer | A criar |
+| [T20](tickets/T20-seo-tecnico-e-medicao.md) · Publicar o domínio oficial com indexação verificável | A | 🟡 Configuração parcial; produção a conferir | https://github.com/SenhorMk/impostometro/issues/11 |
+| [T33](tickets/T33-site-claro-e-confiavel.md) · Apresentar um site claro e confiável com oferta verdadeira | A | ⏳ A fazer; aproveitar PR 7 | https://github.com/SenhorMk/impostometro/issues/10 |
+| [T21](tickets/T21-termos-privacidade-e-aviso-nao-oficial.md) · Publicar identidade contato e informações de uso verdadeiras | A | 🟡 Textos existentes; revisão pendente | https://github.com/SenhorMk/impostometro/issues/12 |
+| [T38](tickets/T38-jornada-acessivel-e-sem-falhas.md) · Validar navegação cálculo e importação no celular e computador | A | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/13 |
+| [T07](tickets/T07-backup-diario-e-monitoramento.md) · Operar com verificação de saúde e recuperação dos dados | A | 🟡 Implementação proposta no PR 6 | https://github.com/SenhorMk/impostometro/issues/14 |
+| [T13](tickets/T13-login-com-link-por-e-mail.md) · Validar o acesso real por e-mail e esconder provedores indisponíveis | B | 🟡 Código e SMTP existentes; sessão real pendente | https://github.com/SenhorMk/impostometro/issues/15 |
+| [T15](tickets/T15-cadastro-minimo-da-empresa.md) · Validar empresa e isolamento entre contas reais de teste | B | 🟡 Formulário e tabela existentes; integração a validar | https://github.com/SenhorMk/impostometro/issues/16 |
+| [T14](tickets/T14-assinatura-recorrente-e-limite-do-plano.md) · Concluir Asaas com pagamento acesso e cancelamento verificáveis | B | 🟡 Código existente; Asaas completo não validado | https://github.com/SenhorMk/impostometro/issues/17 |
+| [T37](tickets/T37-acesso-gratis-previa-e-assinatura.md) · Separar acesso gratuito prévia e assinatura no servidor | B | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/18 |
+| [T34](tickets/T34-periodo-e-integridade-das-notas.md) · Preparar o período e mostrar a cobertura real das notas | B | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/19 |
+| [T35](tickets/T35-premissas-e-classificacoes-confirmadas.md) · Registrar premissas e confirmação das classificações | B | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/20 |
+| [T18](tickets/T18-historico-de-calculos.md) · Integrar histórico com reabertura fiel e isolamento | B | 🟡 Código proposto no PR 6 | https://github.com/SenhorMk/impostometro/issues/21 |
+| [T27](tickets/T27-relatorio-revisavel-do-periodo.md) · Entregar relatório revisável do período em PDF e planilha | B | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/22 |
+| [T36](tickets/T36-cenarios-versionados-e-comparacao.md) · Comparar cenários da mesma análise preservando premissas | C | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/23 |
+| [T22](tickets/T22-funil-medido-e-checklist-de-lancamento.md) · Medir os primeiros usos e recolher feedback sem recrutar empresas | A | 🟡 Funil proposto no PR 6 | https://github.com/SenhorMk/impostometro/issues/24 |
+| [T30](tickets/T30-conteudo-util-e-divulgacao-organica.md) · Publicar conteúdo útil e preparar divulgação orgânica sustentável | C | 🟡 Páginas propostas no PR 7; revisão pendente | https://github.com/SenhorMk/impostometro/issues/25 |
+| [T39](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) · Registrar os critérios e evidências dos dois lançamentos | A | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/26 |
 
 Os quadros originais abaixo registram o planejamento anterior e serão reconciliados conforme cada entrega; a ordem desta revisão prevalece. Nenhum critério novo foi marcado como concluído nesta decomposição.
 

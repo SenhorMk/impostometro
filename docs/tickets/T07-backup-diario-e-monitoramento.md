@@ -7,7 +7,7 @@
 | Prioridade | P0 gratuito básico; P0 assinatura recuperação |
 | Pontos | A estimar após revisar o código existente |
 | Depende de | T05 |
-| GitHub | A criar |
+| GitHub | https://github.com/SenhorMk/impostometro/issues/14 |
 
 ## História
 

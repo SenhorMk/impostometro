@@ -7,7 +7,7 @@
 | Prioridade | P0 por marco |
 | Pontos | A estimar após revisar o código existente |
 | Depende de | T20, T33, T21, T38, T07 |
-| GitHub | A criar |
+| GitHub | https://github.com/SenhorMk/impostometro/issues/26 |
 
 ## História
 
