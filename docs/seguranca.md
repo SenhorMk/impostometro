@@ -7,7 +7,7 @@ Como ler as gravidades: **Alta** = alguém consegue tirar dinheiro, acesso ou da
 ## 1. O que estava bom (não mudou)
 
 - **RLS em todas as tabelas.** Conferido no banco de produção: `perfis`, `empresas`, `assinaturas`, `calculos`, `asaas_eventos`, `funil_diario` e `buscas_sem_resultado` têm RLS ligada e permissões mínimas. Cada conta só lê as próprias linhas; ninguém de fora lê `asaas_eventos`, `funil_diario` ou `buscas_sem_resultado`. A pessoa logada só **lê** a própria assinatura (quem grava é o servidor).
-- **Chave secreta só no servidor.** `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY` e `ASAAS_WEBHOOK_TOKEN` só aparecem em rotas de API. O `next.config.ts` só repassa ao navegador a URL e a chave **publicável** do Supabase. Nenhum segredo no histórico do git (procurado em todos os commits).
+- **Chave secreta só no servidor.** `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY`, `ASAAS_API_KEY_SANDBOX`, `Token_Autenticacao` e `Token_Autenticacao_Sandbox` só aparecem em rotas de API. O `next.config.ts` só repassa ao navegador a URL e a chave **publicável** do Supabase. Nenhum segredo no histórico do git (procurado em todos os commits).
 - **Login sem senha** (link por e-mail ou Google, com PKCE). As rotas conferem o token com o Supabase (`auth.getUser`), não confiam no que o navegador diz.
 - **Webhook com token** comparado em tempo constante.
 - **XML lido no navegador**: o arquivo da nota nunca chega ao servidor. O leitor (`fast-xml-parser`) não busca arquivos nem endereços externos, então XXE "clássico" não acontece.

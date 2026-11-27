@@ -7,7 +7,7 @@ O site decide **no servidor** quem pode usar cada recurso. A tela só mostra o q
 | Valor | O que acontece com a importação de notas | Quando usar |
 |---|---|---|
 | `previa` | aberta a todos, até **20 notas por vez** e 6 lotes a cada 10 minutos por IP; aviso de prévia na tela; assinatura não é vendida | agora, antes de abrir a assinatura (escolha deliberada) |
-| `assinatura` | só assinante com pagamento em dia; precisa de `ASAAS_API_KEY`, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` | depois de testar o Asaas (Lançamento 2) |
+| `assinatura` | só assinante com pagamento em dia; precisa da chave do Asaas do ambiente em `ASAAS_ENVIROMENT` (`ASAAS_API_KEY_SANDBOX` ou `ASAAS_API_KEY`), `SUPABASE_URL` e `SUPABASE_SECRET_KEY` | depois de testar o Asaas (Lançamento 2) |
 | `fechado` | ninguém importa | manutenção ou emergência |
 | vazio | `assinatura` se a cobrança estiver configurada; senão `fechado` | padrão seguro |
 

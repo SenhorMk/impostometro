@@ -12,6 +12,7 @@
  *    Ou seja: segredo faltando NUNCA abre a importação. A prévia só existe se alguém escrever
  *    MODO_ACESSO=previa na Vercel.
  */
+import { chaveAsaas } from "./asaas-config.ts";
 import { temAcesso, type Assinatura } from "./assinatura.ts";
 
 export type ModoAcesso = "previa" | "assinatura" | "fechado";
@@ -35,7 +36,7 @@ export type Modo = {
 };
 
 export function cobrancaConfigurada(env: Env): boolean {
-  return Boolean(env.ASAAS_API_KEY && env.SUPABASE_URL && env.SUPABASE_SECRET_KEY);
+  return Boolean(chaveAsaas(env) && env.SUPABASE_URL && env.SUPABASE_SECRET_KEY);
 }
 
 export function modoDeAcesso(env: Env = process.env): Modo {
@@ -48,7 +49,7 @@ export function modoDeAcesso(env: Env = process.env): Modo {
     return {
       modo: "fechado",
       cobrancaConfigurada: false,
-      aviso: "importação fechada: a cobrança não está configurada (faltam ASAAS_API_KEY, SUPABASE_URL ou SUPABASE_SECRET_KEY)",
+      aviso: "importação fechada: a cobrança não está configurada (faltam a chave do Asaas do ambiente em ASAAS_ENVIROMENT, SUPABASE_URL ou SUPABASE_SECRET_KEY)",
     };
   }
   return { modo: "fechado", cobrancaConfigurada: configurada, aviso: `MODO_ACESSO desconhecido ("${pedido}"); importação fechada` };

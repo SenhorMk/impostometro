@@ -15,7 +15,7 @@ Como usuário, quero pagar pelo plano anunciado, receber acesso e cancelar sem p
 
 ## Estado existente
 
-Há rotas de assinatura/webhook, regras e testes simulados. ASAAS_API_KEY foi encontrada na Vercel, mas ambiente, webhook, token e chave secreta do Supabase não foram validados de ponta a ponta. Não criar outra integração do zero.
+Há rotas de assinatura/webhook, regras e testes simulados. Em 27/11/2026 a Vercel tem, em Production, `ASAAS_ENVIROMENT`, `ASAAS_API_KEY_SANDBOX`, `ASAAS_API_KEY`, `Token_Autenticacao_Sandbox`, `Token_Autenticacao` e `SUPABASE_SECRET_KEY`, e o código passou a usar esses nomes (`site/src/lib/asaas-config.ts`). Valores, webhook no painel do Asaas e o percurso de ponta a ponta ainda não foram validados. Não criar outra integração do zero.
 
 ## Escopo
 

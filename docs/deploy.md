@@ -41,7 +41,7 @@ O cálculo e a gravação de uma busca sem resultado foram conferidos no ambient
 5. Configure SMTP próprio e as credenciais OAuth do Google antes de testar esses fluxos para o público. Confirmação de e-mail permanece ligada e login anônimo permanece desligado.
 6. Os XMLs são lidos no navegador; o fluxo atual não exige bucket de armazenamento.
 
-Para cobrança, configure o ambiente do Asaas e o webhook antes de acrescentar `SUPABASE_SECRET_KEY`: com essa chave e `ASAAS_API_KEY`, o código ativa a cobrança. Veja o procedimento de sandbox em [`banco.md`](banco.md).
+Para cobrança, `ASAAS_ENVIROMENT` escolhe o ambiente do Asaas (vazio = sandbox), e o código usa a chave e o token **daquele** ambiente. Com `SUPABASE_URL`, `SUPABASE_SECRET_KEY` e a chave do ambiente escolhido presentes, e `MODO_ACESSO` vazio ou `assinatura`, a cobrança liga. Por isso, configure o webhook do Asaas antes. Veja o procedimento de sandbox em [`banco.md`](banco.md).
 
 ## Variáveis de ambiente (todas)
 
@@ -50,12 +50,22 @@ Para cobrança, configure o ambiente do Asaas e o webhook antes de acrescentar `
 | `SITE_URL` | site, ambiente Production | endereço HTTPS público para sitemap e canônicas; vazio desabilita indexação |
 | `SUPABASE_URL` | servidor e configuração pública do login | URL do projeto Supabase; configurada em Production |
 | `SUPABASE_PUBLISHABLE_KEY` | servidor e configuração pública do login | chave publicável, protegida pelas permissões e políticas do banco; configurada em Production |
-| `SUPABASE_SECRET_KEY` | somente servidor | administração da assinatura; ainda não configurada nesta entrega |
-| `ASAAS_API_KEY` | somente servidor | chave do Asaas; já cadastrada como Secret em Production; ambiente ainda precisa ser conferido |
-| `ASAAS_AMBIENTE` | somente servidor | `sandbox` ou `producao`; conferir junto com a chave antes de ativar cobrança |
-| `ASAAS_WEBHOOK_TOKEN` | somente servidor e configuração do webhook | autentica os avisos do Asaas; pendente |
+| `MODO_ACESSO` | somente servidor | `previa`, `assinatura` ou `fechado` ([`acesso.md`](acesso.md)); **ainda não cadastrada** (sem ela e com a cobrança ligada, a importação exige assinatura) |
+| `SUPABASE_SECRET_KEY` | somente servidor | administração da assinatura; cadastrada em Production (27/11) |
+| `ASAAS_ENVIROMENT` | somente servidor | `sandbox` (padrão) ou `producao`; escolhe qual chave e qual token valem. Grafia sem o N do meio, igual à Vercel; cadastrada |
+| `ASAAS_API_KEY_SANDBOX` | somente servidor | chave da API do Asaas sandbox; cadastrada |
+| `ASAAS_API_KEY` | somente servidor | chave da API do Asaas de produção; cadastrada (comentário "desativado-produção" na Vercel) |
+| `Token_Autenticacao_Sandbox` | somente servidor e webhook do Asaas sandbox | "Token de autenticação" do webhook; confere o cabeçalho `asaas-access-token`; cadastrada |
+| `Token_Autenticacao` | somente servidor e webhook do Asaas de produção | o mesmo, para produção; cadastrada |
+| `ASAAS_URL` | somente servidor (opcional) | troca o endereço da API do Asaas; normalmente vazia |
+| `SENTRY_DSN` | servidor e navegador (opcional) | monitoramento de erros (T07); não é segredo |
+| `CONTATO_EMAIL` | servidor (opcional) | e-mail de atendimento em `/contato` |
 | `ASSINATURA_PRECO_CENTAVOS` | somente servidor | preço opcional; não alterar para teste sem planejar a cobrança |
 | `CALCULADORA_URL` | quem roda os testes | endereço da calculadora oficial em Docker para `npm run porte:comparar` e `testes-dourados/*.py` (padrão: `http://localhost:8080/api/calculadora`) |
 | `MOTOR_CHAVE` | quem roda os testes (opcional) | só se a calculadora oficial estiver atrás de um porteiro com chave. Normalmente vazia |
 
 `CALCULADORA_URL` e `MOTOR_CHAVE` pertencem aos testes da referência Java. O site em produção usa o porte local.
+
+**Nomes exatos.** Os nomes do Asaas seguem o que foi cadastrado na Vercel em 27/11/2026, inclusive `ASAAS_ENVIROMENT` (sem o N) e `Token_Autenticacao` (com maiúsculas e minúsculas). A Vercel diferencia maiúsculas de minúsculas. A tabela "qual ambiente usa qual chave" fica em `site/src/lib/asaas-config.ts`.
+
+**Hoje todas as variáveis estão só em Production.** Prévias (Preview) da Vercel não têm chave nenhuma: lá a importação fica fechada e a cobrança desligada, o que é o comportamento seguro.
