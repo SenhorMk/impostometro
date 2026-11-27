@@ -16,7 +16,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | [T04](T04-decisoes-do-mateus-nome-dominio-preco.md) | Decisões do Mateus: nome, domínio, preço e regime | E0 Estudo e decisões | S0 | P0 | 1 | 🧑 Depende do Mateus |
 | [T05](T05-colocar-no-ar-vercel-e-supabase.md) | Colocar no ar: Vercel e Supabase | E1 Infraestrutura | S1 | P0 | 5 | 🟡 Parcial (site no ar na Vercel) |
 | [T06](T06-repositorio-ci-e-deploy-automatico.md) | Repositório, CI e deploy automático | E1 Infraestrutura | S1 | P0 | 3 | 🟡 Parcial |
-| [T07](T07-backup-diario-e-monitoramento.md) | Backup diário e monitoramento | E1 Infraestrutura | S3 | P0 | 2 | ⏳ A fazer |
+| [T07](T07-backup-diario-e-monitoramento.md) | Backup diário e monitoramento | E1 Infraestrutura | S3 | P0 | 2 | 🟡 Código pronto; falta o Mateus |
 | [T08](T08-servico-de-calculo.md) | Serviço de cálculo | E2 Motor de cálculo | S1 | P0 | 5 | ✅ Feito (falta gravar no banco) |
 | [T08b](T08b-porte-da-calculadora-para-typescript-roda.md) | Porte da calculadora para TypeScript (roda dentro do site) | E2 Motor de cálculo | S1 | P0 | 8 | ✅ Feito |
 | [T09](T09-testes-dourados-no-ci.md) | Testes dourados no CI | E2 Motor de cálculo | S2 | P0 | 2 | ✅ Feito |
@@ -28,11 +28,11 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | [T15](T15-cadastro-minimo-da-empresa.md) | Cadastro mínimo da empresa | E4 Conta e assinatura | S4 | P0 | 2 | 🟡 Em revisão |
 | [T16](T16-upload-e-leitura-de-xml-de.md) | Upload e leitura de XML de NF-e/NFC-e | E5 Importação de XML | S4 | P0 | 5 | 🟡 Em revisão |
 | [T17](T17-calcular-o-lote-item-a-item.md) | Calcular o lote item a item | E5 Importação de XML | S5 | P0 | 5 | 🟡 Em revisão |
-| [T18](T18-historico-de-calculos.md) | Histórico de cálculos | E4 Conta e assinatura | S6 | P1 | 3 | ⏳ A fazer |
+| [T18](T18-historico-de-calculos.md) | Histórico de cálculos | E4 Conta e assinatura | S6 | P1 | 3 | 🟡 Em revisão |
 | [T19](T19-5-artigos-base-e-glossario.md) | 5 artigos base e glossário | E6 Conteúdo e SEO | S3 | P1 | 3 | 🟡 Implementado; revisão contábil pendente |
 | [T20](T20-seo-tecnico-e-medicao.md) | SEO técnico e medição | E6 Conteúdo e SEO | S3 | P0 | 2 | 🟡 Parcial |
 | [T21](T21-termos-privacidade-e-aviso-nao-oficial.md) | Termos, privacidade e aviso “não oficial” | E7 Lançamento | S3 | P0 | 2 | 🟡 Parcial |
-| [T22](T22-funil-medido-e-checklist-de-lancamento.md) | Funil medido e checklist de lançamento | E7 Lançamento | S6 | P1 | 2 | ⏳ A fazer |
+| [T22](T22-funil-medido-e-checklist-de-lancamento.md) | Funil medido e checklist de lançamento | E7 Lançamento | S6 | P1 | 2 | 🟡 Em revisão |
 
 ## Sprints
 

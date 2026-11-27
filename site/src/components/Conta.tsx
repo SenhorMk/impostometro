@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { REGIMES, UFS, VERSAO_TERMOS, validarEmpresa, type Empresa } from "@/lib/contas";
+import { contarEvento } from "@/lib/funil";
 import { ASSINATURA_ATIVA, cabecalhoLogin, useSessao } from "@/lib/sessao";
 import { supabase } from "@/lib/supabase-navegador";
 import { AssinaturaConta } from "./AssinaturaConta";
@@ -39,6 +40,7 @@ export function Conta() {
       // Primeira entrada: grava o aceite feito na tela de entrar (no Google não dá para mandar junto).
       if (aceitePendente() || usuario.user_metadata?.termos_versao === VERSAO_TERMOS) {
         const r = await sb.from("perfis").insert({ usuario_id: usuario.id, termos_versao: VERSAO_TERMOS });
+        if (!r.error) contarEvento("cadastro");
         return setPerfil(r.error ? "erro" : "ok");
       }
       setPerfil("falta");
@@ -68,6 +70,7 @@ export function Conta() {
 
   async function aceitar() {
     const r = await supabase()!.from("perfis").insert({ usuario_id: usuario!.id, termos_versao: VERSAO_TERMOS });
+    if (!r.error) contarEvento("cadastro");
     setPerfil(r.error ? "erro" : "ok");
   }
 
@@ -117,9 +120,14 @@ export function Conta() {
           <section className="rounded-2xl border border-borda bg-white p-5">
             <h2 className="text-lg font-semibold">Notas do mês</h2>
             <p className="mt-1 text-sm text-suave">Envie os XMLs das suas vendas e veja a CBS e o IBS de cada item.</p>
-            <Link href="/importar" className="botao-primario mt-4">
-              Importar notas
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link href="/importar" className="botao-primario">
+                Importar notas
+              </Link>
+              <Link href="/conta/historico" className="botao-secundario">
+                Ver histórico de cálculos
+              </Link>
+            </div>
           </section>
         </>
       ) : null}

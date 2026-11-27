@@ -26,23 +26,23 @@ export function Resultado({ resultado, descricao, cidade }: Props) {
   const provisorio = r.periodoAliquotas.status === "provisorio";
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-borda bg-white shadow-sm">
-      <div className="bg-marca-900 p-5 text-white sm:p-6">
-        <p className="text-sm text-marca-100">
+    <div className="overflow-hidden rounded-md border border-tinta bg-white">
+      <div className="border-b border-tinta bg-white p-5 sm:p-6">
+        <p className="text-sm text-suave">
           {descricao} · {emReais(r.base)} · {cidade}
         </p>
         {r.semAliquota ? (
           <>
-            <p className="mt-2 text-3xl font-bold tracking-tight">Sem CBS e IBS</p>
-            <p className="mt-1 text-sm text-marca-100">
+            <p className="mt-2 font-serif text-3xl font-semibold tracking-tight">Sem CBS e IBS</p>
+            <p className="mt-1 text-sm text-suave">
               Esta operação não tem alíquota ({r.fundamentacao ?? "imunidade ou não incidência"}).
             </p>
           </>
         ) : (
           <>
-            <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">{emReais(r.total)}</p>
-            <p className="mt-1 text-sm text-marca-100">
-              de CBS + IBS nessa venda, ou <strong className="text-white">{emPercentual(r.percentualSobreVenda)}</strong> do
+            <p className="mt-2 font-serif text-4xl font-semibold tracking-tight sm:text-5xl"><span className="marcatexto">{emReais(r.total)}</span></p>
+            <p className="mt-1 text-sm text-suave">
+              de CBS + IBS nessa venda, ou <strong className="text-tinta">{emPercentual(r.percentualSobreVenda)}</strong> do
               valor
             </p>
           </>
@@ -59,7 +59,7 @@ export function Resultado({ resultado, descricao, cidade }: Props) {
 
       <div className="p-5 sm:p-6">
         {r.cbs.reducao > 0 && (
-          <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-marca-50 px-3 py-1 text-sm font-medium text-marca-800">
+          <p className="mb-3 inline-flex items-center gap-1.5 bg-marcatexto/60 px-2 py-0.5 text-sm font-medium text-tinta">
             Seu setor tem redução de {emPercentual(r.cbs.reducao).replace(",00", "")} na alíquota
           </p>
         )}
@@ -106,7 +106,7 @@ function Linha({ titulo, valor, pct }: { titulo: string; valor: number; pct: num
   return (
     <div className="px-2 py-4">
       <dt className="text-xs text-suave">{titulo}</dt>
-      <dd className="mt-1 font-semibold tabular-nums">{emReais(valor)}</dd>
+      <dd className="mt-1 font-mono font-semibold tabular-nums">{emReais(valor)}</dd>
       <dd className="text-xs tabular-nums text-suave">{emPercentual(pct)}</dd>
     </div>
   );
