@@ -1,4 +1,5 @@
 import { exigirAssinante } from "@/lib/acesso";
+import { CorpoInvalido, dentroDoLimite, ipDoPedido, lerJson, muitosPedidos } from "@/lib/limite";
 import { calcularLote, validarLote, type NotaParaCalcular } from "@/lib/lote";
 
 /**
@@ -9,13 +10,16 @@ import { calcularLote, validarLote, type NotaParaCalcular } from "@/lib/lote";
  */
 export async function POST(request: Request) {
   // T14: com a cobrança ligada, importar notas é só para assinantes.
-  const { erro: semAcesso } = await exigirAssinante(request);
+  // Segurança: primeiro um limite por IP (antes de gastar uma consulta ao login), depois por conta.
+  if (!dentroDoLimite(`lote:ip:${ipDoPedido(request)}`, 60)) return muitosPedidos();
+  const { usuario, erro: semAcesso } = await exigirAssinante(request);
   if (semAcesso) return semAcesso;
+  if (usuario && !dentroDoLimite(`lote:conta:${usuario.id}`, 30)) return muitosPedidos();
   let corpo: unknown;
   try {
-    corpo = await request.json();
-  } catch {
-    return Response.json({ erro: "Pedido inválido." }, { status: 400 });
+    corpo = await lerJson(request, 4_000_000); // 50 notas grandes cabem com folga; a Vercel corta em 4,5 MB
+  } catch (e) {
+    return Response.json({ erro: e instanceof CorpoInvalido && e.status === 413 ? "Lote grande demais. Mande menos notas por vez." : "Pedido inválido." }, { status: e instanceof CorpoInvalido ? e.status : 400 });
   }
   const erro = validarLote(corpo);
   if (erro) return Response.json({ erro }, { status: 400 });

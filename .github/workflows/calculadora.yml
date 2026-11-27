@@ -15,6 +15,10 @@ on:
     paths: ["calculadora/**", "testes-dourados/**", "site/src/dados/**", "site/src/motor/**", "site/scripts/porte/**", "site/package.json", "site/package-lock.json", "scripts/**", "docker-compose.yml", ".github/workflows/calculadora.yml"]
   workflow_dispatch:
 
+# Segurança: a CI só lê o repositório (não pode escrever, abrir PR nem mexer em segredos).
+permissions:
+  contents: read
+
 jobs:
   validar:
     runs-on: ubuntu-latest

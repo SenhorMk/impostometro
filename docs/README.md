@@ -16,6 +16,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Diário de desenvolvimento](diario/README.md) | Histórico das entregas, evidências e pendências |
 | [Deploy](deploy.md) | Configuração de produção e indexação |
 | [Manutenção](manutencao.md) | Atualização do motor, tabelas e atividades |
+| [Segurança](seguranca.md) | Revisão de segurança, o que foi corrigido, tarefas nas contas e limitações |
 
 ## Fluxo de uma entrega
 

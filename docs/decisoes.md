@@ -4,6 +4,7 @@ Registro curto do que foi decidido, quando e por quê. Novas decisões entram no
 
 | Data | Decisão | Por quê | Status |
 |---|---|---|---|
+| 2026-11-27 | Segurança em camadas antes da assinatura: pagamento confirmado no Asaas (não só pelo token), tetos no banco, limite de pedidos e CSP "sem nonce" | um token vazado não pode liberar acesso; abuso de chave publicável é barrado no próprio banco; CSP com nonce deixaria todas as páginas dinâmicas. Detalhes em `seguranca.md` | feito, aguardando SQL e revisão |
 | 2026-11-26 | Histórico guarda o resultado inteiro (não recalcula ao reabrir), gravado pelo navegador com RLS | o objetivo é comparar meses: se a Receita ou o Senado mudarem regras, o cálculo antigo tem que continuar mostrando o que deu na época, com as versões usadas | feito (T18) |
 | 2026-11-26 | Funil por contadores diários no próprio Supabase, sem cookie nem identificador | dá a resposta que o Mateus quer (onde as pessoas desistem) sem banner de cookies nem dado pessoal, e sem custo. Plausible/GA ficam para o T20 | feito (T22) |
 | 2026-11-26 | Sentry só com DSN configurado e sem dados pessoais; `/api/saude` faz um cálculo real; backup fora do GitHub | site sem DSN fica igual. O alerta precisa testar a calculadora, não só a página. Repositório público: artefato de Actions seria baixável por qualquer um | código feito (T07); contas pendentes |
