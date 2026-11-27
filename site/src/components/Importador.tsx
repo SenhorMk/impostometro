@@ -11,14 +11,32 @@
  * T34: antes de calcular, a análise é "preparada" (src/lib/preparo.ts): empresa, mês,
  * notas repetidas, canceladas, de outra empresa ou de outro mês ficam de fora COM motivo,
  * e a pessoa vê se a cobertura é parcial. Dá para somar arquivos de mais de um envio.
+ *
+ * T35: cada classificação tem origem (da nota, sugerida, confirmada) e vale para NCM + CFOP.
+ * Calcular sem confirmar gera um RASCUNHO. Mudar a classificação gera uma nova revisão,
+ * e a anterior continua no histórico. Ver src/lib/premissas.ts.
  */
 import { unzipSync } from "fflate";
 import { useMemo, useState } from "react";
 import { dataBR } from "@/lib/formato";
 import type { ItemCalculado, NotaCalculada, NotaParaCalcular, RespostaLote } from "@/lib/lote";
-import { ErroZip, filtroXmlDoZip, lerNota, type EventoNota, type ItemNota, type NotaLida } from "@/lib/nfe";
+import { ErroZip, filtroXmlDoZip, lerNota, type EventoNota, type NotaLida } from "@/lib/nfe";
 import { documentoLegivel, mesLegivel, nomeDoMotivo, prepararAnalise, type Escopo, type MotivoFora } from "@/lib/preparo";
 import { calculoLote } from "@/lib/historico";
+import {
+  aplicarClassificacoes,
+  contextoDoItem,
+  contextoLegivel,
+  guardarMemoria,
+  lerMemoria,
+  mudancasEntre,
+  ncmValido,
+  precisaClassificar,
+  resumirPremissas,
+  SUGESTAO_PADRAO,
+  valorDoContexto,
+  type Premissas,
+} from "@/lib/premissas";
 import { salvarNoHistorico } from "@/lib/historico-navegador";
 import { cabecalhoLogin } from "@/lib/sessao";
 import { ResultadoLote, type LoteCalculado } from "./ResultadoLote";
@@ -30,8 +48,14 @@ const LIMITE_BYTES = 200 * 1024 * 1024; // 200 MB somando todos os arquivos
 type Rejeitada = { arquivo: string; motivo: string };
 type InfoCodigo = { descricao: string; especiais: { cClassTrib: string; descricao: string }[] } | null;
 
-const ncmValido = (ncm: string) => /^\d{8}$/.test(ncm);
-const precisaClassificar = (i: ItemNota) => !i.cClassTrib && ncmValido(i.ncm);
+/** localStorage pode não existir (modo privado, bloqueado): sem ele, só não lembra escolhas. */
+function armazenamento(): Storage | null {
+  try {
+    return typeof window === "undefined" ? null : window.localStorage;
+  } catch {
+    return null;
+  }
+}
 
 /** Abre os arquivos escolhidos (XML soltos ou .zip) e devolve os textos dos XMLs. */
 async function abrirArquivos(arquivos: File[]): Promise<{ xmls: { nome: string; texto: string }[]; rejeitadas: Rejeitada[] }> {
@@ -72,6 +96,10 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
   const [confirmado, setConfirmado] = useState(false);
   const [progresso, setProgresso] = useState<{ feitas: number; total: number } | null>(null);
   const [resultado, setResultado] = useState<LoteCalculado | null>(null);
+  /** notas como foram calculadas (com a classificação usada em cada item) */
+  const [notasDoResultado, setNotasDoResultado] = useState<NotaLida[]>([]);
+  /** revisões anteriores desta análise, nesta tela (o histórico da conta guarda todas) */
+  const [anteriores, setAnteriores] = useState<{ premissas: Premissas; totalCentavos: number; quando: string }[]>([]);
   const [erro, setErro] = useState<string | null>(null);
 
   const preparo = useMemo(
@@ -80,18 +108,24 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
   );
   const notas = preparo.aceitas;
 
-  /** NCMs dos itens que vieram sem cClassTrib, com quantos itens cada um tem. */
+  /** Itens sem cClassTrib na nota, agrupados por contexto (NCM + CFOP). */
   const aClassificar = useMemo(() => {
-    const m = new Map<string, { ncm: string; itens: number; exemplo: string }>();
+    const m = new Map<string, { contexto: string; ncm: string; cfop: string; itens: number; exemplo: string }>();
     for (const n of notas)
       for (const i of n.itens)
         if (precisaClassificar(i)) {
-          const g = m.get(i.ncm) ?? { ncm: i.ncm, itens: 0, exemplo: i.descricao };
+          const contexto = contextoDoItem(i);
+          const g = m.get(contexto) ?? { contexto, ncm: i.ncm, cfop: i.cfop, itens: 0, exemplo: i.descricao };
           g.itens++;
-          m.set(i.ncm, g);
+          m.set(contexto, g);
         }
-    return [...m.values()].sort((a, b) => b.itens - a.itens);
+    return [...m.values()].sort((a, b) => b.itens - a.itens || a.contexto.localeCompare(b.contexto));
   }, [notas]);
+
+  // Escolhas confirmadas antes, só desta empresa (voltam como "usada antes" e precisam de nova confirmação).
+  const empresa = preparo.escopo.empresa;
+  const memoria = useMemo(() => (empresa === "todas" ? {} : lerMemoria(empresa, armazenamento())), [empresa]);
+  const valorDe = (contexto: string) => valorDoContexto(contexto, escolhas, memoria);
 
   /** somar = juntar com o que já foi enviado (repetidas são detectadas pela chave). */
   async function escolherArquivos(lista: FileList | null, somar = false) {
@@ -123,7 +157,10 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
 
       const ncms = [...new Set(todas.flatMap((n) => n.itens.filter(precisaClassificar).map((i) => i.ncm)))];
       const novosNcms = ncms.filter((c) => !(c in infoCodigos) || !somar);
-      setEscolhas((antes) => Object.fromEntries(ncms.map((c) => [c, (somar && antes[c]) || "000001"])));
+      if (!somar) {
+        setEscolhas({});
+        setAnteriores([]);
+      }
       if (novosNcms.length > 0) {
         const r = await fetch(`/api/codigos?codigos=${novosNcms.slice(0, 500).join(",")}`);
         if (r.ok) {
@@ -139,11 +176,13 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
     }
   }
 
-  async function calcular() {
+  /** confirmar = a pessoa marcou "conferi e confirmo". Sem isso, o resultado é um rascunho. */
+  async function calcular(confirmar: boolean) {
     setErro(null);
     setResultado(null);
+    const comClassificacao = aplicarClassificacoes(notas, (c) => valorDe(c).codigo, confirmar);
     // Cada nota vira um pedido só com dados fiscais. Itens sem NCM válido não são enviados.
-    const pedidos: NotaParaCalcular[] = notas.map((n, idx) => ({
+    const pedidos: NotaParaCalcular[] = comClassificacao.map((n, idx) => ({
       chave: (n.chave || `arquivo-${idx}`).slice(0, 60),
       data: n.data,
       municipio: n.municipio,
@@ -156,7 +195,7 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
           baseCentavos: Math.max(0, i.baseCentavos),
           quantidade: i.quantidade,
           unidade: i.unidade,
-          cClassTrib: i.cClassTrib ?? escolhas[i.ncm] ?? "000001",
+          cClassTrib: i.classificacaoUsada ?? SUGESTAO_PADRAO,
         })),
     }));
 
@@ -207,15 +246,29 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
         totais: { ...totais, itensComErro: itens.filter((i) => !i.ok).length },
       };
     });
-    setResultado({ notas: final, ...versoes });
+    const premissas = resumirPremissas(comClassificacao, anteriores.length + 1, confirmar ? new Date().toISOString() : null);
+    setResultado({ notas: final, ...versoes, premissas });
+    setNotasDoResultado(comClassificacao);
     setProgresso(null);
+    if (confirmar && empresa !== "todas") guardarMemoria(empresa, premissas, armazenamento());
     // T18: guarda no histórico da conta (só os dados fiscais; sem esperar, sem travar a tela).
-    void salvarNoHistorico(calculoLote({ notas: final, lidas: notas, ...versoes }));
+    void salvarNoHistorico(calculoLote({ notas: final, lidas: comClassificacao, ...versoes, premissas }));
+  }
+
+  /** T35: volta para as classificações sem apagar o resultado atual (que vira uma revisão anterior). */
+  function novaRevisao() {
+    if (resultado?.premissas) {
+      const total = resultado.notas.reduce((s, n) => s + n.totais.cbsCentavos + n.totais.ibsCentavos, 0);
+      setAnteriores([...anteriores, { premissas: resultado.premissas, totalCentavos: total, quando: new Date().toISOString() }]);
+    }
+    setResultado(null);
+    setConfirmado(false);
   }
 
   function mudarEscopo(novo: Partial<Escopo>) {
     setEscopo({ ...preparo.escopo, ...novo });
     setResultado(null);
+    setAnteriores([]);
   }
 
   function recomecar() {
@@ -224,6 +277,8 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
     setEscopo({ empresa: null, periodo: null });
     setRejeitadas([]);
     setResultado(null);
+    setAnteriores([]);
+    setEscolhas({});
     setConfirmado(false);
     setErro(null);
   }
@@ -267,36 +322,55 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
 
       {notas.length > 0 && !resultado && !lendo && (
         <section className="rounded-2xl border border-borda bg-white p-5">
+          {anteriores.length > 0 && (
+            <div className="mb-4 rounded-xl bg-fundo p-3 text-sm">
+              <p className="font-medium">Você está na revisão {anteriores.length + 1}. As anteriores continuam guardadas:</p>
+              <ul className="mt-1 space-y-0.5 text-xs text-suave">
+                {anteriores.map((a) => (
+                  <li key={a.premissas.revisao}>
+                    Revisão {a.premissas.revisao}
+                    {a.premissas.itensSugeridos > 0 ? " (rascunho)" : ""}: {emReaisCentavos(a.totalCentavos)} de CBS + IBS
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {aClassificar.length > 0 ? (
             <>
               <h2 className="text-lg font-semibold">Confira a classificação dos produtos</h2>
               <p className="mt-1 text-sm text-suave">
-                Estas notas ainda não trazem a classificação da reforma (cClassTrib). Sugerimos <strong>tributação integral (000001)</strong>,
-                que é o caso da maioria dos produtos. Se algum tem redução ou isenção prevista em lei, escolha abaixo.
+                Estas notas ainda não trazem a classificação da reforma (cClassTrib). Deixamos uma <strong>sugestão</strong>: tributação integral (000001), que é o
+                caso da maioria dos produtos. Sugestão não é confirmação: se algum produto tem redução ou isenção prevista em lei, escolha abaixo. A escolha vale para
+                aquele NCM naquele tipo de operação (CFOP).
               </p>
               <ul className="mt-4 divide-y divide-borda">
                 {aClassificar.map((g) => {
                   const info = infoCodigos[g.ncm];
+                  const v = valorDe(g.contexto);
                   return (
-                    <li key={g.ncm} className="grid gap-2 py-3 sm:grid-cols-[1fr_minmax(0,18rem)] sm:items-center">
+                    <li key={g.contexto} className="grid gap-2 py-3 sm:grid-cols-[1fr_minmax(0,18rem)] sm:items-center">
                       <div className="min-w-0">
                         <p className="text-sm font-medium">
-                          NCM {g.ncm} · {g.itens} {g.itens === 1 ? "item" : "itens"}
+                          {contextoLegivel(g.contexto)} · {g.itens} {g.itens === 1 ? "item" : "itens"}
                         </p>
                         <p className="truncate text-xs text-suave">Ex.: {g.exemplo || "sem descrição"}</p>
                         {info && <p className="line-clamp-2 text-xs text-suave">Tabela oficial: {info.descricao}</p>}
                         {info === null && <p className="text-xs text-amber-800">Este NCM não está na tabela oficial de 2027: a calculadora deve recusar.</p>}
+                        <p className={`text-xs ${v.origem === "escolhida" ? "text-marca-700" : "text-amber-800"}`}>
+                          {v.origem === "escolhida" ? "Escolhida por você" : v.origem === "usada_antes" ? "Você usou esta antes nesta empresa: confira" : "Sugestão, ainda não confirmada"}
+                        </p>
                       </div>
                       <select
-                        aria-label={`Classificação do NCM ${g.ncm}`}
+                        aria-label={`Classificação de ${contextoLegivel(g.contexto)}`}
                         className="campo text-sm"
-                        value={escolhas[g.ncm] ?? "000001"}
+                        value={v.codigo}
                         onChange={(e) => {
-                          setEscolhas({ ...escolhas, [g.ncm]: e.target.value });
+                          setEscolhas({ ...escolhas, [g.contexto]: e.target.value });
                           setConfirmado(false);
                         }}
                       >
                         <option value="000001">000001 · Tributação integral</option>
+                        {v.codigo !== "000001" && !info?.especiais.some((c) => c.cClassTrib === v.codigo) && <option value={v.codigo}>{v.codigo}</option>}
                         {info?.especiais.map((c) => (
                           <option key={c.cClassTrib} value={c.cClassTrib}>
                             {c.cClassTrib} · {c.descricao.slice(0, 80)}
@@ -315,23 +389,49 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
           ) : (
             <p className="text-sm text-suave">Todos os itens já trazem a classificação da reforma (cClassTrib) na nota. Vamos usar a da nota.</p>
           )}
-          <button
-            type="button"
-            className="botao-primario mt-4 w-full px-5 py-3 sm:w-auto"
-            disabled={(aClassificar.length > 0 && !confirmado) || progresso !== null}
-            onClick={calcular}
-          >
-            {progresso ? `Calculando… ${progresso.feitas} de ${progresso.total} notas` : `Calcular ${notas.length} ${notas.length === 1 ? "nota" : "notas"}`}
-          </button>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              className="botao-primario w-full px-5 py-3 sm:w-auto"
+              disabled={(aClassificar.length > 0 && !confirmado) || progresso !== null}
+              onClick={() => calcular(true)}
+            >
+              {progresso ? `Calculando… ${progresso.feitas} de ${progresso.total} notas` : `Calcular ${notas.length} ${notas.length === 1 ? "nota" : "notas"}`}
+            </button>
+            {aClassificar.length > 0 && !confirmado && progresso === null && (
+              <button type="button" className="text-sm text-suave underline hover:text-tinta" onClick={() => calcular(false)}>
+                Ver um rascunho sem confirmar
+              </button>
+            )}
+          </div>
         </section>
       )}
 
       {resultado && (
-        <ResultadoLote
-          resultado={resultado}
-          notas={notas}
-          cobertura={{ resumo: resumoDoEscopo(preparo.escopo), parcial: preparo.parcial, motivos: preparo.motivosParcial }}
-        />
+        <>
+          <ResultadoLote
+            resultado={resultado}
+            notas={notasDoResultado}
+            cobertura={{ resumo: resumoDoEscopo(preparo.escopo), parcial: preparo.parcial, motivos: preparo.motivosParcial }}
+          />
+          {aClassificar.length > 0 && (
+            <div className="rounded-2xl border border-borda bg-white p-4 text-sm">
+              {anteriores.length > 0 && resultado.premissas && (
+                <p className="mb-2 text-suave">
+                  Mudanças em relação à revisão {anteriores.at(-1)!.premissas.revisao}:{" "}
+                  {mudancasEntre(anteriores.at(-1)!.premissas, resultado.premissas)
+                    .map((m) => `${contextoLegivel(m.contexto)}: ${m.de} → ${m.para}`)
+                    .join("; ") || "nenhuma classificação mudou (só a confirmação)"}
+                  .
+                </p>
+              )}
+              <button type="button" className="botao-secundario" onClick={novaRevisao}>
+                {resultado.premissas && resultado.premissas.itensSugeridos > 0 ? "Conferir e confirmar as classificações" : "Mudar classificações (nova revisão)"}
+              </button>
+              <span className="ml-3 text-xs text-suave">Este resultado continua guardado; o novo vira a revisão {anteriores.length + 2}.</span>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -531,3 +631,5 @@ function Cobertura({
     </section>
   );
 }
+
+const emReaisCentavos = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });

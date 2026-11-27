@@ -22,6 +22,9 @@ export type ItemNota = {
   origemBase: "nota" | "estimada";
   cst: string | null; // do grupo IBSCBS, se a nota já tiver
   cClassTrib: string | null;
+  /** T35: preenchidos na hora de calcular (src/lib/premissas.ts), não pelo leitor. */
+  classificacaoUsada?: string;
+  origemClassificacao?: "nota" | "confirmada" | "sugerida";
 };
 
 export type NotaLida = {

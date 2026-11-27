@@ -10,8 +10,16 @@ import type { ItemCalculado, NotaCalculada } from "@/lib/lote";
 import type { ItemNota, NotaLida } from "@/lib/nfe";
 import { nomeDaPlanilha, planilhaDoLote } from "@/lib/planilha";
 import { motivosNaoCalculados } from "@/lib/preparo";
+import { ehRascunho, type Premissas } from "@/lib/premissas";
 
-export type LoteCalculado = { notas: NotaCalculada[]; versaoMotor: string; versaoTabelaMotor: string; versaoTabelaAliquotas: string };
+export type LoteCalculado = {
+  notas: NotaCalculada[];
+  versaoMotor: string;
+  versaoTabelaMotor: string;
+  versaoTabelaAliquotas: string;
+  /** T35: revisão e origem das classificações. Ausente em lotes antigos do histórico. */
+  premissas?: Premissas;
+};
 export type NotaParaMostrar = Pick<NotaLida, "chave" | "modelo" | "numero" | "serie" | "data" | "uf" | "itens">;
 
 const reais = (centavos: number) => emReais(centavos / 100);
@@ -33,12 +41,21 @@ export function ResultadoLote({ resultado, notas, cobertura }: { resultado: Lote
   const total = t.cbs + t.ibs;
   const aliq = resultado.notas.find((n) => n.aliquotas)?.aliquotas;
   const naoCalculados = motivosNaoCalculados(resultado.notas.flatMap((n) => n.itens));
+  const p = resultado.premissas;
+  const rascunho = ehRascunho(p);
 
   return (
     <section className="space-y-4">
       <div className="overflow-hidden rounded-2xl border border-borda bg-white shadow-sm">
+        {rascunho && (
+          <p className="border-b border-amber-300 bg-amber-100 px-5 py-3 text-sm text-amber-950" role="note">
+            <strong>Rascunho, não revisado:</strong> {p!.itensSugeridos} {p!.itensSugeridos === 1 ? "item usou" : "itens usaram"} uma classificação
+            sugerida, sem você confirmar. Confira as classificações antes de usar este total.
+          </p>
+        )}
         <div className="bg-marca-900 p-5 text-white sm:p-6">
           <p className="text-sm text-marca-100">
+            {p && <>Revisão {p.revisao}{rascunho ? " (rascunho)" : ""} · </>}
             {resultado.notas.length} notas · {t.ok} itens calculados · base de {reais(t.base)}
           </p>
           <p className="mt-2 text-4xl font-bold tracking-tight">{reais(total)}</p>
@@ -71,6 +88,13 @@ export function ResultadoLote({ resultado, notas, cobertura }: { resultado: Lote
           </p>
         )}
         <div className="space-y-1 p-5 text-xs text-suave">
+          {p && (
+            <p>
+              Classificações: {p.itensDaNota} {p.itensDaNota === 1 ? "item" : "itens"} com a da nota, {p.itensConfirmados} confirmadas por você
+              {p.confirmadoEm && ` em ${dataBR(p.confirmadoEm.slice(0, 10))}`}, {p.itensSugeridos} só sugeridas. Base estimada (sem o valor da CBS/IBS na nota) em{" "}
+              {p.itensBaseEstimada} {p.itensBaseEstimada === 1 ? "item" : "itens"}.
+            </p>
+          )}
           {aliq && (
             <p>
               Alíquotas usadas: CBS {emPercentual(aliq.cbs)}, IBS estadual {emPercentual(aliq.ibsEstadual)} e municipal {emPercentual(aliq.ibsMunicipal)}
@@ -166,7 +190,7 @@ function ItemResultado({ item, calc }: { item: ItemNota; calc: ItemCalculado }) 
               : "(estimada: valor do produto − desconto + frete + seguro + outras despesas da nota)"}
           </p>
           <p>
-            <strong className="text-tinta">Classificação:</strong> {item.cClassTrib ? `${item.cClassTrib} (da nota)` : "a que você confirmou"}
+            <strong className="text-tinta">Classificação:</strong> {textoClassificacao(item)}
           </p>
           <p>
             <strong className="text-tinta">CBS:</strong> {reais(calc.cbsCentavos ?? 0)}
@@ -187,8 +211,23 @@ function ItemResultado({ item, calc }: { item: ItemNota; calc: ItemCalculado }) 
   );
 }
 
+function textoClassificacao(item: ItemNota): string {
+  const codigo = item.classificacaoUsada ?? item.cClassTrib;
+  switch (item.origemClassificacao) {
+    case "nota":
+      return `${codigo} (veio na nota)`;
+    case "confirmada":
+      return `${codigo} (confirmada por você)`;
+    case "sugerida":
+      return `${codigo} (sugestão nossa, NÃO confirmada)`;
+    default:
+      // lotes antigos do histórico, antes do T35
+      return item.cClassTrib ? `${item.cClassTrib} (veio na nota)` : "a que você confirmou na época";
+  }
+}
+
 function baixarPlanilha(resultado: LoteCalculado, notas: NotaParaMostrar[]) {
-  const csv = planilhaDoLote(resultado.notas, notas, resultado);
+  const csv = planilhaDoLote(resultado.notas, notas, resultado, resultado.premissas);
   const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
   const a = document.createElement("a");
   a.href = url;
