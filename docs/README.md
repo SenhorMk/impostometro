@@ -4,6 +4,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 
 | Documento | Conteúdo |
 |---|---|
+| [Plano de implementação](plano-implementacao.md) | Ordem dos tickets, marcos gratuito e pago, dependências e evidências |
 | [Tickets](tickets/README.md) | Histórias, critérios de aceite, dependências e status |
 | [Arquitetura](arquitetura.md) | Componentes, fluxo de cálculo e vocabulário técnico |
 | [Decisões](decisoes.md) | Escolhas e seus motivos |
@@ -16,6 +17,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Diário de desenvolvimento](diario/README.md) | Histórico das entregas, evidências e pendências |
 | [Deploy](deploy.md) | Configuração de produção e indexação |
 | [Manutenção](manutencao.md) | Atualização do motor, tabelas e atividades |
+| [Estratégia da assinatura](estrategia-assinatura.md) | Pesquisa de referências internacionais, proposta paga e plano de validação comercial |
 | [Segurança](seguranca.md) | Revisão de segurança, o que foi corrigido, tarefas nas contas e limitações |
 | [Acesso](acesso.md) | Quem pode usar o quê: simulação grátis, prévia, assinatura e `MODO_ACESSO` (T37) |
 
