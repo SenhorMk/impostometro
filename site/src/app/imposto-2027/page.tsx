@@ -40,16 +40,16 @@ export default async function ImpostoPorSetor() {
     >
       {[...grupos].map(([titulo, itens]) => (
         <section key={titulo} className="mt-10">
-          <h2 className="text-xl font-semibold tracking-tight">{titulo}</h2>
-          <ul className="mt-4 divide-y divide-borda rounded-2xl border border-borda">
+          <h2 className="font-serif text-2xl font-semibold tracking-tight">{titulo}</h2>
+          <ul className="mt-4 divide-y divide-borda border-y border-tinta">
             {itens.map(({ atividade, resultado }) => (
               <li key={atividade.id}>
-                <Link href={`/imposto-2027/${atividade.id}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-fundo">
+                <Link href={`/imposto-2027/${atividade.id}`} className="flex items-center justify-between gap-4 py-3 hover:bg-fundo">
                   <span>{atividade.nome}</span>
                   <span className="shrink-0 text-right text-sm">
                     {resultado.ok ? (
                       <>
-                        <b>{emReais(resultado.total)}</b>{" "}
+                        <b className="font-mono font-medium">{emReais(resultado.total)}</b>{" "}
                         <span className="text-suave">({emPercentual(resultado.percentualSobreVenda)})</span>
                       </>
                     ) : (

@@ -20,8 +20,9 @@ export default function ImagemCompartilhamento() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 72,
-          background: "linear-gradient(135deg, #0b3d33 0%, #08735a 100%)",
-          color: "white",
+          background: "#faf9f5",
+          color: "#141414",
+          borderBottom: "24px solid #141414",
           fontFamily: "sans-serif",
         }}
       >
@@ -30,9 +31,9 @@ export default function ImagemCompartilhamento() {
             style={{
               width: 64,
               height: 64,
-              borderRadius: 16,
-              background: "white",
-              color: "#08735a",
+              borderRadius: 4,
+              background: "#141414",
+              color: "#faf9f5",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -44,14 +45,14 @@ export default function ImagemCompartilhamento() {
           {SITE.nome}
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 72, fontWeight: 800, lineHeight: 1.1, letterSpacing: -2 }}>
-            Quanto sua empresa vai pagar de imposto em 2027?
+          <div style={{ display: "flex", flexWrap: "wrap", fontSize: 72, fontWeight: 800, lineHeight: 1.1, letterSpacing: -2 }}>
+            Quanto de imposto a sua empresa paga&nbsp;<span style={{ background: "#fbe88a" }}>a partir de 2027</span>
           </div>
-          <div style={{ marginTop: 24, fontSize: 32, color: "#d1fae9" }}>
+          <div style={{ marginTop: 24, fontSize: 32, color: "#57554f" }}>
             CBS e IBS em 2 minutos. Grátis, sem cadastro e com a conta aberta.
           </div>
         </div>
-        <div style={{ display: "flex", fontSize: 24, color: "#a6f2d5" }}>
+        <div style={{ display: "flex", fontSize: 24, color: "#57554f" }}>
           Site independente, não é do governo. Usa a calculadora de código aberto da Receita Federal (licença MIT).
         </div>
       </div>

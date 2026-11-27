@@ -4,10 +4,10 @@ import { SITE } from "@/lib/config";
 /** T21: aviso de "não oficial" e crédito da licença MIT em todas as páginas. */
 export function Rodape() {
   return (
-    <footer className="mt-auto border-t border-borda bg-fundo">
+    <footer className="mt-auto border-t border-tinta bg-papel">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 text-sm text-suave md:grid-cols-[2fr_1fr_1fr]">
         <div>
-          <p className="font-semibold text-tinta">{SITE.nome}</p>
+          <p className="font-serif text-lg font-semibold text-tinta">{SITE.nome}</p>
           <p className="mt-2 max-w-md leading-relaxed">
             Este site <strong>não é do governo</strong> e não tem ligação com a Receita Federal. Os cálculos usam a
             calculadora de tributos publicada pela Receita Federal do Brasil como software livre (licença MIT,

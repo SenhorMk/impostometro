@@ -31,7 +31,7 @@ export default async function Artigo({ params }: PageProps<"/artigos/[slug]">) {
         <p className="text-sm text-suave">Revisão editorial: <time dateTime={artigo.atualizadoEm}>{artigo.atualizadoEm.split("-").reverse().join("/")}</time></p>
         {artigo.secoes.map((secao) => (
           <section key={secao.titulo} className="mt-10">
-            <h2 className="text-2xl font-semibold tracking-tight">{secao.titulo}</h2>
+            <h2 className="font-serif text-3xl font-semibold tracking-tight">{secao.titulo}</h2>
             {secao.paragrafos.map((paragrafo) => <p key={paragrafo} className="mt-4 leading-7 text-suave">{paragrafo}</p>)}
             {secao.fontes && <FontesConteudo fontes={secao.fontes} />}
           </section>

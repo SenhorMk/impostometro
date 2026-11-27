@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PaginaConteudo } from "@/components/Conteudo";
 import { DadosEstruturados } from "@/components/DadosEstruturados";
+import { Recibo } from "@/components/inicio/Recibo";
 import { ATIVIDADES, atividadePorId, calcularExemplo, EXEMPLO_PADRAO, explicarReducao } from "@/lib/exemplos";
-import { dataBR, emPercentual, emReais } from "@/lib/formato";
+import { emPercentual, emReais } from "@/lib/formato";
 import { URL_SITE } from "@/lib/seo";
 
 /**
@@ -62,42 +63,32 @@ export default async function ImpostoDoSetor({ params }: PageProps<"/imposto-202
         <Link href="/imposto-2027" className="hover:text-tinta">Imposto 2027 por setor</Link> › <span className="text-tinta">{atividade.nome}</span>
       </nav>
 
-      {resultado.ok ? (
-        <section className="mt-8 overflow-hidden rounded-2xl border border-borda">
-          <div className="bg-marca-900 p-6 text-white">
-            <p className="text-sm text-marca-100">Venda de {emReais(resultado.base)} em {EXEMPLO_PADRAO.cidade}, em {dataBR(resultado.dataFatoGerador)}</p>
-            <p className="mt-2 text-4xl font-bold">{emReais(resultado.total)}</p>
-            <p className="text-sm text-marca-100">de CBS + IBS, ou {emPercentual(resultado.percentualSobreVenda)} do valor da venda</p>
-          </div>
-          <dl className="grid grid-cols-1 divide-y divide-borda text-sm sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            <div className="p-4"><dt className="text-suave">CBS (federal)</dt><dd className="mt-1 text-lg font-semibold">{emReais(resultado.cbs.valor)}</dd><dd className="text-xs text-suave">alíquota efetiva {emPercentual(resultado.cbs.aliquotaEfetiva)}</dd></div>
-            <div className="p-4"><dt className="text-suave">IBS estadual (teste)</dt><dd className="mt-1 text-lg font-semibold">{emReais(resultado.ibsEstadual.valor)}</dd><dd className="text-xs text-suave">{emPercentual(resultado.ibsEstadual.aliquotaEfetiva)}</dd></div>
-            <div className="p-4"><dt className="text-suave">IBS municipal (teste)</dt><dd className="mt-1 text-lg font-semibold">{emReais(resultado.ibsMunicipal.valor)}</dd><dd className="text-xs text-suave">{emPercentual(resultado.ibsMunicipal.aliquotaEfetiva)}</dd></div>
+      <div className="mt-10">
+        <Recibo resultado={resultado} atividade={atividade} cidade={EXEMPLO_PADRAO.cidade} />
+      </div>
+
+      {resultado.ok && (
+        <section className="mt-10 border-t border-tinta pt-6">
+          <h2 className="font-serif text-2xl font-semibold tracking-tight">De onde vem cada número</h2>
+          <dl className="mt-4 text-sm leading-relaxed">
+            {[
+              ["Redução", explicarReducao(resultado.cbs.reducao, resultado.semAliquota)],
+              ["Alíquota da CBS", `${emPercentual(resultado.cbs.aliquota)} (${resultado.periodoAliquotas.status === "provisorio" ? "provisória" : "publicada"}). ${resultado.periodoAliquotas.explicacaoCbs}`],
+              ...(resultado.fundamentacao ? [["Fundamento legal", `${resultado.fundamentacao} da Lei Complementar 214/2025.`]] : []),
+              ["Códigos", `${codigo} ${atividade.codigo} e classificação tributária (cClassTrib) ${atividade.cClassTrib}.`],
+              ["Versões", `Calculadora oficial ${resultado.versaoMotor}, tabela ${resultado.versaoTabelaMotor}; nossa tabela de alíquotas de ${resultado.versaoTabelaAliquotas}.`],
+            ].map(([t, d]) => (
+              <div key={t} className="grid gap-1 border-b border-borda py-3 sm:grid-cols-[10rem_1fr] sm:gap-4">
+                <dt className="font-mono text-xs uppercase tracking-[0.1em] text-suave sm:pt-0.5">{t}</dt>
+                <dd className="text-suave">{d}</dd>
+              </div>
+            ))}
           </dl>
-          <div className="border-t border-borda bg-fundo p-5 text-sm leading-relaxed">
-            <p className="font-medium">{explicarReducao(resultado.cbs.reducao, resultado.semAliquota)}</p>
-            <ul className="mt-3 space-y-1 text-suave">
-              <li>Alíquota nominal da CBS: {emPercentual(resultado.cbs.aliquota)} ({resultado.periodoAliquotas.status === "provisorio" ? "provisória" : "publicada"}). {resultado.periodoAliquotas.explicacaoCbs}</li>
-              {resultado.fundamentacao && <li>Fundamento legal: {resultado.fundamentacao} da Lei Complementar 214/2025.</li>}
-              <li>Códigos usados: {codigo} {atividade.codigo} e cClassTrib {atividade.cClassTrib}.</li>
-              <li>Calculadora oficial versão {resultado.versaoMotor}, tabela {resultado.versaoTabelaMotor}; nossa tabela de alíquotas {resultado.versaoTabelaAliquotas}.</li>
-            </ul>
-            {resultado.cbs.memoria && (
-              <blockquote className="mt-4 border-l-2 border-marca-600 pl-3 text-xs italic text-suave">
-                Memória de cálculo oficial: “{resultado.cbs.memoria}”
-              </blockquote>
-            )}
-          </div>
-        </section>
-      ) : (
-        <section className="mt-8 rounded-2xl border border-borda bg-fundo p-6">
-          <p className="font-semibold">Não calculado</p>
-          <p className="mt-2 text-suave">{resultado.mensagem}</p>
         </section>
       )}
 
       <section className="mt-10">
-        <h2 className="text-2xl font-semibold tracking-tight">O que muda para {nome} em 2027</h2>
+        <h2 className="font-serif text-2xl font-semibold tracking-tight">O que muda para {nome} em 2027</h2>
         <p className="mt-4 leading-7 text-suave">
           A partir de janeiro de 2027, a CBS substitui o PIS e a Cofins. O IBS, que vai substituir o ICMS e o ISS, começa
           em teste com 0,1% e só cresce a partir de 2029. Por isso, em 2027 quase todo o imposto novo é CBS.
@@ -110,8 +101,8 @@ export default async function ImpostoDoSetor({ params }: PageProps<"/imposto-202
         </p>
       </section>
 
-      <section className="mt-10 rounded-2xl bg-marca-50 p-6">
-        <h2 className="text-xl font-semibold">Calcule com o seu valor e a sua cidade</h2>
+      <section className="mt-10 border border-tinta bg-white p-6">
+        <h2 className="font-serif text-2xl font-semibold">Calcule com o seu valor e a sua cidade</h2>
         <p className="mt-2 text-sm leading-relaxed text-suave">
           Digite “{atividade.sinonimos[0] ?? nome}” na calculadora, informe o valor da venda e a cidade. Grátis, sem
           cadastro e com a conta aberta.
@@ -121,11 +112,11 @@ export default async function ImpostoDoSetor({ params }: PageProps<"/imposto-202
 
       {parecidas.length > 0 && (
         <section className="mt-10">
-          <h2 className="text-xl font-semibold">Atividades com o mesmo tratamento</h2>
+          <h2 className="font-serif text-xl font-semibold">Atividades com o mesmo tratamento</h2>
           <ul className="mt-4 flex flex-wrap gap-2">
             {parecidas.map((a) => (
               <li key={a.id}>
-                <Link href={`/imposto-2027/${a.id}`} className="inline-block rounded-full border border-borda px-3 py-1.5 text-sm hover:border-marca-600">
+                <Link href={`/imposto-2027/${a.id}`} className="inline-block border border-tinta/30 px-3 py-1.5 text-sm hover:border-tinta">
                   {a.nome}
                 </Link>
               </li>

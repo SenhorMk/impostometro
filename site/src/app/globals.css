@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
-/* Paleta: verde-petróleo (confiança, dinheiro) + âmbar para destaques. */
+/*
+ * Identidade visual: "documento fiscal bem impresso".
+ * Papel claro, tinta preta, um verde escuro de destaque e marca-texto amarelo
+ * só nos números que importam. Cantos quase retos, linhas finas em vez de sombras.
+ * Os nomes das cores (marca-*, tinta, suave...) são usados no site inteiro:
+ * mudar aqui muda tudo, inclusive a calculadora.
+ */
 @theme inline {
-  --color-marca-50: #ecfdf7;
-  --color-marca-100: #d1fae9;
-  --color-marca-200: #a6f2d5;
-  --color-marca-600: #0b8f6a;
-  --color-marca-700: #08735a;
-  --color-marca-800: #0a5c49;
-  --color-marca-900: #0b3d33;
-  --color-destaque: #f5b83d;
-  --color-tinta: #13201c;
-  --color-suave: #5b6b66;
-  --color-borda: #dfe7e4;
-  --color-fundo: #f5f8f7;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-marca-50: #eef3ef;
+  --color-marca-100: #d8e5dc;
+  --color-marca-200: #b5cdbc;
+  --color-marca-600: #1f6b47;
+  --color-marca-700: #175a3b;
+  --color-marca-800: #124a31;
+  --color-marca-900: #0e2e20;
+  --color-destaque: #f7dc5c;
+  --color-marcatexto: #fbe88a;
+  --color-tinta: #141414;
+  --color-suave: #57554f;
+  --color-borda: #d9d5ca;
+  --color-fundo: #f1eee6;
+  --color-papel: #faf9f5;
+  --font-sans: var(--fonte-texto);
+  --font-mono: var(--fonte-numeros);
+  --font-serif: var(--fonte-titulo);
+  /* Cantos quase retos no site inteiro (inclusive nos componentes antigos). */
+  --radius-md: 3px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 6px;
 }
 
 body {
-  background: #ffffff;
+  background: var(--color-papel);
   color: var(--color-tinta);
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
 }
 
 @layer components {
@@ -28,70 +47,49 @@ body {
     @apply mb-1.5 block text-sm font-medium text-tinta;
   }
   .campo {
-    @apply w-full rounded-xl border border-borda bg-white px-3.5 py-3 text-base text-tinta outline-none transition placeholder:text-suave/70 focus:border-marca-600 focus:ring-4 focus:ring-marca-100 disabled:bg-fundo;
+    @apply w-full rounded-md border border-tinta/25 bg-white px-3.5 py-3 text-base text-tinta outline-none transition placeholder:text-suave/70 focus:border-tinta focus:ring-2 focus:ring-marca-200 disabled:bg-fundo;
   }
   .botao-primario {
-    @apply inline-flex items-center justify-center rounded-xl bg-marca-700 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-marca-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-marca-200 disabled:opacity-60;
+    @apply inline-flex items-center justify-center rounded-md bg-tinta px-5 py-3 font-semibold text-papel transition hover:bg-marca-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-marca-200 disabled:opacity-60;
   }
   .botao-secundario {
-    @apply inline-flex items-center justify-center rounded-xl border border-borda bg-white px-5 py-3 font-semibold text-tinta transition hover:bg-fundo;
+    @apply inline-flex items-center justify-center rounded-md border border-tinta px-5 py-3 font-semibold text-tinta transition hover:bg-tinta hover:text-papel;
+  }
+  /* Marca-texto: o traço amarelo atrás do número ou da palavra principal. */
+  .marcatexto {
+    background: linear-gradient(transparent 58%, var(--color-marcatexto) 58%, var(--color-marcatexto) 92%, transparent 92%);
+    padding: 0 0.08em;
+  }
+  /* Rótulo de margem das seções (como a coluna de um documento). */
+  .rotulo-secao {
+    @apply font-mono text-xs uppercase tracking-[0.14em] text-suave;
+  }
+  .titulo-secao {
+    @apply font-serif text-3xl font-semibold leading-tight tracking-tight sm:text-[2.6rem];
   }
 }
 
 /* ------------------------------------------------------------------
-   Animações leves (sem JavaScript e sem biblioteca).
-   - "revelar": a seção sobe e aparece quando entra na tela. Usa as
-     animações ligadas à rolagem do CSS; navegador antigo só mostra a seção.
-   - Quem pediu "reduzir movimento" no celular/computador não vê animação.
+   Movimento: só onde explica alguma coisa.
+   - o recibo "imprime" linha por linha quando aparece na tela;
+   - as barras do calendário crescem ao rolar.
+   Sem JavaScript. Quem pede "reduzir movimento" vê tudo parado.
    ------------------------------------------------------------------ */
-@keyframes surgir {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: none; }
+@keyframes imprimir {
+  from { opacity: 0; transform: translateY(-4px); clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
 }
 @keyframes crescer-x {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
-@keyframes flutuar {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-@keyframes pulsar {
-  0% { box-shadow: 0 0 0 0 rgb(11 143 106 / 0.45); }
-  70% { box-shadow: 0 0 0 10px rgb(11 143 106 / 0); }
-  100% { box-shadow: 0 0 0 0 rgb(11 143 106 / 0); }
-}
-
-/* Demonstração animada (a "mini vídeo" do como funciona): ciclo de 12 s. */
-@keyframes demo-digitar {
-  0%, 4% { width: 0; }
-  18%, 100% { width: 100%; }
-}
-@keyframes demo-valor {
-  0%, 22% { opacity: 0; }
-  28%, 100% { opacity: 1; }
-}
-@keyframes demo-botao {
-  0%, 36% { transform: scale(1); }
-  39% { transform: scale(0.95); }
-  42%, 100% { transform: scale(1); }
-}
-@keyframes demo-resultado {
-  0%, 42% { opacity: 0; transform: translateY(12px); }
-  50%, 92% { opacity: 1; transform: none; }
-  100% { opacity: 0; transform: none; }
-}
-@keyframes demo-cursor {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .revelar {
-      animation: surgir linear both;
+    .recibo-linha {
+      animation: imprimir linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 28%;
+      animation-range: entry 40% cover 32%;
     }
     .barra-crescer {
       transform-origin: left;
@@ -100,11 +98,4 @@ body {
       animation-range: entry 10% cover 40%;
     }
   }
-  .flutuar { animation: flutuar 5s ease-in-out infinite; }
-  .pulsar { animation: pulsar 2.4s ease-out infinite; }
-  .demo-digitar { animation: demo-digitar 12s steps(18, end) infinite; }
-  .demo-valor { animation: demo-valor 12s ease infinite; }
-  .demo-botao { animation: demo-botao 12s ease infinite; }
-  .demo-resultado { animation: demo-resultado 12s ease infinite; }
-  .demo-cursor { animation: demo-cursor 0.9s step-end infinite; }
 }

@@ -47,3 +47,16 @@ Teste visual com Playwright (Chromium), computador 1366 px e iPhone 13 (390 px),
 - Sem imagens geradas por IA: o ambiente não tem API de imagem, e ilustrações em SVG/CSS são mais leves. Fotos reais podem entrar depois, se o Mateus quiser.
 - `docs/backlog.md`, `docs/decisoes.md` e o índice do diário não foram mexidos para não conflitar com o PR #6; atualizar depois do merge dele.
 - Search Console e medição continuam dependendo do domínio (T04/T05).
+
+## 27/11/2026 · Segunda versão do visual (pedido do Mateus)
+
+O Mateus achou a primeira versão com "cara de IA genérica". Diagnóstico: manchas de gradiente borradas, selo com ponto pulsando, rótulos em caixa alta sobre cada título, cartões arredondados com sombra em tudo, lista de "✓", passos em bolinhas numeradas, celular flutuando, frases de efeito ("sem enrolação", "sem juridiquês").
+
+Nova direção: **documento fiscal bem impresso**. Referências: jornalismo explicativo brasileiro (gráficos e tipografia editorial) e o próprio material fiscal (recibo, DANFE, tabela de alíquotas). Nenhuma marca copiada.
+
+- Tipografia: Newsreader (títulos, serifa), IBM Plex Sans (texto), IBM Plex Mono (números). Todas SIL OFL, servidas pelo `next/font` (sem pedido ao Google no navegador).
+- Cor: papel `#faf9f5`, tinta `#141414`, um verde escuro e marca-texto amarelo só no número principal. Cantos quase retos no site inteiro (tokens `--radius-*`), linhas finas no lugar de sombras.
+- O exemplo virou um **recibo** com cada linha da conta (porte), que "imprime" ao rolar. Substitui a demonstração animada e o bloco da conta aberta.
+- Setores em **tabela**, calendário como gráfico de barras com fonte, preços em duas colunas, guias como índice com data de revisão.
+- Calculadora e resultado mudam pelo tema (classes `.campo`, `.botao-*` e `Resultado.tsx`), sem mexer em `Calculadora.tsx` (PR #6).
+- Removidos `DemoAnimada.tsx` e `ContaAberta.tsx`.
