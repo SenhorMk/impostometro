@@ -22,7 +22,8 @@ export default function Importar() {
         </p>
         <p className="mt-3 rounded-xl bg-marca-50 p-3 text-sm text-marca-900">
           O arquivo da nota é lido aqui no seu navegador e não é enviado para nós. Para a conta, usamos só NCM, valor,
-          quantidade, classificação, data e cidade de cada item. Nome, CPF e endereço do seu cliente são ignorados.
+          quantidade, classificação, data e cidade de cada item. Nome, CPF e endereço do seu cliente são ignorados. Com
+          login, o resultado fica no histórico da sua conta (com a descrição dos produtos) e você pode apagar quando quiser.
         </p>
         <div className="mt-8">
           <PortaoAssinante />

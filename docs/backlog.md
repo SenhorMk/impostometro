@@ -40,7 +40,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T19 | 5 artigos base e glossário | 🟡 | cinco artigos, glossário, fontes oficiais, links e metadados implementados; revisão contábil pendente. Fontes em `docs/conteudo.md`; evidências no diário |
 | T20 | SEO técnico, Search Console e medição | 🟡 | títulos, descrição, FAQ, sitemap, robots e canônicas feitos. `SITE_URL` configura o endereço; prévias e ambientes sem URL ficam fora da indexação. Falta: configurar URL de produção, Search Console e Plausible/GA |
 | T21 | Termos, privacidade e aviso "não oficial" | 🟡 | rodapé feito; termos e privacidade são rascunhos para advogado revisar |
-| T07 | Backup e monitoramento | ⏳ | Sentry + aviso se o site cair |
+| T07 | Backup e monitoramento | 🟡🧑 | Sentry e `/api/saude` prontos no código; falta criar Sentry e alerta, e o backup ([`monitoramento.md`](monitoramento.md)) |
 
 ## Sprints 4 a 6 · Conta, assinatura e XML
 
@@ -52,8 +52,8 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T14 | Assinatura recorrente (Pix e cartão) | 🟡 | Asaas (decisão do Mateus). Assinar, avisos, cancelar e XML só para assinante prontos; tabelas criadas no Supabase; falta ligar o Asaas, testar no sandbox e com R$ 1 ([`banco.md`](banco.md)) |
 | T17 | Calcular o lote item a item | 🟡 | Total, detalhe por item e confirmação da classificação. 500 notas em 1,7 s. Em revisão |
 | T37 | Acesso grátis, prévia e assinatura decididos no servidor | 🟡 | matriz em [`acesso.md`](acesso.md). `MODO_ACESSO` (`previa`, `assinatura`, `fechado`); chave faltando fecha a importação em vez de abrir. Em revisão |
-| T18 | Histórico de cálculos | ⏳ | |
-| T22 | Funil medido e checklist de lançamento | ⏳ | |
+| T18 | Histórico de cálculos | 🟡 | `/conta/historico`: lista, reabrir com as versões e apagar. Falta rodar o SQL no Supabase |
+| T22 | Funil medido e checklist de lançamento | 🟡 | contadores por dia sem dado pessoal; checklist em [`lancamento.md`](lancamento.md). Falta rodar o SQL |
 | SEG | Revisão de segurança severa | 🟡 | correções no código e SQL novo em revisão; Mateus roda o SQL e faz as tarefas de conta ([`seguranca.md`](seguranca.md)) |
 
 ## Depois do MVP (P2)

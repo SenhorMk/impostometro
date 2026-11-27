@@ -61,4 +61,4 @@ Testes novos em `site/src/lib/seguranca.test.ts` (limite, corpo grande, link do 
 - **Funil**: um visitante ainda consegue inflar "visita", "cálculo grátis" e "cadastro". Não há dado pessoal envolvido; aceito para manter o funil sem cookies.
 - **Histórico gravado pelo navegador**: a pessoa consegue alterar os números do **próprio** histórico. Não afeta ninguém nem a cobrança, mas o histórico não serve como prova.
 - **Lote pesado**: um assinante pode mandar 50 notas de 990 itens por pedido. O limite por conta e o tempo máximo da Vercel seguram; se virar problema, limitar o total de itens por pedido (exige mudar o importador).
-- **Conflito com o PR #6**: os dois mexem em `site/src/app/api/asaas/webhook/route.ts`. Quem for juntado por último precisa recolocar as 4 linhas do funil (dentro do `if (novo)`, depois do `update`).
+- **PR #6 já juntado**: as linhas do funil no webhook foram mantidas, agora depois da gravação conferida (só contam quando a assinatura muda de verdade).
