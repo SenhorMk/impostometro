@@ -476,7 +476,7 @@ export function Calculadora() {
         <p className="text-center text-xs text-suave">Grátis, sem cadastro. Mesma conta da calculadora oficial da Receita Federal.</p>
       </form>
 
-      <div ref={resultadoRef} aria-live="polite">
+      <div ref={resultadoRef} aria-live="polite" className="scroll-mt-32">
         {resultado && (
           <div className="mt-6">
             <Resultado

@@ -1,10 +1,16 @@
 # impostometro (nome do produto provisório: Calcula Reforma)
 
-Site para empresários descobrirem quanto vão pagar de **CBS e IBS em 2027**, a reforma tributária do consumo. É grátis para simular uma venda, com assinatura barata para importar as notas do mês. Todo número vem da **calculadora oficial que a Receita Federal publicou como código aberto**, traduzida fielmente para TypeScript para rodar dentro do próprio site, e o site mostra a conta inteira.
+Site para empresários simularem a **CBS e o IBS de uma venda em 2027**, no regime regular, com premissas e fontes visíveis. A calculadora é gratuita; a importação de notas existe como prévia e a assinatura ainda está em preparação. Os valores vêm de um porte para TypeScript da **calculadora de código aberto da Receita Federal**, executado dentro do site. O resultado não representa a apuração de todos os tributos da empresa.
 
 > **Para agentes e novas pessoas no projeto: comece por [`AGENTS.md`](AGENTS.md).** Ele tem as regras, os comandos e o mapa do repositório.
 
-## Status (25/11/2026)
+## Tickets e implementação
+
+Os tickets estão nas [issues do repositório](https://github.com/SenhorMk/impostometro/issues) e têm especificações versionadas no [catálogo](docs/tickets/README.md). O [plano de implementação](docs/plano-implementacao.md) define ordem, dependências e os marcos gratuito e pago. O [diário](docs/diario/README.md) registra entregas e evidências. Começamos pelo [T33: site claro e confiável](https://github.com/SenhorMk/impostometro/issues/10).
+
+## Status de referência (25/11/2026)
+
+O quadro abaixo é histórico. Consulte o [backlog atualizado](docs/backlog.md) para distinguir código publicado, propostas em PR e validações pendentes.
 
 - ✅ Calculadora oficial empacotada em Docker, validada com o exemplo da Receita (CBS de R$ 42,24) e com 30 testes de referência.
 - ✅ Site com a calculadora grátis na página inicial, "como chegamos nesse número" e landing page.
