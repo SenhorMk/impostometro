@@ -4,7 +4,7 @@ O site roda na Vercel e usa o Supabase para contas e persistência. A calculador
 
 ## Ambiente publicado
 
-Produção: <https://impostometro-opal.vercel.app>. Projeto Vercel `impostometro`, equipe Orbita (`orbita16`), raiz `site`. Supabase: `uivewvttfvaoqdzltrnc`, organização ReformaImposto, região São Paulo. Em 26/11/2026, o deploy `EwEji29SvDFSSd9xsFK5dfZtdTUy`, commit `8362086`, ficou Ready com a conexão do Supabase configurada em Production.
+Produção: <https://calculareforma.mkautobots.site> (domínio verificado na Vercel, com `SITE_URL` apontando para ele; `https://impostometro-opal.vercel.app` continua respondendo com a canônica no domínio). Estado de cada lançamento: [`lancamento.md`](lancamento.md). Projeto Vercel `impostometro`, equipe Orbita (`orbita16`), raiz `site`. Supabase: `uivewvttfvaoqdzltrnc`, organização ReformaImposto, região São Paulo. Em 26/11/2026, o deploy `EwEji29SvDFSSd9xsFK5dfZtdTUy`, commit `8362086`, ficou Ready com a conexão do Supabase configurada em Production.
 
 O cálculo e a gravação de uma busca sem resultado foram conferidos no ambiente publicado. O login reconhece a configuração, mas a entrega do link por e-mail e uma sessão completa ainda precisam ser testadas. Google e SMTP próprio estão pendentes. A cobrança não foi ativada nesta configuração. Evidências e pendências: [diário da configuração](diario/2026-11-26-configuracao-producao.md).
 
@@ -35,7 +35,7 @@ O cálculo e a gravação de uma busca sem resultado foram conferidos no ambient
 ## 3. Supabase e autenticação
 
 1. Confira o projeto `uivewvttfvaoqdzltrnc` antes de aplicar mudanças. As migrações foram aplicadas pelo painel e ainda não têm histórico em `supabase_migrations`; veja [`banco.md`](banco.md) antes de usar `db push`.
-2. Em Authentication → URL Configuration, o Site URL é `https://impostometro-opal.vercel.app` e o retorno permitido é `https://impostometro-opal.vercel.app/conta`. Ao trocar de domínio, atualize ambos. Adicione retornos de desenvolvimento apenas quando necessário; evite liberar todas as prévias da equipe no banco de produção.
+2. Em Authentication → URL Configuration, o Site URL estava documentado como `https://impostometro-opal.vercel.app` (retorno `.../conta`). Com o domínio `calculareforma.mkautobots.site` no ar, troque os dois para o domínio (item B1 do [`lancamento.md`](lancamento.md)). Adicione retornos de desenvolvimento apenas quando necessário; evite liberar todas as prévias da equipe no banco de produção.
 3. Em Production na Vercel, configure `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`. O `next.config.ts` repassa a URL e a chave publicável ao navegador. Chaves secretas ficam exclusivamente no servidor.
 4. Publique novamente após mudar variáveis. A Vercel pode pedir verificação de identidade ao dono da conta.
 5. Configure SMTP próprio e as credenciais OAuth do Google antes de testar esses fluxos para o público. Confirmação de e-mail permanece ligada e login anônimo permanece desligado.
