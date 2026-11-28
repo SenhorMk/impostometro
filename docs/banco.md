@@ -81,7 +81,8 @@ Skills aplicadas: `supabase:supabase` (0.1.2) e `supabase:supabase-postgres-best
 | Limpeza diária de `asaas_eventos` (`pg_cron`) | ✅ job 2 |
 | Site URL e Redirect URLs do login (Authentication → URL Configuration) | ✅ endereço público e retorno exato `/conta` salvos no painel em 26/11/2026 |
 | `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` na Vercel | ✅ configuradas em Production; novo deploy Ready e coleta testada |
-| `SUPABASE_SECRET_KEY`, `ASAAS_API_KEY`, `ASAAS_WEBHOOK_TOKEN` na Vercel e webhook no Asaas | ⏳ falta (ligam a assinatura) |
+| `SUPABASE_SECRET_KEY`, `ASAAS_ENVIROMENT`, `ASAAS_API_KEY_SANDBOX`, `ASAAS_API_KEY`, `Token_Autenticacao_Sandbox` e `Token_Autenticacao` na Vercel | ✅ cadastradas em Production (27/11/2026; só os nomes foram conferidos, não os valores) |
+| `MODO_ACESSO` na Vercel e webhook no Asaas | ⏳ falta |
 | Código das contas e da assinatura em produção | ✅ commit `8362086` publicado; login real e cobrança ainda não validados |
 | Tabela `calculos` (histórico, T18) | ✅ existe no banco (conferido pelo conector em 27/11/2026) |
 | Tabela `funil_diario`, função `contar_evento` e visão `funil_semanal` (T22) | ✅ existem no banco (conferido pelo conector em 27/11/2026) |
@@ -134,14 +135,14 @@ Conferido num Postgres 17 local: a pessoa lê a própria assinatura, não conseg
 2. Criar uma conta no **sandbox** do Asaas (https://sandbox.asaas.com), gerar a chave da API em Integrações.
 3. Ainda no Asaas, em Integrações → Webhooks, criar um webhook:
    - URL: `https://<endereço do site>/api/asaas/webhook`;
-   - token de autenticação: uma senha longa inventada (a mesma vai para `ASAAS_WEBHOOK_TOKEN`);
+   - token de autenticação: uma senha longa inventada (a mesma vai para `Token_Autenticacao_Sandbox`; no webhook de produção, para `Token_Autenticacao`);
    - eventos: cobranças (`PAYMENT_CONFIRMED`, `PAYMENT_RECEIVED`, `PAYMENT_OVERDUE`, `PAYMENT_REFUNDED`, `PAYMENT_CHARGEBACK_REQUESTED`) e assinaturas (`SUBSCRIPTION_DELETED`, `SUBSCRIPTION_INACTIVATED`).
 4. Na Vercel (Settings → Environment Variables), sem colocar nada no git:
    - `SUPABASE_SECRET_KEY`: chave secreta do Supabase (Settings → API Keys, `sb_secret_...`);
-   - `ASAAS_API_KEY`, `ASAAS_AMBIENTE=sandbox`, `ASAAS_WEBHOOK_TOKEN`.
-   Com `ASAAS_API_KEY`, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` presentes e `MODO_ACESSO` vazio ou `assinatura`, a cobrança liga e `/importar` passa a exigir assinatura. Se faltar alguma chave, a importação fica **fechada** (nunca aberta). Para a prévia gratuita, escreva `MODO_ACESSO=previa`. Matriz completa em [`acesso.md`](acesso.md) (T37).
+   - `ASAAS_ENVIROMENT=sandbox`, `ASAAS_API_KEY_SANDBOX`, `Token_Autenticacao_Sandbox` (e, para produção, `ASAAS_API_KEY` e `Token_Autenticacao`).
+   Com a chave do ambiente escolhido, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` presentes e `MODO_ACESSO` vazio ou `assinatura`, a cobrança liga e `/importar` passa a exigir assinatura. Se faltar alguma chave, a importação fica **fechada** (nunca aberta). Para a prévia gratuita, escreva `MODO_ACESSO=previa`. Matriz completa em [`acesso.md`](acesso.md) (T37).
 5. Testar no sandbox: assinar, pagar a cobrança pelo painel do sandbox (o Asaas simula o pagamento), conferir que `/importar` libera; cancelar e conferir.
-6. **Teste real de R$ 1:** trocar para a chave de produção e `ASAAS_AMBIENTE=producao`, colocar `ASSINATURA_PRECO_CENTAVOS=100`, assinar com o próprio CPF, pagar com Pix, conferir, cancelar e **apagar** `ASSINATURA_PRECO_CENTAVOS` (volta a R$ 29).
+6. **Teste real de R$ 1:** trocar `ASAAS_ENVIROMENT` para `producao` (o site passa a usar `ASAAS_API_KEY` e `Token_Autenticacao`), colocar `ASSINATURA_PRECO_CENTAVOS=100`, assinar com o próprio CPF, pagar com Pix, conferir, cancelar e **apagar** `ASSINATURA_PRECO_CENTAVOS` (volta a R$ 29).
 
 **Suposições a confirmar no sandbox** (a rede deste ambiente não alcança o Asaas): endereço do sandbox (`https://api-sandbox.asaas.com/v3`; se mudar, use `ASAAS_URL`), formato da data `AAAA-MM-DD`, e que o link de pagamento vem em `invoiceUrl` da primeira cobrança.
 

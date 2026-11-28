@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { buscarCobranca, COBRANCA_PAGA } from "@/lib/asaas";
+import { tokenWebhookAsaas } from "@/lib/asaas-config";
 import { aplicarEvento, type Assinatura } from "@/lib/assinatura";
 import { CorpoInvalido, lerJson } from "@/lib/limite";
 import { admin } from "@/lib/supabase-servidor";
@@ -11,7 +12,8 @@ import { admin } from "@/lib/supabase-servidor";
  *
  * Segurança (revisão de nov/2026), em camadas:
  *  1. o Asaas manda o token configurado no webhook no cabeçalho "asaas-access-token"; ele
- *     precisa ser igual a ASAAS_WEBHOOK_TOKEN (comparação em tempo constante);
+ *     precisa ser igual a Token_Autenticacao (produção) ou Token_Autenticacao_Sandbox,
+ *     conforme ASAAS_ENVIROMENT (comparação em tempo constante);
  *  2. aviso de PAGAMENTO CONFIRMADO não é aceito só pela palavra do aviso: o site pergunta
  *     ao próprio Asaas (com a chave da API) se aquela cobrança está mesmo paga e se é daquela
  *     assinatura. Assim, mesmo que o token vaze, ninguém libera acesso de graça;
@@ -22,7 +24,7 @@ import { admin } from "@/lib/supabase-servidor";
  */
 
 function tokenConfere(recebido: string | null): boolean {
-  const esperado = process.env.ASAAS_WEBHOOK_TOKEN;
+  const esperado = tokenWebhookAsaas();
   if (!esperado || !recebido) return false;
   const a = Buffer.from(recebido);
   const b = Buffer.from(esperado);

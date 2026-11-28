@@ -1,21 +1,23 @@
 /**
  * Conversa com o Asaas (T14), só no SERVIDOR. Documentação: https://docs.asaas.com
  *
- * Variáveis (na Vercel, nunca no git):
- *  - ASAAS_API_KEY: chave da API (a do sandbox é diferente da de produção);
- *  - ASAAS_AMBIENTE: "sandbox" (padrão) ou "producao";
+ * Variáveis (na Vercel, nunca no git), com os nomes cadastrados lá (ver asaas-config.ts):
+ *  - ASAAS_ENVIROMENT: "sandbox" (padrão) ou "producao"; escolhe qual chave vale;
+ *  - ASAAS_API_KEY_SANDBOX: chave da API do sandbox;
+ *  - ASAAS_API_KEY: chave da API de produção;
  *  - ASAAS_URL: opcional, para trocar o endereço da API.
  */
+import { ambienteAsaas, chaveAsaas } from "./asaas-config.ts";
 
 const ENDERECOS = { sandbox: "https://api-sandbox.asaas.com/v3", producao: "https://api.asaas.com/v3" };
 
 export function asaasConfigurado(): boolean {
-  return Boolean(process.env.ASAAS_API_KEY);
+  return Boolean(chaveAsaas());
 }
 
 function base(): string {
   if (process.env.ASAAS_URL) return process.env.ASAAS_URL.replace(/\/$/, "");
-  return process.env.ASAAS_AMBIENTE === "producao" ? ENDERECOS.producao : ENDERECOS.sandbox;
+  return ENDERECOS[ambienteAsaas()];
 }
 
 export class ErroAsaas extends Error {
@@ -32,7 +34,7 @@ async function chamar<T>(metodo: "GET" | "POST" | "DELETE", caminho: string, cor
   const r = await fetch(`${base()}${caminho}`, {
     method: metodo,
     headers: {
-      access_token: process.env.ASAAS_API_KEY ?? "",
+      access_token: chaveAsaas(),
       "Content-Type": "application/json",
       "User-Agent": "CalculaReforma/1.0", // o Asaas exige User-Agent em contas novas
     },
