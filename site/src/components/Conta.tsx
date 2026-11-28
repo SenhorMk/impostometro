@@ -271,7 +271,7 @@ function FormEmpresa({ usuarioId }: { usuarioId: string }) {
               <input id="emp-razao" className="campo" value={form.razaoSocial} onChange={(e) => mudar("razaoSocial", e.target.value.slice(0, 150))} />
             </div>
           </div>
-          {erro && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{erro}</p>}
+          {erro && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{erro}</p>}
           <div className="flex items-center gap-3">
             <button type="submit" className="botao-primario" disabled={estado === "salvando"}>
               {estado === "salvando" ? "Salvando…" : "Salvar empresa"}
@@ -344,7 +344,7 @@ function ApagarConta({ acesso, usuarioId }: { acesso: EstadoAcesso | null; usuar
       >
         {apagando ? "Apagando…" : "Apagar conta para sempre"}
       </button>
-      {erro && <p className="mt-3 rounded-xl bg-red-50 p-3 text-red-800">{erro}</p>}
+      {erro && <p role="alert" className="mt-3 rounded-xl bg-red-50 p-3 text-red-800">{erro}</p>}
     </details>
   );
 }

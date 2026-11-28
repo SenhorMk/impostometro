@@ -65,6 +65,8 @@ export function Calculadora() {
   const [municipio, setMunicipio] = useState<number>(CAPITAIS.SP);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  /** T38: qual campo tem o problema, para marcar (aria-invalid), ligar à mensagem e levar o foco até ele. */
+  const [campoComErro, setCampoComErro] = useState<"atividade" | "codigo" | "valor" | null>(null);
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [oficiais, setOficiais] = useState<CodigoOficial[]>([]);
   const [classificacoes, setClassificacoes] = useState<ResultadoBuscaOficial[]>([]);
@@ -159,6 +161,7 @@ export function Calculadora() {
     setConsulta(a.nome);
     setAberto(false);
     setErro(null);
+    setCampoComErro(null);
   }
 
   function escolherOficial(o: CodigoOficial) {
@@ -166,6 +169,7 @@ export function Calculadora() {
     setConsulta(o.descricao);
     setAberto(false);
     setErro(null);
+    setCampoComErro(null);
   }
 
   /** Classificação achada pela descrição: preenche o cClassTrib e pede o NCM/NBS. */
@@ -176,6 +180,7 @@ export function Calculadora() {
     setModoCodigo(true);
     setAberto(false);
     setErro(null);
+    setCampoComErro(null);
     requestAnimationFrame(() => codigoRef.current?.focus());
   }
 
@@ -201,15 +206,24 @@ export function Calculadora() {
     }
   }
 
+  /** Mostra o erro junto do campo e leva o foco até ele (teclado e leitor de tela). */
+  function erroNoCampo(campo: "atividade" | "codigo" | "valor", mensagem: string) {
+    setErro(mensagem);
+    setCampoComErro(campo);
+    requestAnimationFrame(() => document.getElementById(campo)?.focus());
+  }
+
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
+    if (carregando) return; // T38: Enter repetido não manda o mesmo cálculo duas vezes
     setErro(null);
+    setCampoComErro(null);
 
     let pedidoBase: { tipo: "ncm" | "nbs"; codigo: string; cClassTrib: string };
     if (modoCodigo) {
       const limpo = codigo.replace(/\D/g, "");
       if (limpo.length !== 8 && limpo.length !== 9) {
-        setErro("Digite um NCM (8 números) ou um NBS (9 números).");
+        erroNoCampo("codigo", "Digite um NCM (8 números) ou um NBS (9 números).");
         return;
       }
       pedidoBase = { tipo: limpo.length === 8 ? "ncm" : "nbs", codigo: limpo, cClassTrib };
@@ -220,14 +234,14 @@ export function Calculadora() {
     } else if (escolha?.modo === "oficial") {
       pedidoBase = { tipo: escolha.oficial.tipo, codigo: escolha.oficial.codigo, cClassTrib: escolha.cClassTrib };
     } else {
-      setErro("Escolha na lista o que você vende.");
+      erroNoCampo("atividade", "Escolha na lista o que você vende.");
       setAberto(true);
       return;
     }
 
     const v = lerValor(valor);
     if (!v || v <= 0) {
-      setErro("Informe o valor da venda.");
+      erroNoCampo("valor", "Informe o valor da venda.");
       return;
     }
 
@@ -239,7 +253,7 @@ export function Calculadora() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...pedidoBase, valor: v, municipio, uf }),
       });
-      const json = (await r.json()) as ResultadoCalculo;
+      const json = await lerResposta(r);
       setResultado(json);
       if (json.ok) {
         contarEvento("calculo_gratis");
@@ -284,6 +298,8 @@ export function Calculadora() {
               aria-controls={listaId}
               aria-activedescendant={aberto && opcoes.length > 0 ? `${listaId}-${destaque}` : undefined}
               aria-autocomplete="list"
+              aria-invalid={campoComErro === "atividade" || undefined}
+              aria-describedby={campoComErro === "atividade" ? "erro-calculo" : undefined}
               autoComplete="off"
               placeholder="Ex.: pizzaria, corte de cabelo, roupas"
               className="campo"
@@ -411,6 +427,8 @@ export function Calculadora() {
                 id="codigo"
                 ref={codigoRef}
                 inputMode="numeric"
+                aria-invalid={campoComErro === "codigo" || undefined}
+                aria-describedby={campoComErro === "codigo" ? "erro-calculo" : undefined}
                 placeholder="Ex.: 61091000"
                 className="campo"
                 value={codigo}
@@ -449,6 +467,8 @@ export function Calculadora() {
             <input
               id="valor"
               inputMode="decimal"
+              aria-invalid={campoComErro === "valor" || undefined}
+              aria-describedby={campoComErro === "valor" ? "erro-calculo" : undefined}
               placeholder="1.000,00"
               className="campo pl-10"
               value={valor}
@@ -490,12 +510,12 @@ export function Calculadora() {
         </div>
 
         {erro && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+          <p id="erro-calculo" role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
             {erro}
           </p>
         )}
 
-        <button type="submit" disabled={carregando} className="botao-primario w-full py-3.5 text-base">
+        <button type="submit" disabled={carregando} aria-busy={carregando} className="botao-primario w-full py-3.5 text-base">
           {carregando ? "Calculando…" : "Calcular meu imposto de 2027"}
         </button>
         <p className="text-center text-xs text-suave">Grátis, sem cadastro. Mesma conta da calculadora oficial da Receita Federal.</p>
@@ -514,4 +534,25 @@ export function Calculadora() {
       </div>
     </div>
   );
+}
+
+/**
+ * T38: lê a resposta do /api/calcular sem confundir erro do servidor com falta de internet.
+ * O servidor pode devolver página de erro (não JSON), limite de pedidos (429) ou pedido inválido.
+ */
+async function lerResposta(r: Response): Promise<ResultadoCalculo> {
+  let json: unknown = null;
+  try {
+    json = await r.json();
+  } catch {
+    /* resposta sem JSON (erro da hospedagem) */
+  }
+  if (json && typeof json === "object" && "ok" in json && (json as { ok: unknown }).ok === true) return json as ResultadoCalculo;
+  const mensagemDoServidor = json && typeof json === "object" ? (json as { mensagem?: unknown; erro?: unknown }) : {};
+  const texto = typeof mensagemDoServidor.mensagem === "string" ? mensagemDoServidor.mensagem : typeof mensagemDoServidor.erro === "string" ? mensagemDoServidor.erro : null;
+  if (json && typeof json === "object" && "estado" in json && texto) return json as ResultadoCalculo;
+  if (r.status === 429) return { ok: false, estado: "LIMITE", mensagem: texto ?? "Muitos pedidos seguidos. Espere um minuto e tente de novo." };
+  if (r.status >= 500 || !json)
+    return { ok: false, estado: "FALHA_TECNICA", mensagem: "O cálculo falhou do nosso lado. Tente de novo em alguns segundos; se continuar, fale com a gente." };
+  return { ok: false, estado: "INCONSISTENCIA_ENTRADA", mensagem: texto ?? "Não conseguimos calcular com esses dados. Confira e tente de novo." };
 }

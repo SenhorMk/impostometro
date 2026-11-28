@@ -182,7 +182,7 @@ export function AssinaturaConta({ usuarioId, acesso }: { usuarioId: string; aces
           <p className="text-xs text-suave">O Asaas pede CPF ou CNPJ para emitir a cobrança.</p>
         </form>
       )}
-      {erro && <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{erro}</p>}
+      {erro && <p role="alert" className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{erro}</p>}
     </section>
   );
 }
