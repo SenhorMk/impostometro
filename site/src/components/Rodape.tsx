@@ -42,6 +42,7 @@ export function Rodape() {
             <li><Link href="/termos" className="hover:text-tinta">Termos de uso</Link></li>
             <li><Link href="/privacidade" className="hover:text-tinta">Privacidade</Link></li>
             <li><Link href="/contato" className="hover:text-tinta">Contato</Link></li>
+            <li><Link href="/contato#sugestao" className="hover:text-tinta">Sugerir melhoria ou apontar erro</Link></li>
           </ul>
         </div>
       </div>

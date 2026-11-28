@@ -167,3 +167,11 @@ Migração: `supabase/migrations/20261126170000_funil_diario.sql`. **Ainda não 
 - Limitação: como qualquer contador sem login, alguém pode chamar a função à toa e inflar números. Serve para tendência e taxas de conversão, não como número exato.
 
 Conferido num Postgres 17 local: soma por dia, recusa etapa desconhecida (ex.: um e-mail), `anon` e `authenticated` não leem a tabela nem a visão.
+
+## Funil: importação, relatório e leitura (T22)
+
+Migração: `supabase/migrations/20261128150000_funil_importacao.sql`. **Ainda não aplicada**: rodar no SQL Editor depois do `20261127210000_revisao_seguranca.sql`. Pode rodar de novo.
+
+- Etapas novas aceitas em `funil_diario`: `importacao_inicio`, `importacao_resultado`, `relatorio`.
+- `funil_semanal` ganha as três colunas e `leitura` (aviso de poucos dados com menos de 100 visitas na semana).
+- Conferido em PGlite com as migrações do repositório: etapas novas somam; um e-mail como etapa é recusado; visitante não soma `assinatura`; visitante não lê a visão. Definições em [`funil.md`](funil.md).

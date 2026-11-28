@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | 🟡 Funil no main (PR 6); tabela aplicada; medição pendente |
+| Status | 🟡 Etapas novas e feedback em PR; SQL 20261128150000 e CONTATO_EMAIL pendentes |
 | Marco | A |
 | Prioridade | P1 gratuito |
 | Pontos | A estimar após revisar o código existente |
@@ -25,12 +25,14 @@ O PR 6 propõe contadores diários sem identificadores. Eles medem tendência e 
 
 ## Critérios de aceite
 
-- [ ] Eventos possuem definição e origem; compra vem da confirmação do gateway, não do clique no botão.
-- [ ] Distinguir eventos, sessões e usuários; não apresentar contadores anônimos como número exato de pessoas ou clientes.
-- [ ] Não coletar XML, documento fiscal, IP, cookie ou identificador pessoal para o funil básico; finalidade e limitações ficam documentadas.
-- [ ] Formulário/canal de feedback funciona e informa destino e uso dos dados; erro na coleta não bloqueia a calculadora.
-- [ ] Sem visitantes, o painel indica falta de dados e não conclui que o preço ou produto foi rejeitado.
-- [ ] Dez empresas, entrevistas, contatos prévios e contratação de analytics deixam de ser condições de lançamento.
+- [x] Eventos possuem definição e origem; compra vem da confirmação do gateway, não do clique no botão.
+- [x] Distinguir eventos, sessões e usuários; não apresentar contadores anônimos como número exato de pessoas ou clientes.
+- [x] Não coletar XML, documento fiscal, IP, cookie ou identificador pessoal para o funil básico; finalidade e limitações ficam documentadas.
+- [x] Formulário/canal de feedback funciona e informa destino e uso dos dados; erro na coleta não bloqueia a calculadora.
+- [x] Sem visitantes, o painel indica falta de dados e não conclui que o preço ou produto foi rejeitado.
+- [x] Dez empresas, entrevistas, contatos prévios e contratação de analytics deixam de ser condições de lançamento.
+
+Evidências (28/11/2026): definições e leitura em [`docs/funil.md`](../funil.md); SQL testado em PGlite (etapas novas aceitas, e-mail recusado, `assinatura` recusada para visitante, visão só para o servidor, aviso de poucos dados). Pendente: rodar o SQL, criar `CONTATO_EMAIL`, ligar `relatorio` depois do PR do T27 e conferir em produção.
 
 ## Verificação
 

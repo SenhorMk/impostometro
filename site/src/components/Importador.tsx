@@ -14,6 +14,7 @@ import type { ItemCalculado, NotaCalculada, NotaParaCalcular, RespostaLote } fro
 import { ErroZip, filtroXmlDoZip, lerNota, type ItemNota, type NotaLida } from "@/lib/nfe";
 import { calculoLote } from "@/lib/historico";
 import { salvarNoHistorico } from "@/lib/historico-navegador";
+import { contarEvento } from "@/lib/funil";
 import { cabecalhoLogin } from "@/lib/sessao";
 import { ResultadoLote, type LoteCalculado } from "./ResultadoLote";
 
@@ -91,6 +92,7 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
       return;
     }
     setLendo(true);
+    contarEvento("importacao_inicio"); // T22: só o total do dia, sem dado nenhum dos arquivos
     try {
       const { xmls, rejeitadas: rej } = await abrirArquivos(arquivos);
       const lidas: NotaLida[] = [];
@@ -191,6 +193,7 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
       };
     });
     setResultado({ notas: final, ...versoes });
+    contarEvento("importacao_resultado");
     setProgresso(null);
     // T18: guarda no histórico da conta (só os dados fiscais; sem esperar, sem travar a tela).
     void salvarNoHistorico(calculoLote({ notas: final, lidas: notas, ...versoes }));
