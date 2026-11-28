@@ -20,6 +20,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Estratégia da assinatura](estrategia-assinatura.md) | Pesquisa de referências internacionais, proposta paga e plano de validação comercial |
 | [Segurança](seguranca.md) | Revisão de segurança, o que foi corrigido, tarefas nas contas e limitações |
 | [Acesso](acesso.md) | Quem pode usar o quê: simulação grátis, prévia, assinatura e `MODO_ACESSO` (T37) |
+| [Relatório](relatorio.md) | Relatório do período para o contador (T27): PDF, planilha, campos e garantias dos centavos |
 
 ## Fluxo de uma entrega
 

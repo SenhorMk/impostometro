@@ -20,4 +20,7 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 26/11/2026 | Polimento: planilha para o contador, contato e backlog | [Polimento](2026-11-26-polimento-lancamento.md) |
 | 27/11/2026 | Revisão de segurança severa | [Revisão de segurança](2026-11-27-revisao-seguranca.md) |
 | 27/11/2026 | T37: acesso grátis, prévia e assinatura no servidor | [Entrega T37](2026-11-27-t37.md) |
+| 27/11/2026 | T34: o que entra na análise das notas e a cobertura real | [Entrega T34](2026-11-27-t34.md) |
+| 27/11/2026 | T35: premissas e classificações confirmadas | [Entrega T35](2026-11-27-t35.md) |
 | 27/11/2026 | Nomes das variáveis do Asaas iguais aos da Vercel (T14) | [Nomes da Vercel](2026-11-27-nomes-vercel.md) |
+| 28/11/2026 | T27: relatório do período em PDF e planilha | [Entrega T27](2026-11-28-t27.md) |

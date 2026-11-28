@@ -7,6 +7,8 @@
  */
 import type { NotaCalculada } from "./lote.ts";
 import type { NotaLida } from "./nfe.ts";
+import type { Premissas } from "./premissas.ts";
+import type { Cobertura } from "./relatorio.ts";
 import type { ResultadoCalculo } from "./tipos.ts";
 
 export type Origem = "manual" | "xml";
@@ -16,7 +18,11 @@ export type DetalheXml = {
   tipo: "xml";
   notas: NotaCalculada[];
   /** dados fiscais das notas (sem cliente final: o importador já descartou nome, CPF e endereço) */
-  lidas: Omit<NotaLida, "arquivo" | "avisos">[];
+  lidas: Omit<NotaLida, "arquivo" | "avisos" | "emitente" | "autorizacao">[];
+  /** T35: revisão, confirmação e origem das classificações usadas (sem XML nem dado pessoal). */
+  premissas?: Premissas;
+  /** T27: o que a soma representa (empresa, período, notas fora, pendências), para o relatório. Sem nome de arquivo. */
+  cobertura?: Cobertura;
 };
 export type Detalhe = DetalheManual | DetalheXml;
 
@@ -68,6 +74,8 @@ export type LoteParaSalvar = {
   versaoMotor: string;
   versaoTabelaMotor: string;
   versaoTabelaAliquotas: string;
+  premissas?: Premissas;
+  cobertura?: Cobertura;
 };
 
 export function calculoLote(lote: LoteParaSalvar): NovoCalculo | null {
@@ -98,10 +106,14 @@ export function calculoLote(lote: LoteParaSalvar): NovoCalculo | null {
       uf: n.uf,
       itens: n.itens,
     })),
+    ...(lote.premissas ? { premissas: lote.premissas } : {}),
+    ...(lote.cobertura ? { cobertura: lote.cobertura } : {}),
   };
+  const p = lote.premissas;
+  const marca = p ? `${p.revisao > 1 ? ` · revisão ${p.revisao}` : ""}${p.itensSugeridos > 0 ? " · rascunho" : ""}` : "";
   return {
     origem: "xml",
-    titulo: cortar(`${qtd} ${qtd === 1 ? "nota" : "notas"} de XML${periodo}`),
+    titulo: cortar(`${qtd} ${qtd === 1 ? "nota" : "notas"} de XML${periodo}${marca}`),
     base_centavos: t.base,
     cbs_centavos: t.cbs,
     ibs_centavos: t.ibs,

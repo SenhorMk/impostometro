@@ -2,10 +2,10 @@
 
 | Campo | Valor |
 |---|---|
-| Status | ⏳ A fazer |
+| Status | 🟡 Em revisão (PR) |
 | Marco | B |
 | Prioridade | P0 assinatura |
-| Pontos | A estimar após revisar o código existente |
+| Pontos | 5 |
 | Depende de | T34 |
 | GitHub | https://github.com/SenhorMk/impostometro/issues/20 |
 
@@ -25,12 +25,14 @@ Itens sem cClassTrib recebem sugestão inicial 000001 no importador. O leitor di
 
 ## Critérios de aceite
 
-- [ ] 000001 sugerido não aparece como enquadramento fiscal validado automaticamente.
-- [ ] Tela e relatório distinguem classificação da nota, sugestão e confirmação do usuário; base estimada permanece identificada.
-- [ ] Itens pendentes não produzem um total apresentado como revisado ou completo.
-- [ ] Mudança de classificação ou premissa produz uma nova revisão/cenário, preservando a origem do resultado anterior.
-- [ ] Reaproveitamento de escolhas é restrito à empresa e ao contexto aplicável, com possibilidade de revisar.
-- [ ] Guardar versão do motor, tabela, alíquota, data do cenário e confirmação sem persistir XML ou dados pessoais desnecessários.
+- [x] 000001 sugerido não aparece como enquadramento fiscal validado automaticamente. (cada linha diz "sugestão, ainda não confirmada"; no resultado, "sugestão nossa, NÃO confirmada")
+- [x] Tela e relatório distinguem classificação da nota, sugestão e confirmação do usuário; base estimada permanece identificada. (tela, planilha CSV com a coluna "Origem da classificação" e histórico)
+- [x] Itens pendentes não produzem um total apresentado como revisado ou completo. (dá para ver um rascunho sem confirmar, marcado "Rascunho, não revisado" na tela, na planilha e no título do histórico)
+- [x] Mudança de classificação ou premissa produz uma nova revisão/cenário, preservando a origem do resultado anterior. (revisão 2, 3...; a anterior fica no histórico e a tela mostra o que mudou)
+- [x] Reaproveitamento de escolhas é restrito à empresa e ao contexto aplicável, com possibilidade de revisar. (por CNPJ e por NCM + CFOP; só o que foi confirmado; volta como "usada antes" e pede nova confirmação; fica no navegador)
+- [x] Guardar versão do motor, tabela, alíquota, data do cenário e confirmação sem persistir XML ou dados pessoais desnecessários. (o histórico guarda as premissas junto das versões que já guardava; CNPJ e protocolo não vão)
+
+Verificado em: testes automáticos e site local no celular e no computador. Não verificado em produção. **Suposição:** "contexto" = NCM + CFOP; outros fatores (destinatário, regime especial) ficam para quando houver caso real.
 
 ## Verificação
 

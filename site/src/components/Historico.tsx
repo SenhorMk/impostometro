@@ -205,8 +205,10 @@ function DetalheSalvo({ detalhe, c }: { detalhe: Detalhe | null; c: CalculoSalvo
         versaoMotor: c.versao_motor,
         versaoTabelaMotor: c.versao_tabela_motor,
         versaoTabelaAliquotas: c.versao_tabela_aliquotas,
+        premissas: detalhe.premissas,
       }}
       notas={detalhe.lidas}
+      cobertura={detalhe.cobertura}
     />
   );
 }
