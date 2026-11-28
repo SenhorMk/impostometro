@@ -23,6 +23,7 @@ import type { ItemCalculado, NotaCalculada, NotaParaCalcular, RespostaLote } fro
 import { ErroZip, filtroXmlDoZip, lerNota, type EventoNota, type NotaLida } from "@/lib/nfe";
 import { documentoLegivel, mesLegivel, nomeDoMotivo, prepararAnalise, type Escopo, type MotivoFora } from "@/lib/preparo";
 import { calculoLote } from "@/lib/historico";
+import { resumirCobertura } from "@/lib/relatorio";
 import {
   aplicarClassificacoes,
   contextoDoItem,
@@ -252,7 +253,7 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
     setProgresso(null);
     if (confirmar && empresa !== "todas") guardarMemoria(empresa, premissas, armazenamento());
     // T18: guarda no histórico da conta (só os dados fiscais; sem esperar, sem travar a tela).
-    void salvarNoHistorico(calculoLote({ notas: final, lidas: comClassificacao, ...versoes, premissas }));
+    void salvarNoHistorico(calculoLote({ notas: final, lidas: comClassificacao, ...versoes, premissas, cobertura: resumirCobertura(preparo) }));
   }
 
   /** T35: volta para as classificações sem apagar o resultado atual (que vira uma revisão anterior). */
@@ -412,7 +413,7 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
           <ResultadoLote
             resultado={resultado}
             notas={notasDoResultado}
-            cobertura={{ resumo: resumoDoEscopo(preparo.escopo), parcial: preparo.parcial, motivos: preparo.motivosParcial }}
+            cobertura={resumirCobertura(preparo)}
           />
           {aClassificar.length > 0 && (
             <div className="rounded-2xl border border-borda bg-white p-4 text-sm">

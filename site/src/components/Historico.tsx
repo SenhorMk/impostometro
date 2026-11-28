@@ -208,6 +208,7 @@ function DetalheSalvo({ detalhe, c }: { detalhe: Detalhe | null; c: CalculoSalvo
         premissas: detalhe.premissas,
       }}
       notas={detalhe.lidas}
+      cobertura={detalhe.cobertura}
     />
   );
 }

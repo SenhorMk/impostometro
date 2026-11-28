@@ -11,6 +11,8 @@ import type { ItemNota, NotaLida } from "@/lib/nfe";
 import { nomeDaPlanilha, planilhaDoLote } from "@/lib/planilha";
 import { motivosNaoCalculados } from "@/lib/preparo";
 import { ehRascunho, type Premissas } from "@/lib/premissas";
+import { montarRelatorio, type Cobertura, type Relatorio } from "@/lib/relatorio";
+import { RelatorioImpressao } from "./RelatorioImpressao";
 
 export type LoteCalculado = {
   notas: NotaCalculada[];
@@ -24,8 +26,8 @@ export type NotaParaMostrar = Pick<NotaLida, "chave" | "modelo" | "numero" | "se
 
 const reais = (centavos: number) => emReais(centavos / 100);
 
-/** cobertura (T34): o que esta soma representa. Ausente ao reabrir do histórico. */
-export type Cobertura = { resumo: string; parcial: boolean; motivos: string[] };
+/** cobertura (T34/T27): o que esta soma representa. Ausente em lotes antigos do histórico. */
+export type { Cobertura };
 
 export function ResultadoLote({ resultado, notas, cobertura }: { resultado: LoteCalculado; notas: NotaParaMostrar[]; cobertura?: Cobertura }) {
   const t = resultado.notas.reduce(
@@ -43,6 +45,8 @@ export function ResultadoLote({ resultado, notas, cobertura }: { resultado: Lote
   const naoCalculados = motivosNaoCalculados(resultado.notas.flatMap((n) => n.itens));
   const p = resultado.premissas;
   const rascunho = ehRascunho(p);
+  const [relatorio, setRelatorio] = useState<Relatorio | null>(null);
+  const terminar = () => setRelatorio(null);
 
   return (
     <section className="space-y-4">
@@ -108,12 +112,23 @@ export function ResultadoLote({ resultado, notas, cobertura }: { resultado: Lote
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <button type="button" className="botao-secundario" onClick={() => baixarPlanilha(resultado, notas)}>
-          Baixar planilha para o contador
-        </button>
-        <span className="text-xs text-suave">Arquivo .csv que abre no Excel: uma linha por item, com base, CBS, IBS e o motivo do que não foi calculado.</span>
+      <div className="rounded-2xl border border-borda bg-white p-4">
+        <p className="font-medium">Relatório para o contador</p>
+        <p className="mt-1 text-xs text-suave">
+          Resumo do período, notas incluídas e de fora, pendências, premissas, versões e o detalhe de cada item, com os mesmos centavos desta tela. Os
+          arquivos são montados no seu navegador: não ficam guardados conosco nem viram link público.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <button type="button" className="botao-primario" onClick={() => setRelatorio(montarRelatorio(resultado, notas, cobertura ?? null, new Date()))}>
+            Relatório em PDF
+          </button>
+          <button type="button" className="botao-secundario" onClick={() => baixarPlanilha(resultado, notas, cobertura)}>
+            Planilha (.csv para Excel)
+          </button>
+        </div>
+        <p className="mt-2 text-xs text-suave">No PDF, escolha &quot;Salvar como PDF&quot; na janela de impressão.</p>
       </div>
+      {relatorio && <RelatorioImpressao relatorio={relatorio} aoTerminar={terminar} />}
 
       <ul className="space-y-3">
         {resultado.notas.map((n, k) => (
@@ -226,8 +241,8 @@ function textoClassificacao(item: ItemNota): string {
   }
 }
 
-function baixarPlanilha(resultado: LoteCalculado, notas: NotaParaMostrar[]) {
-  const csv = planilhaDoLote(resultado.notas, notas, resultado, resultado.premissas);
+function baixarPlanilha(resultado: LoteCalculado, notas: NotaParaMostrar[], cobertura?: Cobertura) {
+  const csv = planilhaDoLote(resultado.notas, notas, resultado, resultado.premissas, cobertura);
   const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
   const a = document.createElement("a");
   a.href = url;

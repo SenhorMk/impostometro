@@ -99,3 +99,37 @@ h1, h2, h3 {
     }
   }
 }
+
+/* ------------------------------------------------------------------
+   Relatório do período para imprimir ou salvar em PDF (T27).
+   Na tela ele não aparece; na impressão, só ele aparece.
+   ------------------------------------------------------------------ */
+#relatorio-impressao { display: none; }
+
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  body > *:not(#relatorio-impressao) { display: none !important; }
+  body { background: #fff !important; }
+  #relatorio-impressao { display: block; color: #111; font-size: 9.5pt; line-height: 1.35; }
+  .relatorio header { border-bottom: 1.5pt solid #111; padding-bottom: 6pt; margin-bottom: 8pt; }
+  .relatorio .relatorio-marca { font-size: 8pt; color: #555; }
+  .relatorio h1 { font-size: 15pt; font-weight: 700; margin: 2pt 0; }
+  .relatorio h2 { font-size: 11pt; font-weight: 700; margin: 12pt 0 4pt; break-after: avoid; }
+  .relatorio .relatorio-rascunho { margin-top: 4pt; display: inline-block; border: 1.5pt solid #b45309; color: #b45309; font-weight: 700; padding: 2pt 6pt; }
+  .relatorio ul { list-style: disc; padding-left: 14pt; margin: 4pt 0; }
+  .relatorio li { break-inside: avoid; }
+  .relatorio .relatorio-avisos li { color: #7c2d12; }
+  .relatorio table { width: 100%; border-collapse: collapse; }
+  .relatorio .relatorio-resumo { width: auto; min-width: 60%; }
+  .relatorio .relatorio-resumo th { text-align: left; font-weight: 400; padding: 2pt 12pt 2pt 0; }
+  .relatorio .relatorio-resumo td { text-align: right; padding: 2pt 0; }
+  .relatorio .relatorio-detalhe { font-size: 8pt; }
+  .relatorio .relatorio-detalhe thead { display: table-header-group; }
+  .relatorio .relatorio-detalhe tfoot { display: table-row-group; } /* total só no fim, não em cada página */
+  .relatorio .relatorio-detalhe th, .relatorio .relatorio-detalhe td { border-bottom: 0.5pt solid #ccc; padding: 2.5pt 3pt; vertical-align: top; text-align: left; }
+  .relatorio .relatorio-detalhe tr { break-inside: avoid; }
+  .relatorio .num { text-align: right !important; white-space: nowrap; }
+  .relatorio small { color: #555; }
+  .relatorio .relatorio-erro td { background: #fdf2f2; }
+  .relatorio footer { margin-top: 12pt; padding-top: 6pt; border-top: 0.5pt solid #999; font-size: 7.5pt; color: #555; }
+}

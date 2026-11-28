@@ -2,10 +2,10 @@
 
 | Campo | Valor |
 |---|---|
-| Status | ⏳ A fazer |
+| Status | 🟡 Código em PR; depende do PR #32 (T34/T35) e de teste com conta real |
 | Marco | B |
 | Prioridade | P0 assinatura |
-| Pontos | A estimar após revisar o código existente |
+| Pontos | 5 |
 | Depende de | T34, T35, T18, T37 |
 | GitHub | https://github.com/SenhorMk/impostometro/issues/22 |
 
@@ -25,13 +25,15 @@ T27 era uma ideia pós-MVP. O relatório de estratégia o promove à entrega mí
 
 ## Critérios de aceite
 
-- [ ] PDF e planilha reconciliam com os valores da tela e os centavos do resultado, sem novo cálculo divergente na exportação.
-- [ ] Resumo identifica empresa, período, cenário, documentos incluídos/excluídos/duplicados e itens não calculados.
-- [ ] Detalhe mostra base, CBS, IBS, classificação e origem, com memória/fonte e versões suficientes para conferência.
-- [ ] Bases estimadas, alíquotas provisórias, premissas pendentes e cobertura parcial aparecem junto aos resultados relevantes.
-- [ ] Arquivos respeitam permissão do usuário, política de retenção e minimização de dados; não usam link público permanente por padrão.
-- [ ] CSV/XLSX protege conteúdo textual contra interpretação como fórmula; números e separadores são documentados.
-- [ ] Conferir visualmente um relatório curto e um extenso, com quebras de página, e validar a soma com amostras de resultado conhecido.
+- [x] PDF e planilha reconciliam com os valores da tela e os centavos do resultado, sem novo cálculo divergente na exportação.
+- [x] Resumo identifica empresa, período, cenário, documentos incluídos/excluídos/duplicados e itens não calculados.
+- [x] Detalhe mostra base, CBS, IBS, classificação e origem, com memória/fonte e versões suficientes para conferência.
+- [x] Bases estimadas, alíquotas provisórias, premissas pendentes e cobertura parcial aparecem junto aos resultados relevantes.
+- [x] Arquivos respeitam permissão do usuário, política de retenção e minimização de dados; não usam link público permanente por padrão.
+- [x] CSV/XLSX protege conteúdo textual contra interpretação como fórmula; números e separadores são documentados.
+- [x] Conferir visualmente um relatório curto e um extenso, com quebras de página, e validar a soma com amostras de resultado conhecido.
+
+Evidências (28/11/2026): testes em `relatorio.test.ts` e `planilha.test.ts` (inclui lote de 500 notas e 20.000 itens com tela = relatório = planilha ao centavo); PDF curto (1 página) e longo (20 notas, 600 itens, 23 páginas) gerados no navegador com os XMLs de exemplo, em `/mnt/project-files/relatorio-t27/` nos arquivos do projeto; total da tela R$ 3.540,00 igual ao total da planilha. Formato em [`docs/relatorio.md`](../relatorio.md). Falta: teste com conta real reabrindo do histórico (precisa do login ligado).
 
 ## Verificação
 
