@@ -22,7 +22,7 @@ A prioridade é tornar o site confiável e utilizável, depois abrir a entrega p
 | [T36](tickets/T36-cenarios-versionados-e-comparacao.md) · Comparar cenários da mesma análise preservando premissas | C | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/23 |
 | [T22](tickets/T22-funil-medido-e-checklist-de-lancamento.md) · Medir os primeiros usos e recolher feedback sem recrutar empresas | A | 🟡 Funil proposto no PR 6 | https://github.com/SenhorMk/impostometro/issues/24 |
 | [T30](tickets/T30-conteudo-util-e-divulgacao-organica.md) · Publicar conteúdo útil e preparar divulgação orgânica sustentável | C | 🟡 Páginas propostas no PR 7; revisão pendente | https://github.com/SenhorMk/impostometro/issues/25 |
-| [T39](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) · Registrar os critérios e evidências dos dois lançamentos | A | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/26 |
+| [T39](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) · Registrar os critérios e evidências dos dois lançamentos | A | 🟡 Lista em [`lancamento.md`](lancamento.md) conferida em 28/11; 3 achados para divulgar | https://github.com/SenhorMk/impostometro/issues/26 |
 
 Os quadros originais abaixo registram o planejamento anterior e serão reconciliados conforme cada entrega; a ordem desta revisão prevalece. Nenhum critério novo foi marcado como concluído nesta decomposição.
 

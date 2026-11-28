@@ -47,7 +47,7 @@ A divulgação gratuita e a abertura da assinatura têm critérios separados no 
 | [T27](T27-relatorio-revisavel-do-periodo.md) | Entregar relatório revisável do período em PDF e planilha | Lançamento confiável | B | P0 assinatura | A estimar | ⏳ A fazer |
 | [T36](T36-cenarios-versionados-e-comparacao.md) | Comparar cenários da mesma análise preservando premissas | Lançamento confiável | C | P1 após primeira entrega paga | A estimar | ⏳ A fazer |
 | [T30](T30-conteudo-util-e-divulgacao-organica.md) | Publicar conteúdo útil e preparar divulgação orgânica sustentável | Lançamento confiável | C | P1 gratuito | A estimar | 🟡 Páginas por setor no main (PR 7); revisão pendente |
-| [T39](T39-criterios-de-lancamento-gratuito-e-pago.md) | Registrar os critérios e evidências dos dois lançamentos | Lançamento confiável | A | P0 por marco | A estimar | ⏳ A fazer |
+| [T39](T39-criterios-de-lancamento-gratuito-e-pago.md) | Registrar os critérios e evidências dos dois lançamentos | Lançamento confiável | A | P0 por marco | 3 | 🟡 Lista feita; lançamentos pendentes |
 
 ## Marcos de implementação
 
