@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * Minha conta: aceite dos termos (T13), dados da empresa (T15), sair e apagar a conta (T13).
+ * Minha conta: aceite dos termos (T13), dados da empresa (T15), sair e apagar a conta (T13),
+ * aceite da versão nova da privacidade e "Baixar meus dados" (LGPD, T41).
  * Fala direto com o Supabase; as regras do banco (RLS) garantem que cada conta só
  * lê e altera as próprias linhas.
  */
@@ -11,10 +12,12 @@ import { useEffect, useState } from "react";
 import { REGIMES, UFS, VERSAO_TERMOS, validarEmpresa, type Empresa } from "@/lib/contas";
 import { useAcesso, type EstadoAcesso } from "@/lib/acesso-cliente";
 import { contarEvento } from "@/lib/funil";
+import { gravarAceite } from "@/lib/lgpd-navegador";
 import { cabecalhoLogin, useSessao } from "@/lib/sessao";
 import { supabase } from "@/lib/supabase-navegador";
 import { AssinaturaConta } from "./AssinaturaConta";
 import { CHAVE_ACEITE } from "./Entrar";
+import { MeusDados } from "./MeusDados";
 
 function aceitePendente(): boolean {
   try {
@@ -28,7 +31,7 @@ export function Conta() {
   const sessao = useSessao();
   const router = useRouter();
   const acesso = useAcesso();
-  const [perfil, setPerfil] = useState<"carregando" | "ok" | "falta" | "erro">("carregando");
+  const [perfil, setPerfil] = useState<"carregando" | "ok" | "falta" | "desatualizado" | "erro">("carregando");
 
   const usuario = sessao.configurado ? sessao.usuario : null;
 
@@ -38,12 +41,13 @@ export function Conta() {
     (async () => {
       const { data, error } = await sb.from("perfis").select("termos_versao").eq("usuario_id", usuario.id).maybeSingle();
       if (error) return setPerfil("erro");
-      if (data) return setPerfil("ok");
+      // LGPD: a política mudou desde o último aceite. A conta continua funcionando, mas pedimos a leitura.
+      if (data) return setPerfil(data.termos_versao === VERSAO_TERMOS ? "ok" : "desatualizado");
       // Primeira entrada: grava o aceite feito na tela de entrar (no Google não dá para mandar junto).
       if (aceitePendente() || usuario.user_metadata?.termos_versao === VERSAO_TERMOS) {
-        const r = await sb.from("perfis").insert({ usuario_id: usuario.id, termos_versao: VERSAO_TERMOS });
-        if (!r.error) contarEvento("cadastro");
-        return setPerfil(r.error ? "erro" : "ok");
+        const r = await gravarAceite(sb, usuario.id);
+        if (r === "ok") contarEvento("cadastro");
+        return setPerfil(r === "erro" ? "erro" : "ok");
       }
       setPerfil("falta");
     })();
@@ -71,9 +75,11 @@ export function Conta() {
   }
 
   async function aceitar() {
-    const r = await supabase()!.from("perfis").insert({ usuario_id: usuario!.id, termos_versao: VERSAO_TERMOS });
-    if (!r.error) contarEvento("cadastro");
-    setPerfil(r.error ? "erro" : "ok");
+    const primeiro = perfil === "falta";
+    const r = await gravarAceite(supabase()!, usuario!.id);
+    if (r === "ok" && primeiro) contarEvento("cadastro");
+    // "sem-sql": o banco ainda não guarda a versão nova (SQL pendente); não travamos a conta por isso.
+    setPerfil(r === "erro" ? "erro" : "ok");
   }
 
   async function sair() {
@@ -115,8 +121,28 @@ export function Conta() {
             Li e aceito
           </button>
         </section>
-      ) : perfil === "ok" ? (
+      ) : perfil === "ok" || perfil === "desatualizado" ? (
         <>
+          {perfil === "desatualizado" && (
+            <section className="rounded-2xl border border-amber-300 bg-amber-50 p-5 text-sm text-amber-950">
+              <h2 className="text-lg font-semibold">Atualizamos a política de privacidade e os termos</h2>
+              <p className="mt-1">
+                Agora explicamos melhor cada dado que guardamos, por quanto tempo e por quê, e você pode baixar uma cópia dos seus dados.
+                Leia a{" "}
+                <Link href="/privacidade" className="underline" target="_blank">
+                  política de privacidade
+                </Link>{" "}
+                e os{" "}
+                <Link href="/termos" className="underline" target="_blank">
+                  termos de uso
+                </Link>
+                . Se não concordar, você pode apagar a conta no fim desta página.
+              </p>
+              <button type="button" onClick={aceitar} className="botao-primario mt-4">
+                Li e aceito a versão nova
+              </button>
+            </section>
+          )}
           <AssinaturaConta usuarioId={usuario.id} acesso={acesso} />
           <FormEmpresa usuarioId={usuario.id} />
           <section className="rounded-2xl border border-borda bg-white p-5">
@@ -134,6 +160,7 @@ export function Conta() {
         </>
       ) : null}
 
+      {perfil !== "falta" && <MeusDados usuario={usuario} />}
       <ApagarConta acesso={acesso} usuarioId={usuario.id} />
     </div>
   );
@@ -329,7 +356,8 @@ function ApagarConta({ acesso, usuarioId }: { acesso: EstadoAcesso | null; usuar
     <details className="rounded-2xl border border-borda bg-white p-5 text-sm">
       <summary className="cursor-pointer font-medium text-red-800">Apagar minha conta</summary>
       <p className="mt-3 text-suave">
-        Apaga para sempre a conta, os dados da empresa e o aceite dos termos, e cancela a assinatura. Não dá para desfazer. Os XMLs das notas nunca ficaram
+        Apaga para sempre a conta, os dados da empresa, o histórico de cálculos e os aceites dos termos, e cancela a assinatura. Se quiser guardar uma cópia, use
+        &quot;Baixar meus dados&quot; antes. Não dá para desfazer. Os XMLs das notas nunca ficaram
         guardados conosco.
       </p>
       <label htmlFor="confirmar-apagar" className="rotulo mt-3">

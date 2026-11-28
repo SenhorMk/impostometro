@@ -21,6 +21,7 @@ Site por assinatura barata para empresários calcularem a **CBS e o IBS da refor
 6. **O site não é do governo** e isso aparece no rodapé de todas as páginas. Não usar "Receita", "gov" nem "Impostômetro" (marca da ACSP) no nome do produto.
 7. **Segredos nunca no git.** Chaves ficam na Vercel e no Supabase. Só `.env.example` (sem valores) é versionado.
 8. **Testes dourados não se "consertam" regravando.** Se um valor mudou, descubra por quê (CHANGELOG da Receita) antes de rodar `--gerar`, e explique no pull request.
+9. **LGPD e segurança mínima em todo o trabalho.** Colete só o necessário, com finalidade e prazo; dado de conta tem RLS, `on delete cascade` e entra no "Baixar meus dados"; nada de dado pessoal em logs, Sentry ou link público. Mudou um fluxo de dados? Atualize `site/src/lib/privacidade.ts`, [`docs/lgpd.md`](docs/lgpd.md) e suba `VERSAO_TERMOS`. Regras completas na seção 7 de [`docs/lgpd.md`](docs/lgpd.md) e em [`docs/seguranca.md`](docs/seguranca.md).
 
 ## Idioma e estilo
 
@@ -41,7 +42,7 @@ Site por assinatura barata para empresários calcularem a **CBS e o IBS da refor
 | `site/src/dados/atividades.json` | dicionário "o que você vende?" (atividade → NCM/NBS + cClassTrib) |
 | `testes-dourados/` | 30 operações com resultado conhecido + checagem do dicionário |
 | `scripts/validar-calculadora.sh` | confere o exemplo oficial da Receita (CBS de R$ 42,24) |
-| `docs/` | arquitetura, deploy, manutenção, backlog, decisões |
+| `docs/` | arquitetura, deploy, manutenção, backlog, decisões, segurança e LGPD (`lgpd.md`) |
 | `docs/tickets/` | um arquivo por ticket do MVP, com critérios de aceite e status |
 | `.github/workflows/` | CI: `calculadora.yml` (oficial + testes + porte × oficial) e `site.yml` (lint, testes do porte, tipos, build) |
 

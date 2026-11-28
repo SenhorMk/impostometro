@@ -1,7 +1,7 @@
 /** Regras das contas (T13) e da empresa (T15) que não dependem do banco. */
 
 /** Versão dos termos e da privacidade que a pessoa aceita ao criar a conta. Mudou o texto? Mude aqui. */
-export const VERSAO_TERMOS = "2026-11";
+export const VERSAO_TERMOS = "2026-11-28";
 
 export const UFS = [
   "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA",

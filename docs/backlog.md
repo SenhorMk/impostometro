@@ -23,6 +23,9 @@ A prioridade é tornar o site confiável e utilizável, depois abrir a entrega p
 | [T22](tickets/T22-funil-medido-e-checklist-de-lancamento.md) · Medir os primeiros usos e recolher feedback sem recrutar empresas | A | 🟡 Funil proposto no PR 6 | https://github.com/SenhorMk/impostometro/issues/24 |
 | [T30](tickets/T30-conteudo-util-e-divulgacao-organica.md) · Publicar conteúdo útil e preparar divulgação orgânica sustentável | C | 🟡 Páginas propostas no PR 7; revisão pendente | https://github.com/SenhorMk/impostometro/issues/25 |
 | [T39](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) · Registrar os critérios e evidências dos dois lançamentos | A | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/26 |
+| [T40](tickets/T40-lgpd-politica-e-registro.md) · Cumprir a LGPD: política completa, registro das operações e canal do titular | A/B | 🟡 Código em PR; controlador e revisão jurídica pendentes | https://github.com/SenhorMk/impostometro/issues/33 |
+| [T41](tickets/T41-direitos-do-titular-na-conta.md) · Direitos do titular em Minha conta: baixar meus dados e aceite de cada versão | B | 🟡 Código em PR; SQL pendente | https://github.com/SenhorMk/impostometro/issues/34 |
+| [T42](tickets/T42-retencao-e-contas-inativas.md) · Retenção: apagar contas inativas automaticamente | B | 🟡 SQL em PR; prazo a confirmar | https://github.com/SenhorMk/impostometro/issues/35 |
 
 Os quadros originais abaixo registram o planejamento anterior e serão reconciliados conforme cada entrega; a ordem desta revisão prevalece. Nenhum critério novo foi marcado como concluído nesta decomposição.
 
@@ -83,6 +86,7 @@ Lançamento 1 (calculadora grátis pública): meta 23/12/2026. Lançamento 2 (as
 | T37 | Acesso grátis, prévia e assinatura decididos no servidor | 🟡 | matriz em [`acesso.md`](acesso.md). `MODO_ACESSO` (`previa`, `assinatura`, `fechado`); chave faltando fecha a importação em vez de abrir. Em revisão |
 | T18 | Histórico de cálculos | 🟡 | `/conta/historico`: lista, reabrir com as versões e apagar. Falta rodar o SQL no Supabase |
 | T22 | Funil medido e checklist de lançamento | 🟡 | contadores por dia sem dado pessoal; checklist em [`lancamento.md`](lancamento.md); página `/contato` (e-mail em `CONTATO_EMAIL`). Falta rodar o SQL e os itens do Mateus no checklist |
+| LGPD | Princípios da LGPD em todo o trabalho (T40–T42) | 🟡 | política completa, registro das operações, baixar meus dados, aceite por versão e limpeza de contas inativas. SQL `20261128120000_lgpd.sql` pendente ([`lgpd.md`](lgpd.md)) |
 | SEG | Revisão de segurança severa | 🟡 | correções no código e SQL novo em revisão; Mateus roda o SQL e faz as tarefas de conta ([`seguranca.md`](seguranca.md)) |
 
 ## Depois do MVP (P2)
