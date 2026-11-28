@@ -167,3 +167,14 @@ Migração: `supabase/migrations/20261126170000_funil_diario.sql`. **Ainda não 
 - Limitação: como qualquer contador sem login, alguém pode chamar a função à toa e inflar números. Serve para tendência e taxas de conversão, não como número exato.
 
 Conferido num Postgres 17 local: soma por dia, recusa etapa desconhecida (ex.: um e-mail), `anon` e `authenticated` não leem a tabela nem a visão.
+
+## LGPD: aceites, pedidos atendidos e contas inativas (T40–T42)
+
+Migração: `supabase/migrations/20261128120000_lgpd.sql`. **Ainda não aplicada**: rodar no SQL Editor depois do `20261127210000_revisao_seguranca.sql`. Pode rodar de novo.
+
+- `aceites_termos`: cada aceite (versão e data), sem apagar os anteriores. A conta só **lê** as próprias linhas; quem grava é `aceitar_termos(versao)`, que também atualiza `perfis`. Os aceites que já estavam em `perfis` entram no histórico ao rodar.
+- `lgpd_registro (dia, tipo, total)`: contas apagadas pela pessoa, contas apagadas por inatividade e cópias dos dados baixadas, por dia. Ninguém da API lê.
+- `apagar_minha_conta()` passa a somar no registro (mesma regra da revisão de segurança).
+- `apagar_contas_inativas()`: no `pg_cron`, todo dia 1º às 4h10 UTC; apaga contas sem acesso há 24 meses e sem assinatura viva ou válida.
+
+Conferido em PGlite (Postgres 17) com todas as migrações do repositório: aceite pela função grava perfil e histórico e não duplica no clique repetido; visitante não aceita; ninguém grava direto em `aceites_termos`; outra conta não lê os aceites; conta logada não chama `registrar_lgpd` nem `apagar_contas_inativas` nem lê `lgpd_registro`; a limpeza apagou só as duas contas inativas sem assinatura (manteve a de acesso recente e a de assinatura ativa); rodar o SQL duas vezes não duplica nada. Detalhes em [`lgpd.md`](lgpd.md).

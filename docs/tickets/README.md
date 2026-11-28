@@ -48,6 +48,9 @@ A divulgação gratuita e a abertura da assinatura têm critérios separados no 
 | [T36](T36-cenarios-versionados-e-comparacao.md) | Comparar cenários da mesma análise preservando premissas | Lançamento confiável | C | P1 após primeira entrega paga | A estimar | ⏳ A fazer |
 | [T30](T30-conteudo-util-e-divulgacao-organica.md) | Publicar conteúdo útil e preparar divulgação orgânica sustentável | Lançamento confiável | C | P1 gratuito | A estimar | 🟡 Páginas por setor no main (PR 7); revisão pendente |
 | [T39](T39-criterios-de-lancamento-gratuito-e-pago.md) | Registrar os critérios e evidências dos dois lançamentos | Lançamento confiável | A | P0 por marco | A estimar | ⏳ A fazer |
+| [T40](T40-lgpd-politica-e-registro.md) | Cumprir a LGPD: política completa, registro das operações e canal do titular | LGPD | A e B | P0 assinatura | 3 | 🟡 Código em PR; decisões do Mateus pendentes |
+| [T41](T41-direitos-do-titular-na-conta.md) | Direitos do titular em Minha conta: baixar meus dados e aceite de cada versão | LGPD | B | P0 assinatura | 3 | 🟡 Código em PR; SQL pendente |
+| [T42](T42-retencao-e-contas-inativas.md) | Retenção: apagar contas inativas automaticamente | LGPD | B | P1 | 1 | 🟡 SQL em PR; prazo a confirmar |
 
 ## Marcos de implementação
 

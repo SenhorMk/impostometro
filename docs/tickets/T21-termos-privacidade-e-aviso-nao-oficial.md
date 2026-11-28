@@ -15,7 +15,7 @@ Como visitante, quero saber quem mantém a ferramenta, como meus dados são usad
 
 ## Estado existente
 
-Há termos e privacidade em rascunho, aviso não oficial e atribuição MIT. A operação agora envolve Supabase, Vercel, Resend e, quando ativado, Asaas. Não alegar revisão jurídica inexistente.
+Há termos e privacidade em rascunho, aviso não oficial e atribuição MIT. Em 28/11/2026 a política foi reescrita com o inventário da LGPD (T40) e os aceites passaram a ter histórico por versão (T41, SQL pendente). A operação agora envolve Supabase, Vercel, Resend e, quando ativado, Asaas. Não alegar revisão jurídica inexistente.
 
 ## Escopo
 
