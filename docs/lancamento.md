@@ -26,5 +26,5 @@ Antes de abrir a assinatura para o público. Cada item precisa de evidência (li
 - [ ] Nome e preço finais decididos (T04)
 
 ## Medição
-- [ ] Funil contando: depois de um teste, `select * from funil_diario order by dia desc;` mostra visita, cálculo, cadastro, assinatura e cancelamento
+- [ ] Funil contando: depois de um teste, `select * from funil_diario order by dia desc;` mostra visita, cálculo, importação, relatório, cadastro, assinatura e cancelamento ([`funil.md`](funil.md))
 - [ ] Search Console e medição de visitas (T20)

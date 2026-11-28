@@ -20,7 +20,7 @@ A prioridade é tornar o site confiável e utilizável, depois abrir a entrega p
 | [T18](tickets/T18-historico-de-calculos.md) · Integrar histórico com reabertura fiel e isolamento | B | 🟡 Código proposto no PR 6 | https://github.com/SenhorMk/impostometro/issues/21 |
 | [T27](tickets/T27-relatorio-revisavel-do-periodo.md) · Entregar relatório revisável do período em PDF e planilha | B | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/22 |
 | [T36](tickets/T36-cenarios-versionados-e-comparacao.md) · Comparar cenários da mesma análise preservando premissas | C | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/23 |
-| [T22](tickets/T22-funil-medido-e-checklist-de-lancamento.md) · Medir os primeiros usos e recolher feedback sem recrutar empresas | A | 🟡 Funil proposto no PR 6 | https://github.com/SenhorMk/impostometro/issues/24 |
+| [T22](tickets/T22-funil-medido-e-checklist-de-lancamento.md) · Medir os primeiros usos e recolher feedback sem recrutar empresas | A | 🟡 Etapas de importação/relatório, leitura e canal de sugestões em PR; SQL pendente | https://github.com/SenhorMk/impostometro/issues/24 |
 | [T30](tickets/T30-conteudo-util-e-divulgacao-organica.md) · Publicar conteúdo útil e preparar divulgação orgânica sustentável | C | 🟡 Páginas propostas no PR 7; revisão pendente | https://github.com/SenhorMk/impostometro/issues/25 |
 | [T39](tickets/T39-criterios-de-lancamento-gratuito-e-pago.md) · Registrar os critérios e evidências dos dois lançamentos | A | ⏳ A fazer | https://github.com/SenhorMk/impostometro/issues/26 |
 

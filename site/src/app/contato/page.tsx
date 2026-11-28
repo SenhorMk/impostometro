@@ -52,6 +52,28 @@ export default function Contato() {
             a classificação (cClassTrib), o valor e a cidade.
           </li>
         </ul>
+        <h2 id="sugestao" className="scroll-mt-24">Sugestões e problemas</h2>
+        <p>
+          Achou um resultado estranho, uma tela confusa ou sentiu falta de alguma coisa? Conte pra gente: cada mensagem é lida e ajuda a
+          decidir o que melhorar primeiro. Nada é enviado sozinho: você escreve e manda do seu e-mail, quando quiser.
+        </p>
+        {email ? (
+          <p className="mt-3">
+            <a href={linkSugestao(email)} className="botao-secundario">
+              Escrever uma sugestão
+            </a>
+          </p>
+        ) : (
+          <p className="mt-3">O canal de sugestões abre junto com o e-mail de atendimento.</p>
+        )}
+        <p className="mt-3 text-xs">
+          Usamos a mensagem só para responder e melhorar o site, como explicado na{" "}
+          <Link href="/privacidade" className="underline">
+            política de privacidade
+          </Link>
+          . Para mostrar um caso, basta a atividade (ou NCM), o valor, a cidade e a versão da calculadora que aparece no resultado. Não mande
+          XML, CPF nem dados de clientes.
+        </p>
         <h2>O que não fazemos</h2>
         <p>
           Não somos escritório de contabilidade nem órgão do governo: não fazemos apuração, não emitimos guias e não damos parecer
@@ -61,4 +83,19 @@ export default function Contato() {
       <Rodape />
     </>
   );
+}
+
+/** mailto com assunto e um roteiro curto. Sem nenhum dado preenchido automaticamente. */
+function linkSugestao(email: string): string {
+  const assunto = `Sugestão ou problema no ${SITE.nome}`;
+  const corpo = [
+    "O que aconteceu ou o que você sugere:",
+    "",
+    "",
+    "Em qual página (se souber):",
+    "",
+    "Se for um resultado: atividade ou NCM, valor, cidade e versão da calculadora (aparece no fim do resultado):",
+    "",
+  ].join("\n");
+  return `mailto:${email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
 }

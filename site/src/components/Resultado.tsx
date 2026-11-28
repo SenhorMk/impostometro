@@ -85,7 +85,10 @@ export function Resultado({ resultado, descricao, cidade }: Props) {
             </>
           )}
           Simulação feita com as regras e tabelas da calculadora oficial da Receita Federal (versão {r.versaoMotor}). Não substitui o seu
-          contador. Este site não é do governo.
+          contador. Este site não é do governo.{" "}
+          <Link href="/contato#sugestao" className="underline hover:text-tinta">
+            Algo estranho neste resultado? Conte pra gente.
+          </Link>
         </p>
 
         <div className="mt-5 rounded-xl bg-fundo p-4">

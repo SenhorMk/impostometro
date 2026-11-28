@@ -20,6 +20,7 @@ Comece pelo [guia de agentes](../AGENTS.md), consulte o [backlog](backlog.md) e 
 | [Estratégia da assinatura](estrategia-assinatura.md) | Pesquisa de referências internacionais, proposta paga e plano de validação comercial |
 | [Segurança](seguranca.md) | Revisão de segurança, o que foi corrigido, tarefas nas contas e limitações |
 | [Acesso](acesso.md) | Quem pode usar o quê: simulação grátis, prévia, assinatura e `MODO_ACESSO` (T37) |
+| [Funil](funil.md) | Etapas medidas sem dado pessoal, como ler e canal de sugestões (T22) |
 
 ## Fluxo de uma entrega
 

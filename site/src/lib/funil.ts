@@ -5,9 +5,17 @@
  * O banco só guarda "dia · etapa · total" (tabela public.funil_diario). Sem as
  * variáveis do Supabase, não faz nada. Nunca atrapalha a tela: erros são ignorados.
  */
-export type EventoFunil = "visita" | "calculo_gratis" | "cadastro" | "assinatura" | "cancelamento";
+export type EventoFunil =
+  | "visita"
+  | "calculo_gratis"
+  | "cadastro"
+  | "assinatura"
+  | "cancelamento"
+  | "importacao_inicio"
+  | "importacao_resultado"
+  | "relatorio";
 
-/** Do navegador (visita, cálculo grátis, cadastro). */
+/** Do navegador (visita, cálculo grátis, cadastro, importação, relatório). Precisa do SQL 20261128150000 para as etapas novas. */
 export function contarEvento(evento: EventoFunil): void {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const chave = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
