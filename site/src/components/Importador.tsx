@@ -226,7 +226,7 @@ export function Importador({ limiteNotas = LIMITE_NOTAS }: { limiteNotas?: numbe
       )}
 
       {lendo && <p className="rounded-2xl border border-borda bg-white p-6 text-center text-suave">Lendo as notas no seu computador…</p>}
-      {erro && <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{erro}</p>}
+      {erro && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{erro}</p>}
 
       {(notas.length > 0 || rejeitadas.length > 0) && !lendo && (
         <section className="rounded-2xl border border-borda bg-white p-5">

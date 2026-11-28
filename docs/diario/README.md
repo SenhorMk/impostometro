@@ -21,3 +21,4 @@ Uma entrada por entrega, com escopo, pesquisa, decisões, arquivos relevantes, e
 | 27/11/2026 | Revisão de segurança severa | [Revisão de segurança](2026-11-27-revisao-seguranca.md) |
 | 27/11/2026 | T37: acesso grátis, prévia e assinatura no servidor | [Entrega T37](2026-11-27-t37.md) |
 | 27/11/2026 | Nomes das variáveis do Asaas iguais aos da Vercel (T14) | [Nomes da Vercel](2026-11-27-nomes-vercel.md) |
+| 28/11/2026 | T38: navegação, teclado, erros e carregamento da jornada grátis | [Entrega T38](2026-11-28-t38.md) |

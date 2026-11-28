@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | ⏳ A fazer |
+| Status | 🟡 Jornada grátis verificada e corrigida (build local, PR); produção e jornada paga pendentes |
 | Marco | A |
 | Prioridade | P0 gratuito e assinatura |
 | Pontos | A estimar após revisar o código existente |
@@ -25,13 +25,15 @@ Existem verificações descritas nos PRs 6 e 7, mas elas não substituem validar
 
 ## Critérios de aceite
 
-- [ ] Concluir uma simulação em 360, 390 e 1366 pixels sem rolagem horizontal, conteúdo cortado ou botão inacessível.
-- [ ] Inputs possuem rótulos e erros associados; o foco é visível e a jornada principal funciona por teclado.
-- [ ] Carregamento evita envio duplicado e erros de API aparecem com possibilidade de tentar novamente.
-- [ ] Animações respeitam movimento reduzido; exemplos e fontes continuam legíveis.
-- [ ] Não há erro inesperado no console durante as jornadas verificadas.
-- [ ] Registrar medidas de carregamento e os principais recursos que pesam; não tratar um resultado isolado de auditoria como garantia de desempenho.
+- [x] Concluir uma simulação em 360, 390 e 1366 pixels sem rolagem horizontal, conteúdo cortado ou botão inacessível.
+- [x] Inputs possuem rótulos e erros associados; o foco é visível e a jornada principal funciona por teclado.
+- [x] Carregamento evita envio duplicado e erros de API aparecem com possibilidade de tentar novamente.
+- [x] Animações respeitam movimento reduzido; exemplos e fontes continuam legíveis.
+- [x] Não há erro inesperado no console durante as jornadas verificadas.
+- [x] Registrar medidas de carregamento e os principais recursos que pesam; não tratar um resultado isolado de auditoria como garantia de desempenho.
 - [ ] Repetir os trechos aplicáveis após integrar conta, cobrança e relatório, registrando a versão testada.
+
+Evidências (28/11/2026, build de produção local, `MODO_ACESSO=previa`): ver [diário](../diario/2026-11-28-t38.md). Marco A (gratuito): critérios 1 a 6 verificados localmente; falta repetir no domínio publicado. Marco B: critério 7 pendente até conta, cobrança e relatório estarem ligados (o relatório foi conferido no navegador no PR do T27).
 
 ## Verificação
 

@@ -71,6 +71,7 @@ export function Entrar() {
     setErro(null);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setErro("Confira o e-mail.");
+      document.getElementById("email")?.focus();
       return;
     }
     setEnviando(true);
@@ -138,6 +139,8 @@ export function Entrar() {
           autoComplete="email"
           className="campo"
           placeholder="voce@empresa.com.br"
+          aria-invalid={erro === "Confira o e-mail." || undefined}
+          aria-describedby={erro ? "erro-entrar" : undefined}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -146,7 +149,7 @@ export function Entrar() {
         </button>
       </form>
       {!aceito && <p className="mt-3 text-xs text-suave">Marque o aceite dos termos para continuar.</p>}
-      {erro && <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{erro}</p>}
+      {erro && <p id="erro-entrar" role="alert" className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{erro}</p>}
     </div>
   );
 }
